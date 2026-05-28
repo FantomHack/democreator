@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Генератор Bash-скриптов для настройки сетевых устройств">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+    <title>Генератор Bash-скрипта</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+        .form-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-generate {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-generate:hover { background-color: #218838; }
+        .btn-copy {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-copy:hover { background-color: #0069d9; }
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+    h3 {
+        color: #0056b3;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+        font-size: 18px;
+    }
+    h4 {
+        margin-bottom: 10px;
+        color: #444;
+        border-bottom: 1px dashed #ccc;
+        padding-bottom: 3px;
+    }
+    details summary {
+        cursor: pointer;
+        user-select: none;
+        outline: none;
+        color: #0056b3;
+        margin-top: 25px;
+    }
+    details summary h3 {
+        display: inline-block;
+        margin-top: 0;
+    }
+    .device-block {
+        margin-top: 25px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .device-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #e9ecef;
+        padding: 10px 20px;
+    }
+    .device-header h2 {
+        margin: 0;
+        color: #333;
+        font-size: 18px;
+    }
+    .device-block pre {
+        margin: 0;
+        border-radius: 0;
+        min-height: auto;
+    }
+    .memo-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    .memo-table th, .memo-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    .memo-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+    /* Тёмная тема */
+    body.dark-theme {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    body.dark-theme .container {
+        background: #1e1e1e;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    body.dark-theme h1, body.dark-theme h3, body.dark-theme details summary {
+        color: #66b2ff;
+    }
+    body.dark-theme h4 {
+        color: #aaa;
+        border-bottom-color: #444;
+    }
+    body.dark-theme input[type="text"] {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+        border-color: #555;
+    }
+    body.dark-theme .device-header {
+        background-color: #2d2d2d;
+    }
+    body.dark-theme .device-header h2 {
+        color: #e0e0e0;
+    }
+    body.dark-theme .device-block, body.dark-theme .memo-table th, body.dark-theme .memo-table td {
+        border-color: #444;
+    }
+    body.dark-theme .memo-table th {
+        background-color: #2d2d2d;
+    }
+    body.dark-theme ul {
+        color: #aaa !important;
+    }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Генератор сетевых настроек</h1>
+        <button id="themeToggle" onclick="toggleTheme()" style="background: none; border: none; font-size: 24px; cursor: pointer; padding: 0;" title="Переключить тему">🌙</button>
+    </div>
+    
+    <h3>Общие настройки</h3>
+    <div class="form-section">
+        <div class="form-group">
+            <label for="domain">Домен (DNS-суффикс):</label>
+            <input type="text" id="domain" value="quantumflux.local">
+        </div>
+        <div class="form-group">
+            <label for="timezone">Часовой пояс:</label>
+            <input type="text" id="timezone" value="Asia/Yekaterinburg">
+        </div>
+    </div>
+
+    <h3>Пользователи и доступ</h3>
+    <div class="form-section">
+        <div class="form-group">
+            <label for="rtrUser">Пользователь Router:</label>
+            <input type="text" id="rtrUser" value="routerfox">
+        </div>
+        <div class="form-group">
+            <label for="rtrPwd">Пароль Router:</label>
+            <input type="text" id="rtrPwd" value="P@$$word">
+        </div>
+        <div class="form-group">
+            <label for="srvUser">Пользователь Server:</label>
+            <input type="text" id="srvUser" value="cyberpanda">
+        </div>
+        <div class="form-group">
+            <label for="srvPwd">Пароль Server:</label>
+            <input type="text" id="srvPwd" value="P@ssw0rd">
+        </div>
+        <div class="form-group">
+            <label for="srvUid">UID пользователя Server:</label>
+            <input type="text" id="srvUid" value="1001">
+        </div>
+        <div class="form-group">
+            <label for="sshPort">SSH Порт (Server):</label>
+            <input type="text" id="sshPort" value="2020">
+        </div>
+    </div>
+
+    <details>
+        <summary><h3>Расширенные настройки (Имена и IP-адреса)</h3></summary>
+        <div style="margin-top: 15px;">
+            <h4>Имена узлов (без домена)</h4>
+            <div class="form-section">
+                <div class="form-group"><label>HQ-RTR:</label><input type="text" id="nameHqRtr" value="hq-rtr"></div>
+                <div class="form-group"><label>HQ-SRV:</label><input type="text" id="nameHqSrv" value="hq-srv"></div>
+                <div class="form-group"><label>HQ-CLI:</label><input type="text" id="nameHqCli" value="hq-cli"></div>
+                <div class="form-group"><label>BR-RTR:</label><input type="text" id="nameBrRtr" value="br-rtr"></div>
+                <div class="form-group"><label>BR-SRV:</label><input type="text" id="nameBrSrv" value="br-srv"></div>
+            </div>
+            <h4>IP-адреса внешних линков (ISP)</h4>
+            <div class="form-section">
+                <div class="form-group"><label>ISP -> HQ-RTR:</label><input type="text" id="ipIspHq" value="172.16.4.1"></div>
+                <div class="form-group"><label>HQ-RTR (Внешний):</label><input type="text" id="ipHqExt" value="172.16.4.2"></div>
+                <div class="form-group"><label>ISP -> BR-RTR:</label><input type="text" id="ipIspBr" value="172.16.5.1"></div>
+                <div class="form-group"><label>BR-RTR (Внешний):</label><input type="text" id="ipBrExt" value="172.16.5.2"></div>
+            </div>
+            <h4>IP-адреса внутренних сетей (HQ)</h4>
+            <div class="form-section">
+                <div class="form-group"><label>VLAN 100 (Шлюз HQ-RTR):</label><input type="text" id="ipHqVlan100Rtr" value="172.16.100.1"></div>
+                <div class="form-group"><label>VLAN 100 (IP HQ-SRV):</label><input type="text" id="ipHqVlan100Srv" value="172.16.100.2"></div>
+                <div class="form-group"><label>VLAN 200 (Шлюз HQ-RTR):</label><input type="text" id="ipHqVlan200Rtr" value="172.16.200.1"></div>
+                <div class="form-group"><label>VLAN 200 (IP HQ-CLI / DHCP Start):</label><input type="text" id="ipHqVlan200Cli" value="172.16.200.2"></div>
+                <div class="form-group"><label>VLAN 999 (Шлюз HQ-RTR):</label><input type="text" id="ipHqVlan999Rtr" value="172.16.99.1"></div>
+            </div>
+            <h4>IP-адреса внутренних сетей (BR) и GRE</h4>
+            <div class="form-section">
+                <div class="form-group"><label>LAN (Шлюз BR-RTR):</label><input type="text" id="ipBrIntRtr" value="172.16.6.1"></div>
+                <div class="form-group"><label>LAN (IP BR-SRV):</label><input type="text" id="ipBrIntSrv" value="172.16.6.2"></div>
+                <div class="form-group"><label>GRE HQ-RTR:</label><input type="text" id="ipGreHq" value="10.10.10.1"></div>
+                <div class="form-group"><label>GRE BR-RTR:</label><input type="text" id="ipGreBr" value="10.10.10.2"></div>
+            </div>
+        </div>
+    </details>
+
+    <details>
+        <summary><h3>Памятка по маскам подсетей (Нажмите, чтобы развернуть)</h3></summary>
+        <div style="margin-top: 15px;">
+            <table class="memo-table">
+                <thead>
+                    <tr>
+                        <th>Маска (CIDR)</th>
+                        <th>Маска (десятичная)</th>
+                        <th>Всего IP</th>
+                        <th>Доступно хостам (-2)</th>
+                        <th>Требование из задания (пример)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><b>24</b></td><td>255.255.255.0</td><td>256</td><td>254</td><td>Вместимость до 128 адресов</td></tr>
+                    <tr><td><b>25</b></td><td>255.255.255.128</td><td>128</td><td>126</td><td>Вместимость до 64 адресов</td></tr>
+                    <tr><td><b>26</b></td><td>255.255.255.192</td><td>64</td><td>62</td><td>Вместимость до 32 адресов</td></tr>
+                    <tr><td><b>27</b></td><td>255.255.255.224</td><td>32</td><td>30</td><td>Вместимость до 16 адресов</td></tr>
+                    <tr><td><b>28</b></td><td>255.255.255.240</td><td>16</td><td>14</td><td>Вместимость до 8 адресов (или линки ISP)</td></tr>
+                    <tr><td><b>29</b></td><td>255.255.255.248</td><td>8</td><td>6</td><td>Вместимость до 4 адресов</td></tr>
+                    <tr><td><b>30</b></td><td>255.255.255.252</td><td>4</td><td>2</td><td>Point-to-Point (GRE туннель)</td></tr>
+                </tbody>
+            </table>
+            <ul style="font-size: 14px; color: #555; margin-bottom: 25px;">
+                <li><b>ISP ↔ HQ-RTR:</b> 172.16.4.0/28</li>
+                <li><b>ISP ↔ BR-RTR:</b> 172.16.5.0/28</li>
+                <li><b>GRE Туннель:</b> 10.10.10.0/30</li>
+                <li><b>Базовые подсети (HQ):</b> VLAN 100 (172.16.100.0), VLAN 200 (172.16.200.0), VLAN 999 (172.16.99.0)</li>
+                <li><b>Базовая подсеть (BR):</b> 172.16.6.0</li>
+            </ul>
+        </div>
+    </details>
+
+    <h3>Сетевые маски (CIDR, например 24)</h3>
+    <div class="form-section">
+        <div class="form-group">
+            <label for="mask100">VLAN 100 (HQ-SRV):</label>
+            <input type="text" id="mask100" value="29">
+        </div>
+        <div class="form-group">
+            <label for="mask200">VLAN 200 (HQ-CLI):</label>
+            <input type="text" id="mask200" value="28">
+        </div>
+        <div class="form-group">
+            <label for="mask999">VLAN 999 (Управление):</label>
+            <input type="text" id="mask999" value="26">
+        </div>
+        <div class="form-group">
+            <label for="maskBr">BR-SRV сеть:</label>
+            <input type="text" id="maskBr" value="27">
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button class="btn-generate" onclick="generateScript()">Сгенерировать скрипты</button>
+    </div>
+
+    <div id="scriptsContainer">
+        <pre><code>// Нажмите "Сгенерировать скрипты", чтобы увидеть результат...</code></pre>
+    </div>
+</div>
+
+<script>
+    // Переключение темы
+    function toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        document.getElementById('themeToggle').innerText = isDark ? '☀️' : '🌙';
+    }
+
+    // Применяем сохраненную тему при загрузке страницы
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.getElementById('themeToggle').innerText = '☀️';
+    }
+
+    function generateScript() {
+        const domain = document.getElementById('domain').value;
+        const tz = document.getElementById('timezone').value;
+        const rtrUser = document.getElementById('rtrUser').value;
+        const rtrPwd = document.getElementById('rtrPwd').value;
+        const srvUser = document.getElementById('srvUser').value;
+        const srvPwd = document.getElementById('srvPwd').value;
+        const srvUid = document.getElementById('srvUid').value;
+        const sshPort = document.getElementById('sshPort').value;
+        const mask100 = document.getElementById('mask100').value;
+        const mask200 = document.getElementById('mask200').value;
+        const mask999 = document.getElementById('mask999').value;
+        const maskBr = document.getElementById('maskBr').value;
+
+        const nameHqRtr = document.getElementById('nameHqRtr').value;
+        const nameHqSrv = document.getElementById('nameHqSrv').value;
+        const nameHqCli = document.getElementById('nameHqCli').value;
+        const nameBrRtr = document.getElementById('nameBrRtr').value;
+        const nameBrSrv = document.getElementById('nameBrSrv').value;
+
+        const ipIspHq = document.getElementById('ipIspHq').value;
+        const ipHqExt = document.getElementById('ipHqExt').value;
+        const ipIspBr = document.getElementById('ipIspBr').value;
+        const ipBrExt = document.getElementById('ipBrExt').value;
+        const ipHqVlan100Rtr = document.getElementById('ipHqVlan100Rtr').value;
+        const ipHqVlan100Srv = document.getElementById('ipHqVlan100Srv').value;
+        const ipHqVlan200Rtr = document.getElementById('ipHqVlan200Rtr').value;
+        const ipHqVlan200Cli = document.getElementById('ipHqVlan200Cli').value;
+        const ipHqVlan999Rtr = document.getElementById('ipHqVlan999Rtr').value;
+        const ipBrIntRtr = document.getElementById('ipBrIntRtr').value;
+        const ipBrIntSrv = document.getElementById('ipBrIntSrv').value;
+        const ipGreHq = document.getElementById('ipGreHq').value;
+        const ipGreBr = document.getElementById('ipGreBr').value;
+
+        const cidrToNetmask = {
+            '30': '255.255.255.252',
+            '29': '255.255.255.248',
+            '28': '255.255.255.240',
+            '27': '255.255.255.224',
+            '26': '255.255.255.192',
+            '25': '255.255.255.128',
+            '24': '255.255.255.0'
+        };
+        const netmask200 = cidrToNetmask[mask200] || '255.255.255.0'; // Fallback
+
+        // Динамический расчет сети DHCP
+        const dhcpBase = ipHqVlan200Rtr.split('.').slice(0, 3).join('.');
+        const dhcpSubnet = dhcpBase + '.0';
+        const dhcpEndOctetMap = {
+            '30': '2', '29': '6', '28': '14', '27': '30', '26': '62', '25': '126', '24': '254'
+        };
+        const dhcpRangeEnd = `${dhcpBase}.${dhcpEndOctetMap[mask200] || '30'}`;
+
+        // Динамический расчет обратной зоны DNS (Reverse DNS)
+        const dnsParts = ipHqVlan100Rtr.split('.');
+        const revZone = `${dnsParts[2]}.${dnsParts[1]}.${dnsParts[0]}.in-addr.arpa`;
+        const octHqRtr = dnsParts[3];
+        const octHqSrv = ipHqVlan100Srv.split('.')[3];
+
+        const scriptISP = `# =======ISP======= 
+# -------Имя------- 
+hostnamectl hostname ISP 
+# exec bash 
+# -------Настройка внутренних интерфейсов------- 
+mkdir /etc/net/ifaces/enp7s{2,3} 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s2/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s3/options 
+echo '${ipIspHq}/28' > /etc/net/ifaces/enp7s2/ipv4address 
+echo '${ipIspBr}/28' > /etc/net/ifaces/enp7s3/ipv4address 
+# -------NAT------- 
+apt-get update && apt-get install nftables  -y 
+# +++
+cat << EOF >/etc/nftables/nftables.nft 
+#!/usr/sbin/nft -f 
+flush ruleset 
+table ip nat {
+	chain postrouting  {
+	type nat hook postrouting priority srcnat
+	oifname "enp7s1" masquerade 
+	}
+}
+
+EOF
+# +++
+systemctl enable --now nftables
+sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/net/sysctl.conf
+sysctl -p 
+systemctl restart network`;
+
+        const scriptBR_RTR = `# =======BR-RTR======= 
+# -------Имя------- 
+hostnamectl hostname ${nameBrRtr}.${domain}
+# exec bash 
+# -------Настройка интерфейсов------- 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s1/options 
+echo '${ipBrExt}/28' > /etc/net/ifaces/enp7s1/ipv4address 
+echo 'default via ${ipIspBr}' > /etc/net/ifaces/enp7s1/ipv4route 
+echo 'nameserver 8.8.8.8' > /etc/net/ifaces/enp7s1/resolv.conf
+mkdir /etc/net/ifaces/{enp7s2,gre1} 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s2/options 
+echo '${ipBrIntRtr}/${maskBr}' > /etc/net/ifaces/enp7s2/ipv4address 
+systemctl restart network
+
+# -------GRE-------
+# +++ 
+cat << EOF > /etc/net/ifaces/gre1/options 
+TYPE=iptun 
+TUNTYPE=gre
+TUNLOCAL=${ipBrExt}
+TUNREMOTE=${ipHqExt}
+TUNTTL=64 
+TUNOPTIONS='ttl 64'
+EOF
+# +++ 
+echo "${ipGreBr}/30" > /etc/net/ifaces/gre1/ipv4address 
+systemctl restart network 
+# -------Установка-------
+apt-get update && apt-get install sudo nftables tzdata frr -y 
+# -------Создание пользователя----- 
+useradd -m ${rtrUser}
+echo "${rtrUser}:${rtrPwd}" | chpasswd
+usermod -aG wheel ${rtrUser} 
+echo 'WHEEL_USERS ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers.d/${rtrUser}
+# su -l ${rtrUser}
+# sudo id
+# -------DNS-------
+rm -f /etc/net/ifaces/enp7s1/resolv.conf
+echo $'search ${domain}\\nnameserver ${ipHqVlan100Srv}'
+# -------NAT------- 
+# +++
+cat << EOF > /etc/nftables/nftables.nft 
+#!/usr/sbin/nft -f 
+flush ruleset 
+table ip nat {
+chain postrouting  {
+type nat hook postrouting priority srcnat
+oifname "enp7s1" masquerade 
+}
+}
+
+EOF
+# +++
+systemctl enable --now nftables
+sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/net/sysctl.conf
+sysctl -p 
+# -------OSPFF-------
+sed -i 's/ospfd=no/ospfd=yes/' /etc/frr/daemons ; grep ospf /etc/frr/daemons ; 
+# +++ 
+cat << 'EOF' > /etc/frr/frr.conf 
+interface gre1 
+	no ip ospf passive 
+exit 
+!
+interface gre1 
+	ip ospf area 0
+	ip ospf authentication 
+	ip ospf authentication-key ${rtrPwd}
+	no ip ospf passive 
+exit 
+!
+interface enp7s2
+	ip ospf area 0
+exit
+!
+router ospf
+passive-interface default
+exit
+EOF
+# +++
+systemctl restart network
+systemctl enable --now nftables frr
+# -------TimeZone-------
+timedatectl set-timezone ${tz}`;
+
+        const scriptHQ_RTR = `# =======HQ-RTR======= 
+hostnamectl hostname ${nameHqRtr}.${domain}
+# exec bash 
+# -------Настройка внешнего интерфейса------- 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
+echo '${ipHqExt}/28' > /etc/net/ifaces/enp7s1/ipv4address 
+echo 'default via ${ipIspHq}' > /etc/net/ifaces/enp7s1/ipv4route 
+echo 'nameserver 8.8.8.8' > /etc/net/ifaces/enp7s1/resolv.conf
+systemctl restart network
+# -------Настройка внутренних вланов------- 
+mkdir /etc/net/ifaces/{enp7s2,enp7s2.{100,200,999},gre1} 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s2/options 
+echo -e 'BOOTPRO-TO=static\\nTYPE=vlan\\nVID=100\\nHOST=enp7s2\\nONBOOT=yes' >> /etc/net/ifaces/enp7s2.100/options 
+echo -e 'BOOTPRO-TO=static\\nTYPE=vlan\\nVID=200\\nHOST=enp7s2\\nONBOOT=yes' >> /etc/net/ifaces/enp7s2.200/options 
+echo -e 'BOOTPRO-TO=static\\nTYPE=vlan\\nVID=999\\nHOST=enp7s2\\nONBOOT=yes' >> /etc/net/ifaces/enp7s2.999/options 
+echo '${ipHqVlan100Rtr}/${mask100}' > /etc/net/ifaces/enp7s2.100/ipv4address 
+echo '${ipHqVlan200Rtr}/${mask200}' > /etc/net/ifaces/enp7s2.200/ipv4address 
+echo '${ipHqVlan999Rtr}/${mask999}' > /etc/net/ifaces/enp7s2.999/ipv4address 
+systemctl restart network
+# -------GRE-------
+# +++ 
+cat << EOF > /etc/net/ifaces/gre1/options 
+TYPE=iptun 
+TUNTYPE=gre
+TUNLOCAL=${ipHqExt}
+TUNREMOTE=${ipBrExt}
+TUNTTL=64 
+TUNOPTIONS='ttl 64'
+EOF
+# +++ 
+echo "${ipGreHq}/30" > /etc/net/ifaces/gre1/ipv4address 
+systemctl restart network 
+# -------Установка-------
+apt-get update && apt-get install sudo nftables tzdata frr dhcp-server -y 
+# -------Создание пользователя----- 
+useradd -m ${rtrUser}
+echo "${rtrUser}:${rtrPwd}" | chpasswd
+usermod -aG wheel ${rtrUser}
+echo 'WHEEL_USERS ALL=(ALL:ALL) NOPASSWD: ALL' >> /etc/sudoers.d/${rtrUser}
+# su -l ${rtrUser}
+# sudo id
+# -------DNS-------
+rm -f /etc/net/ifaces/enp7s1/resolv.conf
+echo -e 'search ${domain}\\nnameserver ${ipHqVlan100Srv}' > /etc/resolv.conf
+# -------NAT------- 
+# +++
+cat << EOF > /etc/nftables/nftables.nft 
+#!/usr/sbin/nft -f 
+flush ruleset 
+table ip nat {
+chain postrouting  {
+type nat hook postrouting priority srcnat
+oifname "enp7s1" masquerade 
+}
+}
+
+EOF
+# +++
+systemctl enable --now nftables
+sed -i 's/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g' /etc/net/sysctl.conf
+sysctl -p 
+# -------OSPFF-------
+sed -i 's/ospfd=no/ospfd=yes/' /etc/frr/daemons ; grep ospf /etc/frr/daemons ; 
+# +++ 
+cat << 'EOF' > /etc/frr/frr.conf 
+interface gre1 
+	no ip ospf passive 
+exit 
+!
+interface gre1 
+	ip ospf area 0
+	ip ospf authentication 
+	ip ospf authentication-key ${rtrPwd}
+	no ip ospf passive 
+exit 
+!
+interface enp7s2.100
+	ip ospf area 0
+exit
+!
+interface enp7s2.200
+	ip ospf area 0
+exit
+!
+interface enp7s2.999 
+	ip ospf area 0
+exit
+!
+router ospf
+	passive-interface default
+exit
+EOF
+# +++
+systemctl enable --now frr
+# -------TimeZone-------
+timedatectl set-timezone ${tz}
+# -------DHCP-------
+cat << 'EOF' > /etc/dhcp/dhcpd.conf
+subnet ${dhcpSubnet} netmask ${netmask200} {
+range ${ipHqVlan200Cli} ${dhcpRangeEnd};
+option routers ${ipHqVlan200Rtr};
+option domain-name-servers ${ipHqVlan100Srv};
+option domain-search "${domain}";
+default-lease-time 600;
+max-lease-time 7200;
+}
+EOF
+# +++
+sed -i 's/DHCPDARGS=/DHCPDARGS=enp7s2.200/g' /etc/sysconfig/dhcpd
+systemctl enable --now dhcpd`;
+
+        const scriptHQ_SRV = `# =======HQ-SRV======= 
+# -------Имя------- 
+hostnamectl hostname ${nameHqSrv}.${domain}
+# exec bash 
+# -------Настройка интерфейсов-------
+echo -e 'BOOTPROTO=static\\nTYPE=eth\\nONBOOT=yes' > /etc/net/ifaces/enp7s1/options 
+echo '${ipHqVlan100Srv}/${mask100}' > /etc/net/ifaces/enp7s1/ipv4address
+echo 'default via ${ipHqVlan100Rtr}' > /etc/net/ifaces/enp7s1/ipv4route
+echo 'nameserver 8.8.8.8' > /etc/net/ifaces/enp7s1/resolv.conf
+systemctl restart network
+# ------Установка необходимого ПО-------
+apt-get update && apt-get install bind bind-utils tzdata -y
+timedatectl set-timezone ${tz}
+# ------Настройка sshuser----- 
+useradd -u ${srvUid} ${srvUser}
+echo "${srvUser}:${srvPwd}" | chpasswd
+usermod -aG wheel ${srvUser}
+echo "WHEEL_USERS ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/${srvUser}
+# su -l ${srvUser}
+# sudo id
+# ------Настройка SSH------
+echo "Authorized access only" > /etc/openssh/banner
+echo -e "Port ${sshPort}\\nMaxAuthTries 2\\nAllowUsers ${srvUser}\\nBanner /etc/openssh/banner\\n" >> /etc/openssh/sshd_config
+systemctl restart sshd
+ss -ltnp | grep sshd
+
+ssh ${srvUser}@127.0.0.1 -p ${sshPort}
+# ------Смена DNS------
+echo $'search ${domain}\\nnameserver 127.0.0.1' > /etc/net/ifaces/enp7s1/resolv.conf
+# -------BIND9--------
+# +++
+cat > /etc/bind/options.conf << 'EOF'
+options {
+    directory "/etc/bind/zone";
+    listen-on { ${ipHqVlan100Srv}; 127.0.0.1; };
+    allow-query { any; };
+    forwarders { 8.8.8.8; };
+    recursion yes;
+};
+EOF
+# +++
+cat > /etc/bind/rfc1912.conf << 'EOF'
+
+zone "${domain}" IN {
+    type master;
+    file "/etc/bind/zone/${domain}";
+};
+
+zone "${revZone}" IN {
+    type master;
+    file "/etc/bind/zone/${revZone}";
+};
+EOF
+# +++
+cat > /etc/bind/zone/${domain} << 'EOF'
+$TTL 86400
+@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. (
+            2025010101 ; Serial
+            3600       ; Refresh
+            1800       ; Retry
+            604800     ; Expire
+            86400 )    ; Minimum TTL
+
+@       IN NS   ${nameHqSrv}.${domain}.
+${nameHqRtr}  IN A    ${ipHqVlan100Rtr}
+${nameHqSrv}  IN A    ${ipHqVlan100Srv}
+${nameHqCli}  IN A    ${ipHqVlan200Cli}
+${nameBrRtr}  IN A    ${ipBrIntRtr}
+${nameBrSrv}  IN A    ${ipBrIntSrv}
+moodle  IN CNAME ${nameHqRtr}.${domain}.
+wiki    IN CNAME ${nameHqRtr}.${domain}.
+EOF
+# +++
+cat > /etc/bind/zone/${revZone} << 'EOF'
+$TTL 86400
+@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. (
+            2025010101
+            3600
+            1800
+            604800
+            86400 )
+
+@       IN NS   ${nameHqSrv}.${domain}.
+
+${octHqRtr}   IN PTR  ${nameHqRtr}.${domain}.
+${octHqSrv}   IN PTR  ${nameHqSrv}.${domain}.
+EOF
+# +++
+rndc-confgen > /etc/bind/rndc.key
+sed -i '6,$d' /etc/bind/rndc.key
+named-checkconf
+named-checkconf -z
+systemctl enable --now bind
+systemctl status bind
+
+host ${nameHqSrv}.${domain} ${ipHqVlan100Srv}
+nslookup ${nameHqRtr}.${domain} ${ipHqVlan100Srv}`;
+
+        const scriptHQ_CLI = `# =======HQ-CLI======= 
+# -------Имя------- 
+hostnamectl hostname ${nameHqCli}.${domain}
+# exec bash
+echo -e 'BOOTPROTO=dhcp\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
+systemctl restart network`;
+
+        const scriptBR_SRV = `# =======BR-SRV======= 
+# -------Имя------- 
+hostnamectl hostname ${nameBrSrv}.${domain}
+# exec bash 
+# -------Настройка интерфейсов------- 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s1/options 
+echo '${ipBrIntSrv}/${maskBr}' > /etc/net/ifaces/enp7s1/ipv4address 
+echo 'default via ${ipBrIntRtr}' > /etc/net/ifaces/enp7s1/ipv4route 
+echo 'nameserver ${ipHqVlan100Srv}' > /etc/net/ifaces/enp7s1/resolv.conf
+systemctl restart network
+# -------Создание пользователя----- 
+useradd -u ${srvUid} ${srvUser}
+echo "${srvUser}:${srvPwd}" | chpasswd
+usermod -aG wheel ${srvUser}
+echo "WHEEL_USERS ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/${srvUser}
+# su -l ${srvUser}
+# sudo id
+# ------Настройка SSH------
+echo "Authorized access only" > /etc/openssh/banner
+echo -e "Port ${sshPort}\\nMaxAuthTries 2\\nAllowUsers ${srvUser}\\nBanner /etc/openssh/banner\\n" >> /etc/openssh/sshd_config
+systemctl restart sshd
+ss -ltnp | grep sshd`;
+
+        const scripts = {
+            "ISP": scriptISP,
+            "BR-RTR": scriptBR_RTR,
+            "HQ-RTR": scriptHQ_RTR,
+            "HQ-SRV": scriptHQ_SRV,
+            "HQ-CLI": scriptHQ_CLI,
+            "BR-SRV": scriptBR_SRV
+        };
+
+        const container = document.getElementById('scriptsContainer');
+        container.innerHTML = '';
+
+        Object.keys(scripts).forEach((deviceName) => {
+            const id = 'script-' + deviceName.toLowerCase();
+            const block = document.createElement('div');
+            block.className = 'device-block';
+            block.innerHTML = `
+                <div class="device-header">
+                    <h2>${deviceName}</h2>
+                    <button class="btn-copy" onclick="copyText('${id}', this)">Копировать</button>
+                </div>
+                <pre><code id="${id}">${scripts[deviceName]}</code></pre>
+            `;
+            container.appendChild(block);
+        });
+    }
+
+    function copyText(id, buttonElement) {
+        const output = document.getElementById(id);
+        navigator.clipboard.writeText(output.textContent).then(() => {
+            const originalText = buttonElement.innerText;
+            buttonElement.innerText = 'Скопировано!';
+            buttonElement.disabled = true;
+            setTimeout(() => {
+                buttonElement.innerText = originalText;
+                buttonElement.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            alert("Ошибка при копировании: " + err);
+        });
+    }
+</script>
+</body>
+</html>
