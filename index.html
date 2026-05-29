@@ -37,7 +37,7 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
-        input[type="text"] {
+        input[type="text"], input[type="number"] {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -82,6 +82,10 @@
             font-family: 'Courier New', Courier, monospace;
             min-height: 200px;
             white-space: pre-wrap;
+        }
+        pre[contenteditable="true"]:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #007bff;
         }
     h3 {
         color: #0056b3;
@@ -162,13 +166,23 @@
         color: #aaa;
         border-bottom-color: #444;
     }
-    body.dark-theme input[type="text"] {
+    body.dark-theme input[type="text"], body.dark-theme input[type="number"] {
         background-color: #2d2d2d;
         color: #e0e0e0;
         border-color: #555;
     }
+    .mask-hint {
+        color: #007bff;
+        font-weight: bold;
+    }
+    body.dark-theme .mask-hint {
+        color: #66b2ff;
+    }
     body.dark-theme .device-header {
         background-color: #2d2d2d;
+    }
+    body.dark-theme pre[contenteditable="true"]:focus {
+        box-shadow: inset 0 0 0 2px #66b2ff;
     }
     body.dark-theme .device-header h2 {
         color: #e0e0e0;
@@ -239,9 +253,8 @@
     </div>
 
     <details>
-        <summary><h3>Расширенные настройки (Имена и IP-адреса)</h3></summary>
+        <summary><h3>Имена узлов (без домена) (Нажмите, чтобы развернуть)</h3></summary>
         <div style="margin-top: 15px;">
-            <h4>Имена узлов (без домена)</h4>
             <div class="form-section">
                 <div class="form-group"><label>HQ-RTR:</label><input type="text" id="nameHqRtr" value="hq-rtr"></div>
                 <div class="form-group"><label>HQ-SRV:</label><input type="text" id="nameHqSrv" value="hq-srv"></div>
@@ -249,30 +262,47 @@
                 <div class="form-group"><label>BR-RTR:</label><input type="text" id="nameBrRtr" value="br-rtr"></div>
                 <div class="form-group"><label>BR-SRV:</label><input type="text" id="nameBrSrv" value="br-srv"></div>
             </div>
-            <h4>IP-адреса внешних линков (ISP)</h4>
-            <div class="form-section">
-                <div class="form-group"><label>ISP -> HQ-RTR:</label><input type="text" id="ipIspHq" value="172.16.4.1"></div>
-                <div class="form-group"><label>HQ-RTR -> ISP:</label><input type="text" id="ipHqExt" value="172.16.4.2"></div>
-                <div class="form-group"><label>ISP -> BR-RTR:</label><input type="text" id="ipIspBr" value="172.16.5.1"></div>
-                <div class="form-group"><label>BR-RTR -> ISP:</label><input type="text" id="ipBrExt" value="172.16.5.2"></div>
-            </div>
-            <h4>IP-адреса внутренних сетей (HQ)</h4>
-            <div class="form-section">
-                <div class="form-group"><label>HQ-RTR -> VLAN 100:</label><input type="text" id="ipHqVlan100Rtr" value="172.16.100.1"></div>
-                <div class="form-group"><label>HQ-SRV -> VLAN 100:</label><input type="text" id="ipHqVlan100Srv" value="172.16.100.2"></div>
-                <div class="form-group"><label>HQ-RTR -> VLAN 200:</label><input type="text" id="ipHqVlan200Rtr" value="172.16.200.1"></div>
-                <div class="form-group"><label>HQ-CLI -> VLAN 200 (DHCP):</label><input type="text" id="ipHqVlan200Cli" value="172.16.200.2"></div>
-                <div class="form-group"><label>HQ-RTR -> VLAN 999:</label><input type="text" id="ipHqVlan999Rtr" value="172.16.99.1"></div>
-            </div>
-            <h4>IP-адреса внутренних сетей (BR) и GRE</h4>
-            <div class="form-section">
-                <div class="form-group"><label>BR-RTR -> LAN:</label><input type="text" id="ipBrIntRtr" value="172.16.6.1"></div>
-                <div class="form-group"><label>BR-SRV -> LAN:</label><input type="text" id="ipBrIntSrv" value="172.16.6.2"></div>
-                <div class="form-group"><label>HQ-RTR -> GRE:</label><input type="text" id="ipGreHq" value="10.10.10.1"></div>
-                <div class="form-group"><label>BR-RTR -> GRE:</label><input type="text" id="ipGreBr" value="10.10.10.2"></div>
-            </div>
         </div>
     </details>
+
+    <h3>Сетевые настройки (IP-адреса и Вместимость)</h3>
+    
+    <h4>VLAN 100 (Серверы HQ)</h4>
+    <div class="form-section">
+        <div class="form-group"><label>Подсеть VLAN 100:</label><input type="text" id="subnet100" value="172.16.100.0"></div>
+        <div class="form-group"><label>Вместимость (адресов) <span id="hint100" class="mask-hint"></span>:</label><input type="number" id="hosts100" value="6" oninput="updateMaskHints()" min="1" max="254"></div>
+    </div>
+
+    <h4>VLAN 200 (Клиенты HQ)</h4>
+    <div class="form-section">
+        <div class="form-group"><label>Подсеть VLAN 200:</label><input type="text" id="subnet200" value="172.16.200.0"></div>
+        <div class="form-group"><label>Вместимость (адресов) <span id="hint200" class="mask-hint"></span>:</label><input type="number" id="hosts200" value="14" oninput="updateMaskHints()" min="1" max="254"></div>
+    </div>
+
+    <h4>VLAN 999 (Управление HQ)</h4>
+    <div class="form-section">
+        <div class="form-group"><label>Подсеть VLAN 999:</label><input type="text" id="subnet999" value="172.16.99.0"></div>
+        <div class="form-group"><label>Вместимость (адресов) <span id="hint999" class="mask-hint"></span>:</label><input type="number" id="hosts999" value="62" oninput="updateMaskHints()" min="1" max="254"></div>
+    </div>
+
+    <h4>LAN Филиала (BR)</h4>
+    <div class="form-section">
+        <div class="form-group"><label>Подсеть LAN BR:</label><input type="text" id="subnetBr" value="172.16.6.0"></div>
+        <div class="form-group"><label>Вместимость (адресов) <span id="hintBr" class="mask-hint"></span>:</label><input type="number" id="hostsBr" value="30" oninput="updateMaskHints()" min="1" max="254"></div>
+    </div>
+
+    <h4>Внешние линки (ISP)</h4>
+    <div class="form-section">
+        <div class="form-group"><label>Подсеть ISP HQ:</label><input type="text" id="subnetIspHq" value="172.16.4.0"></div>
+        <div class="form-group"><label>Подсеть ISP BR:</label><input type="text" id="subnetIspBr" value="172.16.5.0"></div>
+        <div class="form-group"><label>Вместимость (адресов) <span id="hintIsp" class="mask-hint"></span>:</label><input type="number" id="hostsIsp" value="14" oninput="updateMaskHints()" min="1" max="254"></div>
+    </div>
+
+    <h4>Туннель GRE</h4>
+    <div class="form-section">
+        <div class="form-group"><label>Подсеть GRE:</label><input type="text" id="subnetGre" value="10.10.10.0"></div>
+        <div class="form-group"><label>Вместимость (адресов) <span id="hintGre" class="mask-hint"></span>:</label><input type="number" id="hostsGre" value="2" oninput="updateMaskHints()" min="1" max="254"></div>
+    </div>
 
     <details>
         <summary><h3>Памятка по маскам подсетей (Нажмите, чтобы развернуть)</h3></summary>
@@ -300,34 +330,6 @@
         </div>
     </details>
 
-    <h3>Сетевые маски (CIDR, например 24)</h3>
-    <div class="form-section">
-        <div class="form-group">
-            <label for="mask100">VLAN 100 (HQ-SRV):</label>
-            <input type="text" id="mask100" value="29">
-        </div>
-        <div class="form-group">
-            <label for="mask200">VLAN 200 (HQ-CLI):</label>
-            <input type="text" id="mask200" value="28">
-        </div>
-        <div class="form-group">
-            <label for="mask999">VLAN 999 (Управление):</label>
-            <input type="text" id="mask999" value="26">
-        </div>
-        <div class="form-group">
-            <label for="maskBr">BR-SRV сеть:</label>
-            <input type="text" id="maskBr" value="27">
-        </div>
-        <div class="form-group">
-            <label for="maskIsp">ISP линки (HQ/BR):</label>
-            <input type="text" id="maskIsp" value="28">
-        </div>
-        <div class="form-group">
-            <label for="maskGre">GRE туннель:</label>
-            <input type="text" id="maskGre" value="30">
-        </div>
-    </div>
-
     <div class="buttons">
         <button class="btn-generate" onclick="generateScript()">Сгенерировать скрипты</button>
     </div>
@@ -352,6 +354,31 @@
         document.getElementById('themeToggle').innerText = '☀️';
     }
 
+    // Логика подбора маски на основе требуемых хостов
+    function getCidr(hosts) {
+        const h = parseInt(hosts, 10);
+        if (isNaN(h) || h <= 0) return '24';
+        if (h <= 2) return '30';
+        if (h <= 6) return '29';
+        if (h <= 14) return '28';
+        if (h <= 30) return '27';
+        if (h <= 62) return '26';
+        if (h <= 126) return '25';
+        if (h <= 254) return '24';
+        return '24'; // Значение по умолчанию для больших сетей
+    }
+
+    function updateMaskHints() {
+        const fields = ['100', '200', '999', 'Br', 'Isp', 'Gre'];
+        fields.forEach(field => {
+            const el = document.getElementById('hosts' + field);
+            const hint = document.getElementById('hint' + field);
+            if (el && hint) {
+                hint.innerText = `(/${getCidr(el.value)})`;
+            }
+        });
+    }
+
     function generateScript() {
         const domain = document.getElementById('domain').value;
         const tz = document.getElementById('timezone').value;
@@ -361,12 +388,12 @@
         const srvPwd = document.getElementById('srvPwd').value;
         const srvUid = document.getElementById('srvUid').value;
         const sshPort = document.getElementById('sshPort').value;
-        const mask100 = document.getElementById('mask100').value;
-        const mask200 = document.getElementById('mask200').value;
-        const mask999 = document.getElementById('mask999').value;
-        const maskBr = document.getElementById('maskBr').value;
-        const maskIsp = document.getElementById('maskIsp').value;
-        const maskGre = document.getElementById('maskGre').value;
+        const mask100 = getCidr(document.getElementById('hosts100').value);
+        const mask200 = getCidr(document.getElementById('hosts200').value);
+        const mask999 = getCidr(document.getElementById('hosts999').value);
+        const maskBr = getCidr(document.getElementById('hostsBr').value);
+        const maskIsp = getCidr(document.getElementById('hostsIsp').value);
+        const maskGre = getCidr(document.getElementById('hostsGre').value);
 
         const nameHqRtr = document.getElementById('nameHqRtr').value;
         const nameHqSrv = document.getElementById('nameHqSrv').value;
@@ -374,19 +401,31 @@
         const nameBrRtr = document.getElementById('nameBrRtr').value;
         const nameBrSrv = document.getElementById('nameBrSrv').value;
 
-        const ipIspHq = document.getElementById('ipIspHq').value;
-        const ipHqExt = document.getElementById('ipHqExt').value;
-        const ipIspBr = document.getElementById('ipIspBr').value;
-        const ipBrExt = document.getElementById('ipBrExt').value;
-        const ipHqVlan100Rtr = document.getElementById('ipHqVlan100Rtr').value;
-        const ipHqVlan100Srv = document.getElementById('ipHqVlan100Srv').value;
-        const ipHqVlan200Rtr = document.getElementById('ipHqVlan200Rtr').value;
-        const ipHqVlan200Cli = document.getElementById('ipHqVlan200Cli').value;
-        const ipHqVlan999Rtr = document.getElementById('ipHqVlan999Rtr').value;
-        const ipBrIntRtr = document.getElementById('ipBrIntRtr').value;
-        const ipBrIntSrv = document.getElementById('ipBrIntSrv').value;
-        const ipGreHq = document.getElementById('ipGreHq').value;
-        const ipGreBr = document.getElementById('ipGreBr').value;
+        // Вспомогательная функция для получения базовой сети (первые 3 октета)
+        const getBase = (ip) => ip.split('.').slice(0, 3).join('.');
+
+        const baseIspHq = getBase(document.getElementById('subnetIspHq').value);
+        const baseIspBr = getBase(document.getElementById('subnetIspBr').value);
+        const base100 = getBase(document.getElementById('subnet100').value);
+        const base200 = getBase(document.getElementById('subnet200').value);
+        const base999 = getBase(document.getElementById('subnet999').value);
+        const baseBr = getBase(document.getElementById('subnetBr').value);
+        const baseGre = getBase(document.getElementById('subnetGre').value);
+
+        // Автоматическая раздача IP адресов: роутер = .1, сервер/клиент = .2
+        const ipIspHq = baseIspHq + '.1';
+        const ipHqExt = baseIspHq + '.2';
+        const ipIspBr = baseIspBr + '.1';
+        const ipBrExt = baseIspBr + '.2';
+        const ipHqVlan100Rtr = base100 + '.1';
+        const ipHqVlan100Srv = base100 + '.2';
+        const ipHqVlan200Rtr = base200 + '.1';
+        const ipHqVlan200Cli = base200 + '.2';
+        const ipHqVlan999Rtr = base999 + '.1';
+        const ipBrIntRtr = baseBr + '.1';
+        const ipBrIntSrv = baseBr + '.2';
+        const ipGreHq = baseGre + '.1';
+        const ipGreBr = baseGre + '.2';
 
         const cidrToNetmask = {
             '30': '255.255.255.252',
@@ -400,7 +439,7 @@
         const netmask200 = cidrToNetmask[mask200] || '255.255.255.0'; // Fallback
 
         // Динамический расчет сети DHCP
-        const dhcpBase = ipHqVlan200Rtr.split('.').slice(0, 3).join('.');
+        const dhcpBase = base200;
         const dhcpSubnet = dhcpBase + '.0';
         const dhcpEndOctetMap = {
             '30': '2', '29': '6', '28': '14', '27': '30', '26': '62', '25': '126', '24': '254'
@@ -408,10 +447,10 @@
         const dhcpRangeEnd = `${dhcpBase}.${dhcpEndOctetMap[mask200] || '30'}`;
 
         // Динамический расчет обратной зоны DNS (Reverse DNS)
-        const dnsParts = ipHqVlan100Rtr.split('.');
+        const dnsParts = base100.split('.');
         const revZone = `${dnsParts[2]}.${dnsParts[1]}.${dnsParts[0]}.in-addr.arpa`;
-        const octHqRtr = dnsParts[3];
-        const octHqSrv = ipHqVlan100Srv.split('.')[3];
+        const octHqRtr = '1';
+        const octHqSrv = '2';
 
         const scriptISP = `# =======ISP======= 
 # -------Имя------- 
@@ -789,7 +828,7 @@ ss -ltnp | grep sshd`;
                     <h2>${deviceName}</h2>
                     <button class="btn-copy" onclick="copyText('${id}', this)">Копировать</button>
                 </div>
-                <pre><code id="${id}">${scripts[deviceName]}</code></pre>
+                <pre id="${id}" contenteditable="true" spellcheck="false"><code>${scripts[deviceName]}</code></pre>
             `;
             container.appendChild(block);
         });
@@ -797,7 +836,7 @@ ss -ltnp | grep sshd`;
 
     function copyText(id, buttonElement) {
         const output = document.getElementById(id);
-        navigator.clipboard.writeText(output.textContent).then(() => {
+        navigator.clipboard.writeText(output.innerText).then(() => {
             const originalText = buttonElement.innerText;
             buttonElement.innerText = 'Скопировано!';
             buttonElement.disabled = true;
@@ -816,19 +855,19 @@ ss -ltnp | grep sshd`;
                 domain: 'quantumflux.local', timezone: 'Asia/Yekaterinburg',
                 rtrUser: 'routerfox', rtrPwd: 'P@$$word', srvUser: 'cyberpanda', srvPwd: 'P@ssw0rd', srvUid: '1001', sshPort: '2020',
                 nameHqRtr: 'hq-rtr', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli', nameBrRtr: 'br-rtr', nameBrSrv: 'br-srv',
-                ipIspHq: '172.16.4.1', ipHqExt: '172.16.4.2', ipIspBr: '172.16.5.1', ipBrExt: '172.16.5.2',
-                ipHqVlan100Rtr: '172.16.100.1', ipHqVlan100Srv: '172.16.100.2', ipHqVlan200Rtr: '172.16.200.1', ipHqVlan200Cli: '172.16.200.2', ipHqVlan999Rtr: '172.16.99.1',
-                ipBrIntRtr: '172.16.6.1', ipBrIntSrv: '172.16.6.2', ipGreHq: '10.10.10.1', ipGreBr: '10.10.10.2',
-                mask100: '29', mask200: '28', mask999: '26', maskBr: '27', maskIsp: '28', maskGre: '30'
+                subnetIspHq: '172.16.4.0', subnetIspBr: '172.16.5.0',
+                subnet100: '172.16.100.0', subnet200: '172.16.200.0', subnet999: '172.16.99.0',
+                subnetBr: '172.16.6.0', subnetGre: '10.10.10.0',
+                hosts100: '6', hosts200: '14', hosts999: '62', hostsBr: '30', hostsIsp: '14', hostsGre: '2'
             },
             'preset1': {
                 domain: 'cybernet.local', timezone: 'Asia/Yekaterinburg',
                 rtrUser: 'admin', rtrPwd: 'SecretPassword1!', srvUser: 'sysadmin', srvPwd: 'SecretPassword2!', srvUid: '2000', sshPort: '2222',
                 nameHqRtr: 'hq-rtr', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli', nameBrRtr: 'br-rtr', nameBrSrv: 'br-srv',
-                ipIspHq: '192.168.4.1', ipHqExt: '192.168.4.2', ipIspBr: '192.168.5.1', ipBrExt: '192.168.5.2',
-                ipHqVlan100Rtr: '192.168.100.1', ipHqVlan100Srv: '192.168.100.2', ipHqVlan200Rtr: '192.168.200.1', ipHqVlan200Cli: '192.168.200.2', ipHqVlan999Rtr: '192.168.99.1',
-                ipBrIntRtr: '192.168.30.1', ipBrIntSrv: '192.168.30.2', ipGreHq: '10.10.10.1', ipGreBr: '10.10.10.2',
-                mask100: '24', mask200: '24', mask999: '24', maskBr: '24', maskIsp: '28', maskGre: '30'
+                subnetIspHq: '192.168.4.0', subnetIspBr: '192.168.5.0',
+                subnet100: '192.168.100.0', subnet200: '192.168.200.0', subnet999: '192.168.99.0',
+                subnetBr: '192.168.30.0', subnetGre: '10.10.10.0',
+                hosts100: '254', hosts200: '254', hosts999: '254', hostsBr: '254', hostsIsp: '14', hostsGre: '2'
             }
         };
 
@@ -841,7 +880,11 @@ ss -ltnp | grep sshd`;
                 el.value = data[key];
             }
         }
+        updateMaskHints();
     }
+
+    // Инициализация подсказок при загрузке
+    updateMaskHints();
 </script>
 </body>
 </html>
