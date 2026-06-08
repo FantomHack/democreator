@@ -458,8 +458,8 @@ hostnamectl hostname ISP
 # exec bash 
 # -------Настройка внутренних интерфейсов------- 
 mkdir /etc/net/ifaces/enp7s{2,3} 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s2/options 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s3/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s2/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s3/options 
 echo '${ipIspHq}/${maskIsp}' > /etc/net/ifaces/enp7s2/ipv4address 
 echo '${ipIspBr}/${maskIsp}' > /etc/net/ifaces/enp7s3/ipv4address 
 # -------NAT------- 
@@ -490,12 +490,13 @@ systemctl restart network`;
 hostnamectl hostname ${nameBrRtr}.${domain}
 # exec bash 
 # -------Настройка интерфейсов------- 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s1/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
 echo '${ipBrExt}/${maskIsp}' > /etc/net/ifaces/enp7s1/ipv4address 
 echo 'default via ${ipIspBr}' > /etc/net/ifaces/enp7s1/ipv4route 
 mkdir /etc/net/ifaces/{enp7s2,gre1} 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s2/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s2/options 
 echo '${ipBrIntRtr}/${maskBr}' > /etc/net/ifaces/enp7s2/ipv4address 
+echo 'nameserver 8.8.8.8' > /etc/net/ifaces/enp7s1/resolv.conf
 systemctl restart network
 
 # -------GRE-------
@@ -576,10 +577,11 @@ echo 'default via ${ipIspHq}' > /etc/net/ifaces/enp7s1/ipv4route
 systemctl restart network
 # -------Настройка внутренних вланов------- 
 mkdir /etc/net/ifaces/{enp7s2,enp7s2.{100,200,999},gre1} 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s2/options 
-echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=100\\nHOST=enp7s2\\nONBOOT=yes' >> /etc/net/ifaces/enp7s2.100/options 
-echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=200\\nHOST=enp7s2\\nONBOOT=yes' >> /etc/net/ifaces/enp7s2.200/options 
-echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=999\\nHOST=enp7s2\\nONBOOT=yes' >> /etc/net/ifaces/enp7s2.999/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s2/options 
+echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=100\\nHOST=enp7s2\\nONBOOT=yes' > /etc/net/ifaces/enp7s2.100/options 
+echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=200\\nHOST=enp7s2\\nONBOOT=yes' > /etc/net/ifaces/enp7s2.200/options 
+echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=999\\nHOST=enp7s2\\nONBOOT=yes' > /etc/net/ifaces/enp7s2.999/options
+echo 'nameserver 8.8.8.8' > /etc/net/ifaces/enp7s1/resolv.conf
 echo '${ipHqVlan100Rtr}/${mask100}' > /etc/net/ifaces/enp7s2.100/ipv4address 
 echo '${ipHqVlan200Rtr}/${mask200}' > /etc/net/ifaces/enp7s2.200/ipv4address 
 echo '${ipHqVlan999Rtr}/${mask999}' > /etc/net/ifaces/enp7s2.999/ipv4address 
@@ -786,10 +788,10 @@ timedatectl set-timezone ${tz}`;
 hostnamectl hostname ${nameBrSrv}.${domain}
 # exec bash 
 # -------Настройка интерфейсов------- 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' >> /etc/net/ifaces/enp7s1/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
 echo '${ipBrIntSrv}/${maskBr}' > /etc/net/ifaces/enp7s1/ipv4address 
 echo 'default via ${ipBrIntRtr}' > /etc/net/ifaces/enp7s1/ipv4route 
-echo 'nameserver ${ipHqVlan100Srv}' > /etc/net/ifaces/enp7s1/resolv.conf
+echo 'nameserver 8.8.8.8' > /etc/net/ifaces/enp7s1/resolv.conf
 systemctl restart network
 # -------Установка-------
 apt-get update && apt-get install tzdata -y
