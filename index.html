@@ -675,7 +675,7 @@ EOF
 sed -i 's/DHCPDARGS=/DHCPDARGS=enp7s2.200/g' /etc/sysconfig/dhcpd
 systemctl enable --now dhcpd
 systemctl restart network
-systemctl restart dhcp`;
+systemctl restart dhcpd`;
 
         const scriptHQ_SRV = `# =======HQ-SRV======= 
 # -------Имя------- 
