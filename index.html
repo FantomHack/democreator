@@ -673,7 +673,9 @@ max-lease-time 7200;
 EOF
 # +++
 sed -i 's/DHCPDARGS=/DHCPDARGS=enp7s2.200/g' /etc/sysconfig/dhcpd
-systemctl enable --now dhcpd`;
+systemctl enable --now dhcpd
+systemctl restart network
+systemctl restart dhcp`;
 
         const scriptHQ_SRV = `# =======HQ-SRV======= 
 # -------Имя------- 
