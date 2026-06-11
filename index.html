@@ -196,6 +196,52 @@
     body.dark-theme ul {
         color: #aaa !important;
     }
+    /* Чат-виджет */
+    .chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .chat-toggle {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: transform 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .chat-toggle:hover { transform: scale(1.1); }
+    .chat-container {
+        display: none;
+        background: #fff;
+        width: 320px;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        margin-bottom: 15px;
+        flex-direction: column;
+    }
+    .chat-container.active { display: flex; }
+    #chat-box { height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 10px; margin-bottom: 10px; background-color: #fafafa; font-size: 14px; }
+    .chat-message { margin-bottom: 8px; line-height: 1.4; word-wrap: break-word; }
+    .chat-message strong { color: #0056b3; }
+    .chat-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .chat-inputs input { box-sizing: border-box; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    body.dark-theme .chat-container { background: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
+    body.dark-theme #chat-box { background-color: #2d2d2d; border-color: #555; }
+    body.dark-theme .chat-message strong { color: #66b2ff; }
+    body.dark-theme .chat-inputs input { background-color: #2d2d2d; color: #e0e0e0; border-color: #555; }
     </style>
 </head>
 <body>
@@ -208,8 +254,8 @@
     
     <h3>Готовые примеры (Пресеты)</h3>
     <div class="buttons" style="margin-top: 10px;">
-        <button class="btn-preset" onclick="loadPreset('default')">По умолчанию (172.16.x.x)</button>
-        <button class="btn-preset" onclick="loadPreset('preset1')">Пример 1 (192.168.x.x)</button>
+        <button class="btn-preset" onclick="loadPreset('default')">Пример 1 (172.16.x.x)</button>
+        <button class="btn-preset" onclick="loadPreset('preset1')">Пример 2 (192.168.x.x)</button>
     </div>
 
     <h3>Общие настройки</h3>
@@ -339,6 +385,23 @@
     </div>
 </div>
 
+<!-- HTML Чат-виджета -->
+<div class="chat-widget">
+    <div class="chat-container" id="chatContainer">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 16px; border: none; padding: 0;">Общий чат</h3>
+            <button onclick="toggleChat()" style="background: none; border: none; color: #999; font-size: 18px; padding: 0; cursor: pointer; line-height: 1;">✖</button>
+        </div>
+        <div id="chat-box"></div>
+        <div class="chat-inputs">
+            <input type="text" id="username" placeholder="Ваше Имя" />
+            <input type="text" id="chat-message" placeholder="Введите сообщение..." />
+        </div>
+        <button id="send-btn" class="btn-generate" style="width: 100%;">Отправить</button>
+    </div>
+    <button class="chat-toggle" onclick="toggleChat()" title="Открыть чат">💬</button>
+</div>
+
 <script>
     // Переключение темы
     function toggleTheme() {
@@ -352,6 +415,12 @@
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-theme');
         document.getElementById('themeToggle').innerText = '☀️';
+    }
+
+    // Переключение видимости чата
+    function toggleChat() {
+        const chat = document.getElementById('chatContainer');
+        chat.classList.toggle('active');
     }
 
     // Логика подбора маски на основе требуемых хостов
@@ -811,13 +880,18 @@ echo -e "Port ${sshPort}\\nMaxAuthTries 2\\nAllowUsers ${srvUser}\\nBanner /etc/
 systemctl restart sshd
 ss -ltnp | grep sshd`;
 
+        const scriptDNS = `# =======Смена DNS=======
+rm -f /etc/net/ifaces/enp7s1/resolv.conf
+echo -e 'search ${domain}\\nnameserver ${ipHqVlan100Srv}' > /etc/resolv.conf`;
+
         const scripts = {
             "ISP": scriptISP,
             "BR-RTR": scriptBR_RTR,
             "HQ-RTR": scriptHQ_RTR,
             "HQ-SRV": scriptHQ_SRV,
             "HQ-CLI": scriptHQ_CLI,
-            "BR-SRV": scriptBR_SRV
+            "BR-SRV": scriptBR_SRV,
+            "Смена DNS": scriptDNS
         };
 
         const container = document.getElementById('scriptsContainer');
@@ -889,6 +963,59 @@ ss -ltnp | grep sshd`;
 
     // Инициализация подсказок при загрузке
     updateMaskHints();
+</script>
+
+<!-- Подключаем Firebase для чата -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDk_3FBQMLqzXX3_g3fUEfte2NheCx2T2g",
+        authDomain: "my-github-chat-4b104.firebaseapp.com",
+        databaseURL: "https://my-github-chat-4b104-default-rtdb.firebaseio.com",
+        projectId: "my-github-chat-4b104",
+        storageBucket: "my-github-chat-4b104.firebasestorage.app",
+        messagingSenderId: "292325476833",
+        appId: "1:292325476833:web:9e1f69874dababdc826aa0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const messagesRef = ref(db, "messages");
+
+    const chatBox = document.getElementById("chat-box");
+    const usernameInput = document.getElementById("username");
+    const messageInput = document.getElementById("chat-message");
+    const sendBtn = document.getElementById("send-btn");
+
+    function sendMessage() {
+        const name = usernameInput.value.trim() || "Аноним";
+        const text = messageInput.value.trim();
+        
+        if (text !== "") {
+            push(messagesRef, {
+                name: name,
+                text: text,
+                timestamp: Date.now()
+            });
+            messageInput.value = ""; 
+        }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    messageInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    onChildAdded(messagesRef, (snapshot) => {
+        const data = snapshot.val();
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "chat-message";
+        msgDiv.innerHTML = `<strong>${data.name}:</strong> ${data.text}`;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
 </script>
 </body>
 </html>
