@@ -73,6 +73,651 @@
             color: white;
         }
         .btn-preset:hover { background-color: #138496; }
+        /* Элитная кнопка самоуничтожения */
+        .btn-nuke-header {
+            background: linear-gradient(135deg, #400000 0%, #8b0000 50%, #b30000 100%);
+            color: #ffffff;
+            border: 2px solid #ff3333;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 16px rgba(255, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.6);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+        .btn-nuke-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.25) 50%, transparent 60%);
+            transform: rotate(45deg);
+            animation: nukeShine 3.5s infinite;
+        }
+        .btn-nuke-header:hover {
+            transform: scale(1.06);
+            border-color: #ffea00;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.9), 0 0 45px rgba(255, 200, 0, 0.6);
+            color: #fffde0;
+        }
+        .nuke-badge {
+            background: #ff0000;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            animation: badgeBlink 1s infinite;
+        }
+        .nuke-ico {
+            font-size: 18px;
+            filter: drop-shadow(0 0 6px #ff0000);
+            animation: iconSpin 8s linear infinite;
+        }
+        @keyframes nukeShine {
+            0% { transform: translateX(-150%) rotate(45deg); }
+            30%, 100% { transform: translateX(150%) rotate(45deg); }
+        }
+        @keyframes badgeBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Экстремальные эффекты разрушения */
+        @keyframes emergencyAlarm {
+            0%, 100% { background: radial-gradient(circle at center, rgba(80, 0, 0, 0.95) 0%, rgba(15, 0, 0, 0.98) 100%); box-shadow: inset 0 0 160px rgba(255, 0, 0, 0.9); }
+            50% { background: radial-gradient(circle at center, rgba(15, 0, 0, 0.96) 0%, rgba(2, 0, 0, 0.99) 100%); box-shadow: inset 0 0 60px rgba(180, 0, 0, 0.3); }
+        }
+        @keyframes violentTremor {
+            0% { transform: translate(0, 0) skew(0deg); filter: invert(0); }
+            10% { transform: translate(-18px, 14px) skew(-4deg); filter: invert(0.9) hue-rotate(180deg); }
+            25% { transform: translate(20px, -18px) skew(5deg); filter: contrast(350%) brightness(2.8); }
+            40% { transform: translate(-22px, -12px) skew(-6deg); filter: invert(0.8); }
+            55% { transform: translate(18px, 20px) skew(4deg); filter: contrast(450%) saturate(300%); }
+            70% { transform: translate(-15px, -10px) skew(-3deg); filter: hue-rotate(90deg); }
+            85% { transform: translate(12px, -14px) skew(2deg); filter: brightness(3); }
+            100% { transform: translate(0, 0) skew(0deg); filter: invert(0); }
+        }
+        .shaking {
+            animation: violentTremor 0.05s infinite !important;
+        }
+        .exploding {
+            transition: all 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) !important;
+            transform: scale(0.005) rotate(45deg) !important;
+            filter: blur(50px) brightness(8) !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        /* Предупреждающее окно */
+        .destruct-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(14px);
+            animation: emergencyAlarm 0.7s infinite;
+        }
+        .destruct-overlay.active { display: flex; }
+        .destruct-modal {
+            background: rgba(10, 1, 1, 0.94);
+            border: 2px solid #ff2222;
+            border-radius: 14px;
+            padding: 26px 30px;
+            max-width: 540px;
+            width: 90%;
+            text-align: center;
+            color: #ff8888;
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.85), inset 0 0 40px rgba(0, 0, 0, 0.95);
+            position: relative;
+            overflow: hidden;
+        }
+        .hazard-ribbon {
+            height: 12px;
+            background: repeating-linear-gradient(
+                -45deg,
+                #ffcc00,
+                #ffcc00 14px,
+                #111 14px,
+                #111 28px
+            );
+            border-radius: 3px;
+            margin-bottom: 16px;
+        }
+        .hazard-ribbon.bottom {
+            margin-top: 18px;
+            margin-bottom: 0;
+        }
+        .destruct-timer {
+            font-size: 80px;
+            font-weight: 900;
+            color: #ff0000;
+            text-shadow: 0 0 40px #ff0000, 0 0 10px #ffffff;
+            margin: 5px 0 10px 0;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 5px;
+            line-height: 1;
+        }
+
+        /* Военный HUD прогресс-бар в модальном окне */
+        .destruct-hud-bar {
+            width: 100%;
+            height: 8px;
+            background: #200000;
+            border: 1px solid #ff2222;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0 16px 0;
+            box-shadow: inset 0 0 10px #000;
+        }
+        .destruct-hud-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #ffcc00 0%, #ff3300 50%, #ff0000 100%);
+            transition: width 1s linear;
+            box-shadow: 0 0 12px #ff0000;
+        }
+        .defcon-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff2222;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #ff4444;
+            margin-bottom: 10px;
+            animation: badgeBlink 0.6s infinite;
+        }
+
+        /* Оверлей разбитого стекла и трещин экрана */
+        .glass-crack-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 10003;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease-in;
+        }
+        .glass-crack-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Вспышка детонации */
+        #detonationFlash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #ffffff;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10005;
+            transition: opacity 0.8s ease-out;
+        }
+
+        /* Экран руин (кибер-апокалипсис) */
+        .ruins-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, #130303 0%, #030000 85%);
+            color: #ff5555;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 25px;
+            box-sizing: border-box;
+            z-index: 9999;
+            overflow-y: auto;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .ruins-screen.active { display: flex; }
+        .ruins-screen::before {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10002;
+            opacity: 0.3;
+        }
+        .ruins-ascii {
+            color: #ff2222;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.15;
+            text-shadow: 0 0 15px #ff0000;
+            margin-bottom: 15px;
+            white-space: pre;
+        }
+        /* Панель разминирования (Мини-игра 1: Провода) */
+        .defuse-box {
+            background: rgba(20, 0, 0, 0.7);
+            border: 1px dashed #ff4444;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 10px 0 14px 0;
+            text-align: center;
+        }
+        .defuse-header {
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffaa00;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .defuse-hint {
+            font-size: 11px;
+            color: #ffd880;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 170, 0, 0.4);
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .wires-rack {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 0;
+        }
+        .wire-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+        .wire-unit:hover {
+            transform: scale(1.15);
+        }
+        .wire-cable {
+            width: 16px;
+            height: 48px;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            transition: all 0.25s;
+        }
+        .wire-cable::before, .wire-cable::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 5px;
+            background: #888;
+            left: -2px;
+            border-radius: 2px;
+        }
+        .wire-cable::before { top: 0; }
+        .wire-cable::after { bottom: 0; }
+        .wire-unit.red .wire-cable { background: linear-gradient(90deg, #ff1100, #ff5533); box-shadow: 0 0 12px #ff0000; }
+        .wire-unit.blue .wire-cable { background: linear-gradient(90deg, #0066ff, #00d4ff); box-shadow: 0 0 12px #00aaff; }
+        .wire-unit.yellow .wire-cable { background: linear-gradient(90deg, #ffbb00, #ffee33); box-shadow: 0 0 12px #ffbb00; }
+        .wire-unit.green .wire-cable { background: linear-gradient(90deg, #00cc44, #33ff77); box-shadow: 0 0 12px #00ff66; }
+        
+        .wire-unit.cut .wire-cable {
+            background: #333 !important;
+            box-shadow: none !important;
+            opacity: 0.4;
+            height: 18px;
+            margin: 15px 0;
+        }
+        .wire-label {
+            font-size: 10px;
+            font-weight: 800;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+        .defuse-success-banner {
+            background: rgba(0, 255, 100, 0.18);
+            border: 1px solid #00ff66;
+            color: #00ff66;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* Табы и аркада в экране руин */
+        /* Табы и аркада в экране руин */
+        .ruins-hub {
+            max-width: 860px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .ruins-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .ruins-tab-btn {
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ruins-tab-btn:hover {
+            border-color: #58a6ff;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(88, 166, 255, 0.3);
+        }
+        .ruins-tab-btn.active {
+            background: #1f242c;
+            border-color: #58a6ff;
+            color: #58a6ff;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
+        }
+        .ruins-view {
+            width: 100%;
+            display: none;
+        }
+        .ruins-view.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Аркада: Cyber Fallout Canvas */
+        .arcade-card {
+            background: #090d12;
+            border: 2px solid #00d4ff;
+            border-radius: 12px;
+            padding: 18px;
+            width: 100%;
+            max-width: 820px;
+            box-sizing: border-box;
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.25);
+            text-align: center;
+        }
+        .arcade-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #00d4ff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 0 8px;
+        }
+        #arcadeCanvas, #snakeCanvas, #brickCanvas {
+            background: #04070c;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            border-radius: 8px;
+            cursor: crosshair;
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 760px;
+            height: auto;
+            aspect-ratio: 760 / 380;
+            touch-action: none;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+        #snakeCanvas {
+            border-color: rgba(0, 255, 102, 0.45);
+            box-shadow: inset 0 0 20px rgba(0, 255, 102, 0.08);
+        }
+        #brickCanvas {
+            border-color: rgba(255, 170, 0, 0.45);
+            box-shadow: inset 0 0 20px rgba(255, 170, 0, 0.08);
+        }
+        .arcade-controls-note {
+            font-size: 12px;
+            color: #8b949e;
+            margin-top: 8px;
+        }
+        .dpad-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .dpad-row {
+            display: flex;
+            gap: 6px;
+        }
+        .dpad-btn {
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #00ff66;
+            width: 44px;
+            height: 34px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: all 0.15s;
+        }
+        .dpad-btn:hover {
+            background: #21262d;
+            border-color: #00ff66;
+            transform: translateY(-1px);
+        }
+        .dpad-btn:active {
+            background: #00ff66;
+            color: #0d1117;
+            transform: scale(0.95);
+        }
+
+        /* Взлом ядра: Hacker Terminal (Чистый современный контрастный интерфейс) */
+        .hacker-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 22px 26px;
+            width: 100%;
+            max-width: 820px;
+            box-sizing: border-box;
+            color: #f0f6fc;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+            text-align: left;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .hacker-card-header {
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #58a6ff;
+            letter-spacing: 0.5px;
+        }
+        .hacker-card-desc {
+            font-size: 13.5px;
+            color: #c9d1d9;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+        .hacker-logs {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 14px 18px;
+            min-height: 150px;
+            max-height: 230px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 12px 0 16px 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .hack-log-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 3px solid #58a6ff;
+            border-radius: 6px;
+            padding: 7px 14px;
+            margin-bottom: 8px;
+            font-size: 13.5px;
+            color: #f0f6fc;
+        }
+        .hack-log-code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #58a6ff;
+        }
+        .hack-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .hack-stat-badge.exact {
+            background: rgba(46, 160, 67, 0.25);
+            color: #3fb950;
+            border: 1px solid rgba(46, 160, 67, 0.4);
+        }
+        .hack-stat-badge.partial {
+            background: rgba(210, 153, 34, 0.25);
+            color: #e3b341;
+            border: 1px solid rgba(210, 153, 34, 0.4);
+        }
+        .hacker-input-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .hacker-input {
+            background: #0d1117;
+            border: 2px solid #58a6ff;
+            color: #ffffff;
+            font-size: 22px;
+            font-family: 'Consolas', monospace;
+            font-weight: 800;
+            padding: 8px 14px;
+            border-radius: 6px;
+            letter-spacing: 8px;
+            width: 150px;
+            text-align: center;
+            outline: none;
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.2);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .hacker-input:focus {
+            border-color: #1f6feb;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.4);
+        }
+        .hacker-btn {
+            background: #238636;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            transition: all 0.2s;
+        }
+        .hacker-btn:hover {
+            background: #2ea043;
+            box-shadow: 0 0 15px rgba(46, 160, 67, 0.4);
+        }
+        .hacker-btn.reset {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+        }
+        .hacker-btn.reset:hover {
+            background: #30363d;
+            color: #ffffff;
+        }
+
+        .ruins-terminal {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px 25px;
+            max-width: 820px;
+            width: 100%;
+            text-align: left;
+            color: #ff6666;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            line-height: 1.7;
+            font-size: 14px;
+            min-height: 160px;
+            box-sizing: border-box;
+        }
+        .btn-restore {
+            background: linear-gradient(135deg, #007bff 0%, #00d4ff 100%);
+            color: #000;
+            font-weight: 900;
+            padding: 14px 35px;
+            font-size: 17px;
+            letter-spacing: 1px;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.7);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+        }
+        .btn-restore:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 1);
+        }
         pre {
             background-color: #1e1e1e;
             color: #d4d4d4;
@@ -193,63 +838,245 @@
     body.dark-theme .memo-table th {
         background-color: #2d2d2d;
     }
-    body.dark-theme ul {
-        color: #aaa !important;
+    /* Интерактивная топология сети */
+    .topology-container {
+        margin: 25px 0 15px 0;
+        background: #f8f9fa;
+        border: 1px solid #e1e4e8;
+        border-radius: 10px;
+        padding: 16px;
+        overflow-x: auto;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s;
     }
-    /* Чат-виджет */
-    .chat-widget {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1000;
+    body.dark-theme .topology-container {
+        background: #14171c;
+        border-color: #2c323c;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+    .topology-header {
         display: flex;
-        flex-direction: column;
-        align-items: flex-end;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px dashed #d0d7de;
     }
-    .chat-toggle {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        font-size: 28px;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        transition: transform 0.3s;
+    body.dark-theme .topology-header {
+        border-bottom-color: #30363d;
+    }
+    .topology-title {
+        font-size: 15px;
+        font-weight: 700;
         display: flex;
         align-items: center;
-        justify-content: center;
+        gap: 8px;
+        color: #0366d6;
     }
-    .chat-toggle:hover { transform: scale(1.1); }
-    .chat-container {
-        display: none;
-        background: #fff;
-        width: 320px;
-        padding: 15px;
+    body.dark-theme .topology-title {
+        color: #58a6ff;
+    }
+    .topo-node {
+        cursor: pointer;
+        transition: transform 0.2s, filter 0.2s;
+    }
+    .topo-node:hover {
+        transform: scale(1.02);
+        filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.6));
+    }
+    .topo-node rect {
+        transition: stroke 0.2s, fill 0.2s;
+    }
+    .topo-node:hover rect {
+        stroke: #00d4ff !important;
+        stroke-width: 2.5px !important;
+    }
+
+    /* Блок валидации и коллизий */
+    .validation-panel {
+        margin: 15px 0 20px 0;
         border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        margin-bottom: 15px;
-        flex-direction: column;
+        padding: 12px 18px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s ease;
     }
-    .chat-container.active { display: flex; }
-    #chat-box { height: 250px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 10px; margin-bottom: 10px; background-color: #fafafa; font-size: 14px; }
-    .chat-message { margin-bottom: 8px; line-height: 1.4; word-wrap: break-word; }
-    .chat-message strong { color: #0056b3; }
-    .chat-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-    .chat-inputs input { box-sizing: border-box; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-    body.dark-theme .chat-container { background: #1e1e1e; box-shadow: 0 4px 15px rgba(0,0,0,0.6); }
-    body.dark-theme #chat-box { background-color: #2d2d2d; border-color: #555; }
-    body.dark-theme .chat-message strong { color: #66b2ff; }
-    body.dark-theme .chat-inputs input { background-color: #2d2d2d; color: #e0e0e0; border-color: #555; }
+    .validation-panel.valid {
+        background: rgba(40, 167, 69, 0.12);
+        border: 1px solid rgba(40, 167, 69, 0.4);
+        color: #28a745;
+    }
+    body.dark-theme .validation-panel.valid {
+        background: rgba(46, 160, 67, 0.15);
+        border-color: #2ea043;
+        color: #3fb950;
+    }
+    .validation-panel.invalid {
+        background: rgba(220, 53, 69, 0.12);
+        border: 1px solid rgba(220, 53, 69, 0.5);
+        color: #dc3545;
+        box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
+    }
+    body.dark-theme .validation-panel.invalid {
+        background: rgba(248, 81, 73, 0.18);
+        border-color: #f85149;
+        color: #ff7b72;
+    }
+    .collision-badge {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-left: 6px;
+        text-transform: uppercase;
+    }
+    .collision-badge.ok { background: #28a745; color: #fff; }
+    .collision-badge.err { background: #dc3545; color: #fff; animation: pulseErr 1.5s infinite; }
+    @keyframes pulseErr {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Вкладки скриптов (Tabs Navigation) */
+    .script-tabs-bar {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding: 6px 0;
+        margin-bottom: 12px;
+        border-bottom: 2px solid #007bff22;
+    }
+    body.dark-theme .script-tabs-bar {
+        border-bottom-color: #30363d;
+    }
+    .tab-btn {
+        background: #e9ecef;
+        color: #495057;
+        border: 1px solid #ced4da;
+        border-radius: 6px 6px 0 0;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    body.dark-theme .tab-btn {
+        background: #21262d;
+        color: #8b949e;
+        border-color: #30363d;
+    }
+    .tab-btn:hover {
+        background: #007bff15;
+        color: #007bff;
+    }
+    body.dark-theme .tab-btn:hover {
+        background: #30363d;
+        color: #58a6ff;
+    }
+    .tab-btn.active {
+        background: #007bff;
+        color: #ffffff;
+        border-color: #007bff;
+        box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
+    }
+    body.dark-theme .tab-btn.active {
+        background: #1f6feb;
+        color: #ffffff;
+        border-color: #388bfd;
+        box-shadow: 0 0 10px rgba(56, 139, 253, 0.4);
+    }
+
+    /* Панель поиска и действий со скриптами */
+    .script-controls-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+        background: #f1f3f5;
+        padding: 10px 14px;
+        border-radius: 8px;
+    }
+    body.dark-theme .script-controls-bar {
+        background: #161b22;
+        border: 1px solid #30363d;
+    }
+    .script-search-input {
+        flex: 1;
+        min-width: 220px;
+        max-width: 380px;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 13px;
+        outline: none;
+    }
+    body.dark-theme .script-search-input {
+        background: #0d1117;
+        color: #c9d1d9;
+        border-color: #30363d;
+    }
+    .btn-download-all {
+        background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
+        color: white;
+        font-size: 13px;
+        padding: 8px 15px;
+        border-radius: 5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-download-all:hover {
+        background: linear-gradient(135deg, #138496 0%, #0e6372 100%);
+    }
+
+    /* Всплывающее уведомление (Toast) */
+    #copyToast {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: #1e1e1e;
+        color: #fff;
+        border: 1px solid #00d4ff;
+        box-shadow: 0 4px 20px rgba(0, 212, 255, 0.35);
+        padding: 12px 22px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 10050;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.25s, transform 0.25s;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    #copyToast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
     </style>
 </head>
 <body class="dark-theme">
 
 <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
         <h1>Генератор сетевых настроек</h1>
-        <div style="display: flex; gap: 15px; align-items: center;">
+        <div style="display: flex; gap: 14px; align-items: center;">
+            <button class="btn-nuke-header" onclick="openSelfDestructModal()" title="Инициировать аварийный протокол ликвидации">
+                <span class="nuke-badge">ARMED</span>
+                <span class="nuke-ico">☢️</span>
+                <span>Самоуничтожение</span>
+            </button>
             <button id="themeToggle" onclick="toggleTheme()" style="background: none; border: none; font-size: 24px; cursor: pointer; padding: 0;" title="Переключить тему">☀️</button>
         </div>
     </div>
@@ -263,6 +1090,27 @@
 
     <h3>Общие настройки</h3>
     <div class="form-section">
+        <div class="form-group">
+            <label for="ifacePrefix">Префикс или имя интерфейса (enp7s, ens, ens33, eth0):</label>
+            <input type="text" id="ifacePrefix" value="enp7s" list="ifaceSuggestions" placeholder="enp7s, ens, ens33, eth0..." oninput="updateIfaceHint()">
+            <datalist id="ifaceSuggestions">
+                <option value="enp7s">enp7s (enp7s1, enp7s2, enp7s3)</option>
+                <option value="ens">ens (ens1, ens2, ens3)</option>
+                <option value="ens33">ens33 (ens33, ens34, ens35)</option>
+                <option value="ens18">ens18 (ens18, ens19, ens20)</option>
+                <option value="eth">eth (eth1, eth2, eth3)</option>
+                <option value="eth0">eth0 (eth0, eth1, eth2)</option>
+                <option value="enp0s">enp0s (enp0s1, enp0s2, enp0s3)</option>
+            </datalist>
+            <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+                <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;" onclick="setIfacePrefix('enp7s')">enp7s</button>
+                <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;" onclick="setIfacePrefix('ens')">ens</button>
+                <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;" onclick="setIfacePrefix('ens33')">ens33 (33, 34...)</button>
+                <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;" onclick="setIfacePrefix('ens18')">ens18 (18, 19...)</button>
+                <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;" onclick="setIfacePrefix('eth0')">eth0 (0, 1...)</button>
+            </div>
+            <span id="ifaceHint" class="mask-hint" style="font-size: 12px; margin-top: 4px;"></span>
+        </div>
         <div class="form-group">
             <label for="domain">Домен (DNS-суффикс):</label>
             <input type="text" id="domain" value="quantumflux.local">
@@ -392,7 +1240,36 @@
         </div>
     </details>
 
-    <div class="buttons" style="align-items: center; gap: 20px;">
+    <!-- Панель автоматической валидации и проверки сетевых коллизий -->
+    <div id="validationPanel" class="validation-panel valid">
+        <span id="validationIcon" style="font-size: 20px;">🛡️</span>
+        <div style="flex: 1;">
+            <div style="font-weight: bold;" id="validationTitle">Сеть сбалансирована: конфликтов адресации не обнаружено</div>
+            <div style="font-size: 12px; opacity: 0.85; margin-top: 2px;" id="validationDetails">Все 6 подсетей и GRE туннель распределены изолированно.</div>
+        </div>
+        <div id="validationBadges"></div>
+    </div>
+
+    <!-- Интерактивная карта топологии сети -->
+    <div class="topology-container">
+        <div class="topology-header">
+            <div class="topology-title">
+                <span>🗺️</span>
+                <span>Интерактивная карта топологии сети</span>
+                <span style="font-size: 11px; font-weight: normal; color: #888; margin-left: 8px;">(Кликните по узлу для мгновенного перехода к скрипту)</span>
+            </div>
+            <div style="font-size: 12px; color: #888;" id="topoStatusSummary">
+                Динамическая адресация
+            </div>
+        </div>
+        <div style="overflow-x: auto; width: 100%; display: flex; justify-content: center;">
+            <svg id="networkTopologySvg" viewBox="0 0 960 360" style="width: 100%; max-width: 960px; height: auto; min-width: 680px; font-family: 'Segoe UI', Tahoma, sans-serif; user-select: none;">
+                <!-- Фоновая сетка и связи будут рисоваться динамически -->
+            </svg>
+        </div>
+    </div>
+
+    <div class="buttons" style="align-items: center; gap: 15px; flex-wrap: wrap;">
         <button class="btn-generate" onclick="generateScript()">Сгенерировать скрипты</button>
         <div style="display: flex; align-items: center; gap: 8px;">
             <input type="checkbox" id="removeComments" style="width: 20px; height: 20px; cursor: pointer; margin: 0;">
@@ -400,26 +1277,243 @@
         </div>
     </div>
 
+    <!-- Панель поиска, фильтра и скачивания скриптов -->
+    <div id="scriptControlsBar" class="script-controls-bar" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+            <span style="font-size: 15px;">🔍</span>
+            <input type="text" id="scriptSearchInput" class="script-search-input" placeholder="Поиск в коде скрипта (например, nftables, ospf, zone)..." oninput="filterActiveScript()">
+            <span id="searchMatchesCount" style="font-size: 12px; color: #888;"></span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn-download-all" onclick="downloadAllScripts()" title="Скачать все скрипты отдельными .sh файлами">
+                <span>📥</span>
+                <span>Скачать все (.sh)</span>
+            </button>
+            <button class="btn-copy" onclick="copyCurrentTabScript()" style="font-size: 13px; padding: 8px 14px;">
+                <span>📋</span>
+                <span>Копировать</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Вкладки устройств -->
+    <div id="scriptTabsBar" class="script-tabs-bar" style="display: none;"></div>
+
     <div id="scriptsContainer">
         <pre><code>// Нажмите "Сгенерировать скрипты", чтобы увидеть результат...</code></pre>
     </div>
 </div>
 
-<!-- HTML Чат-виджета -->
-<div class="chat-widget">
-    <div class="chat-container" id="chatContainer">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <h3 style="margin: 0; font-size: 16px; border: none; padding: 0;">Общий чат</h3>
-            <button onclick="toggleChat()" style="background: none; border: none; color: #999; font-size: 18px; padding: 0; cursor: pointer; line-height: 1;">✖</button>
+<!-- Всплывающий тост для копирования -->
+<div id="copyToast">
+    <span>✅</span>
+    <span id="copyToastText">Скрипт скопирован в буфер обмена!</span>
+</div>
+
+<!-- Вспышка взрыва -->
+<div id="detonationFlash"></div>
+
+<!-- Холст для взрывных ударных волн и частиц -->
+<canvas id="destructCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 10001; display: none;"></canvas>
+
+<!-- Оверлей разбитого стекла монитора при детонации -->
+<div id="glassCrackOverlay" class="glass-crack-overlay">
+    <svg viewBox="0 0 1000 1000" style="width: 100vw; height: 100vh; position: absolute; top: 0; left: 0;" preserveAspectRatio="none">
+        <path d="M 500 500 L 150 120 M 500 500 L 850 80 M 500 500 L 920 620 M 500 500 L 720 920 M 500 500 L 280 880 M 500 500 L 80 580 M 500 500 L 450 60 M 350 330 L 220 370 M 660 300 L 780 250 M 680 580 L 810 650 M 410 670 L 320 780 M 300 530 L 160 500 M 470 270 L 580 180 M 500 500 m -50 0 a 50 50 0 1 0 100 0 a 50 50 0 1 0 -100 0 M 500 500 m -120 0 a 120 120 0 1 0 240 0 a 120 120 0 1 0 -240 0" stroke="rgba(255, 255, 255, 0.85)" stroke-width="2.5" fill="none" stroke-linecap="round" filter="drop-shadow(0 0 4px rgba(255,255,255,0.9))"/>
+    </svg>
+</div>
+
+<!-- Предупреждающее модальное окно -->
+<div id="destructOverlay" class="destruct-overlay">
+    <div class="destruct-modal">
+        <div class="hazard-ribbon"></div>
+        <div class="defcon-indicator">
+            <span>☣️</span>
+            <span>DEFCON 1: СМЕРТЕЛЬНЫЙ УРОВЕНЬ УГРОЗЫ</span>
         </div>
-        <div id="chat-box"></div>
-        <div class="chat-inputs">
-            <input type="text" id="username" placeholder="Ваше Имя" />
-            <input type="text" id="chat-message" placeholder="Введите сообщение..." />
+        <div style="font-size: 22px; font-weight: 900; color: #ff2222; text-shadow: 0 0 18px #ff0000; letter-spacing: 2px;">
+            ⚠️ АВАРИЙНЫЙ ПРОТОКОЛ ОМЕГА ⚠️
         </div>
-        <button id="send-btn" class="btn-generate" style="width: 100%;">Отправить</button>
+        <p style="font-size: 13px; color: #ffaaaa; margin: 8px 0 4px 0; line-height: 1.4;">
+            Инициация ядерной дестабилизации! Сетевой стек ALT Linux и все сервисы будут ликвидированы!
+        </p>
+        <div id="destructTimerDisplay" class="destruct-timer">03</div>
+        <div class="destruct-hud-bar">
+            <div id="destructHudFill" class="destruct-hud-fill"></div>
+        </div>
+
+        <!-- МИНИ-ИГРА 1: РАЗМИНИРОВАНИЕ (ПЕРЕРЕЖЬ ПРОВОД) -->
+        <div class="defuse-box" id="defuseBox">
+            <div class="defuse-header">✂️ Мини-игра: Перережь провод для обезвреживания</div>
+            <div class="defuse-hint" id="defuseHint">Подсказка: [Сканирование детонатора...]</div>
+            <div class="wires-rack" id="wiresRack">
+                <div class="wire-unit red" onclick="cutWire('red', this)" title="Перерезать красный провод">
+                    <div class="wire-cable"></div>
+                    <span class="wire-label" style="color: #ff4444;">RED</span>
+                </div>
+                <div class="wire-unit blue" onclick="cutWire('blue', this)" title="Перерезать синий провод">
+                    <div class="wire-cable"></div>
+                    <span class="wire-label" style="color: #33aaff;">BLUE</span>
+                </div>
+                <div class="wire-unit yellow" onclick="cutWire('yellow', this)" title="Перерезать желтый провод">
+                    <div class="wire-cable"></div>
+                    <span class="wire-label" style="color: #ffbb00;">YELLOW</span>
+                </div>
+                <div class="wire-unit green" onclick="cutWire('green', this)" title="Перерезать зеленый провод">
+                    <div class="wire-cable"></div>
+                    <span class="wire-label" style="color: #00ff66;">GREEN</span>
+                </div>
+            </div>
+            <div id="defuseSuccessBanner" class="defuse-success-banner">
+                <div>🏆 БОМБА ОБЕЗВРЕЖЕНА! СИСТЕМА СПАСЕНА!</div>
+                <div style="font-size: 11px; margin-top: 4px; opacity: 0.9;">Вы спасли сеть от полного уничтожения.</div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 10px;">
+            <button onclick="startSelfDestructImmediate()" class="btn-nuke-header" style="font-size: 13px; padding: 10px 18px;">
+                <span>💥 ДЕТОНАЦИЯ СЕЙЧАС</span>
+            </button>
+            <button onclick="cancelSelfDestruct()" style="background: #2a2a2a; color: #eee; border: 1px solid #555; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                ОТМЕНА
+            </button>
+        </div>
+        <div class="hazard-ribbon bottom"></div>
     </div>
-    <button class="chat-toggle" onclick="toggleChat()" title="Открыть чат">💬</button>
+</div>
+
+<!-- Экран руин (кибер-апокалипсис) -->
+<div id="ruinsScreen" class="ruins-screen">
+    <div class="ruins-ascii">
+    .-''''''-.
+  .'          '.
+ /   O      O   \
+:           __   :
+|          /  \  |
+:   .----./    \ :
+ \ (  /\  )    /
+  '.'-..-'   .'
+    '-....-'
+    </div>
+    <h1 style="color: #ff0000; text-shadow: 0 0 25px #ff0000, 0 0 50px #990000; font-size: 34px; margin: 0 0 15px 0; letter-spacing: 2px;">
+        💀 СИСТЕМА ЛИКВИДИРОВАНА
+    </h1>
+
+    <!-- ИНТЕРАКТИВНЫЙ ХАБ МИНИ-ИГР И ТЕРМИНАЛА В РУИНАХ -->
+    <div class="ruins-hub">
+        <div class="ruins-nav">
+            <button class="ruins-tab-btn active" id="btnTabLog" onclick="switchRuinsTab('log')">
+                <span>📋</span> <span>Журнал отката</span>
+            </button>
+            <button class="ruins-tab-btn" id="btnTabArcade" onclick="switchRuinsTab('arcade')">
+                <span>🕹️</span> <span>Аркада: Cyber Fallout</span>
+            </button>
+            <button class="ruins-tab-btn" id="btnTabHack" onclick="switchRuinsTab('hack')">
+                <span>🔐</span> <span>Взлом ядра: Hack Core</span>
+            </button>
+            <button class="ruins-tab-btn" id="btnTabSnake" onclick="switchRuinsTab('snake')">
+                <span>🐍</span> <span>Червь: Cyber Snake</span>
+            </button>
+            <button class="ruins-tab-btn" id="btnTabBrick" onclick="switchRuinsTab('brick')">
+                <span>🧱</span> <span>Файрвол: Breakout</span>
+            </button>
+        </div>
+
+        <!-- ВКЛАДКА 1: Журнал отката -->
+        <div class="ruins-view active" id="viewRuinsLog">
+            <div id="terminalLog" class="ruins-terminal"></div>
+        </div>
+
+        <!-- ВКЛАДКА 2: Аркада Cyber Fallout -->
+        <div class="ruins-view" id="viewRuinsArcade">
+            <div class="arcade-card">
+                <div class="arcade-hud">
+                    <div>СЧЁТ: <span id="arcadeScore" style="color: #fff; font-size: 17px;">0</span></div>
+                    <div>РЕКОРД: <span id="arcadeBestScore" style="color: #ffcc00; font-size: 17px;">0</span></div>
+                    <div>ЖИЗНИ: <span id="arcadeLives" style="color: #ff4444; font-size: 18px;">❤️❤️❤️</span></div>
+                </div>
+                <canvas id="arcadeCanvas" width="760" height="380"></canvas>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 8px;">
+                    <span class="arcade-controls-note">Управление: Движение мыши / Касание экрана / Клавиши [←][→] или [A][D]</span>
+                    <button onclick="startArcadeGame()" class="btn-copy" style="font-size: 12px; padding: 6px 16px; background: #00d4ff; color: #000; font-weight: bold;">
+                        🔄 Начать заново
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА 3: Взлом ядра (Mastermind / PIN Code) -->
+        <div class="ruins-view" id="viewRuinsHack">
+            <div class="hacker-card">
+                <div class="hacker-card-header">
+                    <span>🔐 КВАНТОВЫЙ ДЕШИФРАТОР ЯДРА</span>
+                    <span id="hackAttemptsLeft" style="color: #e3b341; background: rgba(210,153,34,0.15); padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(210,153,34,0.3);">Попыток: 6/6</span>
+                </div>
+                <div class="hacker-card-desc">
+                    Подберите секретный 4-значный ключ деактивации протокола самоуничтожения (цифры 0-9). После ввода система укажет количество точных совпадений и найденных цифр.
+                </div>
+                <div class="hacker-logs" id="hackerLogs">
+                    <div style="color: #8b949e;">> Система ожидает ввода. Введите 4-значный PIN-код ниже...</div>
+                </div>
+                <div class="hacker-input-row">
+                    <input type="text" id="hackerInput" class="hacker-input" maxlength="4" placeholder="••••" onkeydown="if(event.key==='Enter') submitHackerCode()">
+                    <button class="hacker-btn" onclick="submitHackerCode()">[ ВЗЛОМАТЬ ]</button>
+                    <button class="hacker-btn reset" onclick="resetHackerGame()">[ СБРОСИТЬ ]</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА 4: Сетевой червь (Cyber Snake) -->
+        <div class="ruins-view" id="viewRuinsSnake">
+            <div class="arcade-card" style="border-color: #00ff66; box-shadow: 0 8px 30px rgba(0, 255, 102, 0.2);">
+                <div class="arcade-hud" style="color: #00ff66;">
+                    <div>СЧЁТ: <span id="snakeScore" style="color: #fff; font-size: 17px;">0</span></div>
+                    <div>ДЛИНА: <span id="snakeLength" style="color: #00ff66; font-size: 17px;">3</span></div>
+                    <div>РЕКОРД: <span id="snakeBestScore" style="color: #ffcc00; font-size: 17px;">0</span></div>
+                </div>
+                <canvas id="snakeCanvas" width="760" height="380"></canvas>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                        <span class="arcade-controls-note">Управление: Клавиши [↑][↓][←][→] или [W][A][S][D] / Экранные кнопки D-Pad</span>
+                        <div class="dpad-container">
+                            <div class="dpad-row">
+                                <button class="dpad-btn" onclick="handleSnakeDir(0, -1)" title="Вверх">▲</button>
+                            </div>
+                            <div class="dpad-row">
+                                <button class="dpad-btn" onclick="handleSnakeDir(-1, 0)" title="Влево">◄</button>
+                                <button class="dpad-btn" onclick="handleSnakeDir(0, 1)" title="Вниз">▼</button>
+                                <button class="dpad-btn" onclick="handleSnakeDir(1, 0)" title="Вправо">►</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="startSnakeGame()" class="btn-copy" style="font-size: 12px; padding: 6px 16px; background: #00ff66; color: #000; font-weight: bold;">
+                        🔄 Начать заново
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА 5: Прорыв файрвола (Breakout / Arkanoid) -->
+        <div class="ruins-view" id="viewRuinsBrick">
+            <div class="arcade-card" style="border-color: #ffaa00; box-shadow: 0 8px 30px rgba(255, 170, 0, 0.2);">
+                <div class="arcade-hud" style="color: #ffaa00;">
+                    <div>СЧЁТ: <span id="brickScore" style="color: #fff; font-size: 17px;">0</span></div>
+                    <div>ОСТАЛОСЬ ПРАВИЛ: <span id="brickLeft" style="color: #00d4ff; font-size: 17px;">40</span></div>
+                    <div>РЕКОРД: <span id="brickBestScore" style="color: #ffcc00; font-size: 17px;">0</span></div>
+                    <div>ПАКЕТЫ: <span id="brickLives" style="color: #ff4444; font-size: 18px;">❤️❤️❤️</span></div>
+                </div>
+                <canvas id="brickCanvas" width="760" height="380"></canvas>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 8px;">
+                    <span class="arcade-controls-note">Управление: Движение мыши / Касание экрана / Клавиши [←][→] или [A][D]</span>
+                    <button onclick="startBrickGame()" class="btn-copy" style="font-size: 12px; padding: 6px 16px; background: #ffaa00; color: #000; font-weight: bold;">
+                        🔄 Начать заново
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-restore" onclick="restoreSystem()">⚡ ВОЗРОДИТЬ СИСТЕМУ ИЗ ПЕПЛА</button>
 </div>
 
 <script>
@@ -429,6 +1523,9 @@
         const isDark = document.body.classList.contains('dark-theme');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         document.getElementById('themeToggle').innerText = isDark ? '☀️' : '🌙';
+        if (typeof updateNetworkTopology === 'function') {
+            updateNetworkTopology();
+        }
     }
 
     // Применяем сохраненную тему при загрузке страницы
@@ -437,10 +1534,52 @@
         document.getElementById('themeToggle').innerText = '🌙';
     }
 
-    // Переключение видимости чата
-    function toggleChat() {
-        const chat = document.getElementById('chatContainer');
-        chat.classList.toggle('active');
+    // Управление префиксом и нумерацией интерфейсов
+    function parseInterfaceConfig(val) {
+        let raw = (val || 'enp7s').trim();
+        // Поддержка как префиксов (enp7s, ens, eth), так и конкретных имён со стартовым номером (ens33, ens18, eth0, enp0s3)
+        const match = raw.match(/^([a-zA-Z0-9]*[a-zA-Z_-])(\d+)$/);
+        if (match) {
+            const prefix = match[1];
+            const startNum = parseInt(match[2], 10);
+            return {
+                raw: raw,
+                prefix: prefix,
+                iface1: `${prefix}${startNum}`,
+                iface2: `${prefix}${startNum + 1}`,
+                iface3: `${prefix}${startNum + 2}`,
+                cleanPrefix: prefix
+            };
+        } else {
+            // Префикс без номера на конце (например enp7s, ens, eth)
+            const prefix = raw || 'enp7s';
+            return {
+                raw: raw,
+                prefix: prefix,
+                iface1: `${prefix}1`,
+                iface2: `${prefix}2`,
+                iface3: `${prefix}3`,
+                cleanPrefix: prefix
+            };
+        }
+    }
+
+    function updateIfaceHint() {
+        const inputEl = document.getElementById('ifacePrefix');
+        const raw = (inputEl ? inputEl.value : 'enp7s').trim();
+        const cfg = parseInterfaceConfig(raw);
+        const hintEl = document.getElementById('ifaceHint');
+        if (hintEl) {
+            hintEl.innerText = `Интерфейсы: ${cfg.iface1} (ext), ${cfg.iface2} (int/lan), ${cfg.iface3} (isp)`;
+        }
+    }
+
+    function setIfacePrefix(val) {
+        const el = document.getElementById('ifacePrefix');
+        if (el) {
+            el.value = val;
+            updateIfaceHint();
+        }
     }
 
     // Логика подбора маски на основе требуемых хостов
@@ -469,6 +1608,12 @@
     }
 
     function generateScript() {
+        const ifaceCfg = parseInterfaceConfig(document.getElementById('ifacePrefix').value);
+        const iface1 = ifaceCfg.iface1;
+        const iface2 = ifaceCfg.iface2;
+        const iface3 = ifaceCfg.iface3;
+        const ifaceClean = ifaceCfg.cleanPrefix;
+
         const domain = document.getElementById('domain').value;
         const tz = document.getElementById('timezone').value;
         const rtrUser = document.getElementById('rtrUser').value;
@@ -553,11 +1698,11 @@
 hostnamectl hostname ISP 
 # exec bash 
 # -------Настройка внутренних интерфейсов------- 
-mkdir /etc/net/ifaces/enp7s{2,3} 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s2/options 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s3/options 
-echo '${ipIspHq}/${maskIsp}' > /etc/net/ifaces/enp7s2/ipv4address 
-echo '${ipIspBr}/${maskIsp}' > /etc/net/ifaces/enp7s3/ipv4address 
+mkdir /etc/net/ifaces/{${iface2},${iface3}} 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/${iface2}/options 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/${iface3}/options 
+echo '${ipIspHq}/${maskIsp}' > /etc/net/ifaces/${iface2}/ipv4address 
+echo '${ipIspBr}/${maskIsp}' > /etc/net/ifaces/${iface3}/ipv4address 
 # -------NAT------- 
 apt-get update && apt-get install nftables tzdata -y 
 # -------TimeZone-------
@@ -570,7 +1715,7 @@ flush ruleset
 table ip nat {
 	chain postrouting  {
 	type nat hook postrouting priority srcnat
-	oifname "enp7s1" masquerade 
+	oifname "${iface1}" masquerade 
 	}
 }
 
@@ -586,13 +1731,13 @@ systemctl restart network`;
 hostnamectl hostname ${nameBrRtr}.${domain}
 # exec bash 
 # -------Настройка интерфейсов------- 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
-echo '${ipBrExt}/${maskIsp}' > /etc/net/ifaces/enp7s1/ipv4address 
-echo 'default via ${ipIspBr}' > /etc/net/ifaces/enp7s1/ipv4route 
-mkdir /etc/net/ifaces/{enp7s2,gre1} 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s2/options 
-echo '${ipBrIntRtr}/${maskBr}' > /etc/net/ifaces/enp7s2/ipv4address 
-echo 'nameserver ${extDns}' > /etc/net/ifaces/enp7s1/resolv.conf
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/${iface1}/options 
+echo '${ipBrExt}/${maskIsp}' > /etc/net/ifaces/${iface1}/ipv4address 
+echo 'default via ${ipIspBr}' > /etc/net/ifaces/${iface1}/ipv4route 
+mkdir /etc/net/ifaces/{${iface2},gre1} 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/${iface2}/options 
+echo '${ipBrIntRtr}/${maskBr}' > /etc/net/ifaces/${iface2}/ipv4address 
+echo 'nameserver ${extDns}' > /etc/net/ifaces/${iface1}/resolv.conf
 systemctl restart network
 
 # -------GRE-------
@@ -625,7 +1770,7 @@ flush ruleset
 table ip nat {
 chain postrouting  {
 type nat hook postrouting priority srcnat
-oifname "enp7s1" masquerade 
+oifname "${iface1}" masquerade 
 }
 }
 
@@ -649,7 +1794,7 @@ interface gre1
 	no ip ospf passive 
 exit 
 !
-interface enp7s2
+interface ${iface2}
 	ip ospf area 0
 exit
 !
@@ -667,20 +1812,20 @@ timedatectl set-timezone ${tz}`;
 hostnamectl hostname ${nameHqRtr}.${domain}
 # exec bash 
 # -------Настройка внешнего интерфейса------- 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
-echo '${ipHqExt}/${maskIsp}' > /etc/net/ifaces/enp7s1/ipv4address 
-echo 'default via ${ipIspHq}' > /etc/net/ifaces/enp7s1/ipv4route 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/${iface1}/options 
+echo '${ipHqExt}/${maskIsp}' > /etc/net/ifaces/${iface1}/ipv4address 
+echo 'default via ${ipIspHq}' > /etc/net/ifaces/${iface1}/ipv4route 
 systemctl restart network
 # -------Настройка внутренних вланов------- 
-mkdir /etc/net/ifaces/{enp7s2,enp7s2.{${vlan100Id},${vlan200Id},${vlan999Id}},gre1} 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s2/options 
-echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=${vlan100Id}\\nHOST=enp7s2\\nONBOOT=yes' > /etc/net/ifaces/enp7s2.${vlan100Id}/options 
-echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=${vlan200Id}\\nHOST=enp7s2\\nONBOOT=yes' > /etc/net/ifaces/enp7s2.${vlan200Id}/options 
-echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=${vlan999Id}\\nHOST=enp7s2\\nONBOOT=yes' > /etc/net/ifaces/enp7s2.${vlan999Id}/options
-echo 'nameserver ${extDns}' > /etc/net/ifaces/enp7s1/resolv.conf
-echo '${ipHqVlan100Rtr}/${mask100}' > /etc/net/ifaces/enp7s2.${vlan100Id}/ipv4address 
-echo '${ipHqVlan200Rtr}/${mask200}' > /etc/net/ifaces/enp7s2.${vlan200Id}/ipv4address 
-echo '${ipHqVlan999Rtr}/${mask999}' > /etc/net/ifaces/enp7s2.${vlan999Id}/ipv4address 
+mkdir /etc/net/ifaces/{${iface2},${iface2}.{${vlan100Id},${vlan200Id},${vlan999Id}},gre1} 
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/${iface2}/options 
+echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=${vlan100Id}\\nHOST=${iface2}\\nONBOOT=yes' > /etc/net/ifaces/${iface2}.${vlan100Id}/options 
+echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=${vlan200Id}\\nHOST=${iface2}\\nONBOOT=yes' > /etc/net/ifaces/${iface2}.${vlan200Id}/options 
+echo -e 'BOOTPROTO=static\\nTYPE=vlan\\nVID=${vlan999Id}\\nHOST=${iface2}\\nONBOOT=yes' > /etc/net/ifaces/${iface2}.${vlan999Id}/options
+echo 'nameserver ${extDns}' > /etc/net/ifaces/${iface1}/resolv.conf
+echo '${ipHqVlan100Rtr}/${mask100}' > /etc/net/ifaces/${iface2}.${vlan100Id}/ipv4address 
+echo '${ipHqVlan200Rtr}/${mask200}' > /etc/net/ifaces/${iface2}.${vlan200Id}/ipv4address 
+echo '${ipHqVlan999Rtr}/${mask999}' > /etc/net/ifaces/${iface2}.${vlan999Id}/ipv4address 
 systemctl restart network
 # -------GRE-------
 # +++ 
@@ -712,7 +1857,7 @@ flush ruleset
 table ip nat {
 chain postrouting  {
 type nat hook postrouting priority srcnat
-oifname "enp7s1" masquerade 
+oifname "${iface1}" masquerade 
 }
 }
 
@@ -736,15 +1881,15 @@ interface gre1
 	no ip ospf passive 
 exit 
 !
-interface enp7s2.${vlan100Id}
+interface ${iface2}.${vlan100Id}
 	ip ospf area 0
 exit
 !
-interface enp7s2.${vlan200Id}
+interface ${iface2}.${vlan200Id}
 	ip ospf area 0
 exit
 !
-interface enp7s2.${vlan999Id} 
+interface ${iface2}.${vlan999Id} 
 	ip ospf area 0
 exit
 !
@@ -768,7 +1913,7 @@ max-lease-time 7200;
 }
 EOF
 # +++
-sed -i 's/DHCPDARGS=/DHCPDARGS=enp7s2.${vlan200Id}/g' /etc/sysconfig/dhcpd
+sed -i 's/DHCPDARGS=/DHCPDARGS=${iface2}.${vlan200Id}/g' /etc/sysconfig/dhcpd
 systemctl enable --now dhcpd
 systemctl restart network
 systemctl restart dhcpd`;
@@ -778,10 +1923,10 @@ systemctl restart dhcpd`;
 hostnamectl hostname ${nameHqSrv}.${domain}
 # exec bash 
 # -------Настройка интерфейсов-------
-echo -e 'BOOTPROTO=static\\nTYPE=eth\\nONBOOT=yes' > /etc/net/ifaces/enp7s1/options 
-echo '${ipHqVlan100Srv}/${mask100}' > /etc/net/ifaces/enp7s1/ipv4address
-echo 'default via ${ipHqVlan100Rtr}' > /etc/net/ifaces/enp7s1/ipv4route
-echo 'nameserver ${extDns}' > /etc/net/ifaces/enp7s1/resolv.conf
+echo -e 'BOOTPROTO=static\\nTYPE=eth\\nONBOOT=yes' > /etc/net/ifaces/${iface1}/options 
+echo '${ipHqVlan100Srv}/${mask100}' > /etc/net/ifaces/${iface1}/ipv4address
+echo 'default via ${ipHqVlan100Rtr}' > /etc/net/ifaces/${iface1}/ipv4route
+echo 'nameserver ${extDns}' > /etc/net/ifaces/${iface1}/resolv.conf
 systemctl restart network
 # ------Установка необходимого ПО-------
 apt-get update && apt-get install bind bind-utils tzdata -y
@@ -801,7 +1946,7 @@ ss -ltnp | grep sshd
 
 ssh ${srvUser}@127.0.0.1 -p ${sshPort}
 # ------Смена DNS------
-echo $'search ${domain}\\nnameserver 127.0.0.1' > /etc/net/ifaces/enp7s1/resolv.conf
+echo $'search ${domain}\\nnameserver 127.0.0.1' > /etc/net/ifaces/${iface1}/resolv.conf
 # -------BIND9--------
 # +++
 cat > /etc/bind/options.conf << 'EOF'
@@ -875,7 +2020,7 @@ nslookup ${nameHqRtr}.${domain} ${ipHqVlan100Srv}`;
 # -------Имя------- 
 hostnamectl hostname ${nameHqCli}.${domain}
 # exec bash
-echo -e 'BOOTPROTO=dhcp\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
+echo -e 'BOOTPROTO=dhcp\\nTYPE=eth' > /etc/net/ifaces/${iface1}/options 
 systemctl restart network
 # -------Установка-------
 apt-get update && apt-get install tzdata -y
@@ -886,10 +2031,10 @@ timedatectl set-timezone ${tz}`;
 hostnamectl hostname ${nameBrSrv}.${domain}
 # exec bash 
 # -------Настройка интерфейсов------- 
-echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/enp7s1/options 
-echo '${ipBrIntSrv}/${maskBr}' > /etc/net/ifaces/enp7s1/ipv4address 
-echo 'default via ${ipBrIntRtr}' > /etc/net/ifaces/enp7s1/ipv4route 
-echo 'nameserver ${extDns}' > /etc/net/ifaces/enp7s1/resolv.conf
+echo -e 'BOOTPROTO=static\\nTYPE=eth' > /etc/net/ifaces/${iface1}/options 
+echo '${ipBrIntSrv}/${maskBr}' > /etc/net/ifaces/${iface1}/ipv4address 
+echo 'default via ${ipBrIntRtr}' > /etc/net/ifaces/${iface1}/ipv4route 
+echo 'nameserver ${extDns}' > /etc/net/ifaces/${iface1}/resolv.conf
 systemctl restart network
 # -------Установка-------
 apt-get update && apt-get install tzdata -y
@@ -908,67 +2053,483 @@ systemctl restart sshd
 ss -ltnp | grep sshd`;
 
         const scriptDNS = `# =======Смена DNS=======
-rm -f /etc/net/ifaces/enp7s1/resolv.conf
+rm -f /etc/net/ifaces/${iface1}/resolv.conf
 echo -e 'search ${domain}\\nnameserver ${ipHqVlan100Srv}' > /etc/resolv.conf`;
 
-        const scripts = {
+        const scriptDestruct = `# =======Самоуничтожение / Полный откат системы=======
+# Остановка и отключение всех развернутых служб
+systemctl stop nftables frr dhcpd bind 2>/dev/null
+systemctl disable nftables frr dhcpd bind 2>/dev/null
+
+# Удаление созданных интерфейсов и сброс на чистый DHCP
+rm -rf /etc/net/ifaces/${ifaceClean}* /etc/net/ifaces/gre* 2>/dev/null
+mkdir -p /etc/net/ifaces/${iface1}
+echo -e 'BOOTPROTO=dhcp\\nTYPE=eth\\nONBOOT=yes' > /etc/net/ifaces/${iface1}/options
+rm -f /etc/net/ifaces/${iface1}/resolv.conf
+echo 'nameserver ${extDns}' > /etc/resolv.conf
+
+# Очистка nftables и форвардинга
+nft flush ruleset 2>/dev/null
+sed -i 's/net.ipv4.ip_forward = 1/net.ipv4.ip_forward = 0/g' /etc/net/sysctl.conf 2>/dev/null
+sysctl -p 2>/dev/null
+
+# Удаление созданных пользователей и файлов sudoers
+userdel -r -f ${rtrUser} 2>/dev/null
+rm -f /etc/sudoers.d/${rtrUser}
+userdel -r -f ${srvUser} 2>/dev/null
+rm -f /etc/sudoers.d/${srvUser}
+
+# Сброс настроек SSH
+sed -i "/Port ${sshPort}/d" /etc/openssh/sshd_config 2>/dev/null
+sed -i "/AllowUsers ${srvUser}/d" /etc/openssh/sshd_config 2>/dev/null
+rm -f /etc/openssh/banner
+systemctl restart sshd 2>/dev/null
+
+# Очистка FRR, BIND, DHCPD
+rm -f /etc/frr/frr.conf 2>/dev/null
+echo "ospfd=no" > /etc/frr/daemons 2>/dev/null
+rm -rf /etc/bind/zone/* /etc/bind/rndc.key 2>/dev/null
+rm -f /etc/dhcp/dhcpd.conf 2>/dev/null
+sed -i 's/DHCPDARGS=.*/DHCPDARGS=/g' /etc/sysconfig/dhcpd 2>/dev/null
+
+# Перезапуск сети в чистом виде
+systemctl restart network
+echo "=== Система успешно возвращена к чистому исходному состоянию ==="`;
+
+        generatedScriptsStore = {
             "ISP": scriptISP,
             "BR-RTR": scriptBR_RTR,
             "HQ-RTR": scriptHQ_RTR,
             "HQ-SRV": scriptHQ_SRV,
             "HQ-CLI": scriptHQ_CLI,
             "BR-SRV": scriptBR_SRV,
-            "Смена DNS": scriptDNS
+            "Смена DNS": scriptDNS,
+            "💥 Самоуничтожение (Откат)": scriptDestruct
         };
 
+        renderScriptTabsAndActive();
+        updateNetworkTopology();
+        showToast("Скрипты успешно сгенерированы!");
+    }
+
+    // Сохраненные данные сгенерированных скриптов
+    let generatedScriptsStore = {};
+    let activeTabDeviceName = "HQ-RTR";
+
+    function renderScriptTabsAndActive() {
+        const tabsBar = document.getElementById('scriptTabsBar');
+        const controlsBar = document.getElementById('scriptControlsBar');
         const container = document.getElementById('scriptsContainer');
-        container.innerHTML = '';
+
+        if (!tabsBar || !controlsBar || !container) return;
+
+        tabsBar.style.display = 'flex';
+        controlsBar.style.display = 'flex';
+        tabsBar.innerHTML = '';
 
         const removeComments = document.getElementById('removeComments').checked;
+        const keys = Object.keys(generatedScriptsStore);
+        if (!keys.includes(activeTabDeviceName)) {
+            activeTabDeviceName = keys[0] || "HQ-RTR";
+        }
 
-        Object.keys(scripts).forEach((deviceName) => {
-            let finalScript = scripts[deviceName];
-            if (removeComments) {
-                finalScript = finalScript.split('\n').filter(line => {
-                    const trimmed = line.trim();
-                    if (trimmed.startsWith('#!')) return true; // Оставляем shebang
-                    return !trimmed.startsWith('#');
-                }).filter(line => line.trim() !== '').join('\n'); // Также удаляем пустые строки, оставшиеся от комментариев
-            }
+        keys.forEach(deviceName => {
+            const btn = document.createElement('button');
+            btn.className = 'tab-btn' + (deviceName === activeTabDeviceName ? ' active' : '');
             
-            const id = 'script-' + deviceName.toLowerCase();
-            const block = document.createElement('div');
-            block.className = 'device-block';
-            block.innerHTML = `
-                <div class="device-header">
-                    <h2>${deviceName}</h2>
-                    <button class="btn-copy" onclick="copyText('${id}', this)">Копировать</button>
-                </div>
-                <pre id="${id}" contenteditable="true" spellcheck="false"><code>${finalScript}</code></pre>
-            `;
-            container.appendChild(block);
+            let icon = '💻';
+            if (deviceName.includes('RTR')) icon = '🔀';
+            else if (deviceName.includes('SRV')) icon = '🖥️';
+            else if (deviceName.includes('ISP')) icon = '🌐';
+            else if (deviceName.includes('DNS')) icon = '🔍';
+            else if (deviceName.includes('Самоуничтожение')) icon = '💥';
+
+            btn.innerHTML = `<span>${icon}</span> <span>${deviceName}</span>`;
+            btn.onclick = () => {
+                activeTabDeviceName = deviceName;
+                renderScriptTabsAndActive();
+            };
+            tabsBar.appendChild(btn);
         });
+
+        // Отрисовка активного скрипта
+        let finalScript = generatedScriptsStore[activeTabDeviceName] || '';
+        if (removeComments) {
+            finalScript = finalScript.split('\n').filter(line => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('#!')) return true;
+                return !trimmed.startsWith('#');
+            }).filter(line => line.trim() !== '').join('\n');
+        }
+
+        const id = 'script-' + encodeURIComponent(activeTabDeviceName).replace(/%/g, '');
+        container.innerHTML = `
+            <div class="device-block">
+                <div class="device-header">
+                    <h2>${activeTabDeviceName}</h2>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn-copy" onclick="downloadSingleScript('${activeTabDeviceName}')" style="background: #17a2b8;">Скачать .sh</button>
+                        <button class="btn-copy" onclick="copyText('${id}', this)">Копировать</button>
+                    </div>
+                </div>
+                <pre id="${id}" contenteditable="true" spellcheck="false"><code>${escapeHtml(finalScript)}</code></pre>
+            </div>
+        `;
+
+        filterActiveScript();
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;');
+    }
+
+    function selectTabByName(name) {
+        if (generatedScriptsStore[name]) {
+            activeTabDeviceName = name;
+            renderScriptTabsAndActive();
+            const tabsBar = document.getElementById('scriptTabsBar');
+            if (tabsBar) tabsBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+            generateScript();
+            activeTabDeviceName = name;
+            renderScriptTabsAndActive();
+        }
+    }
+
+    function filterActiveScript() {
+        const query = (document.getElementById('scriptSearchInput')?.value || '').trim().toLowerCase();
+        const preEl = document.querySelector('#scriptsContainer pre code');
+        const countEl = document.getElementById('searchMatchesCount');
+        if (!preEl || !generatedScriptsStore[activeTabDeviceName]) return;
+
+        let script = generatedScriptsStore[activeTabDeviceName];
+        const removeComments = document.getElementById('removeComments').checked;
+        if (removeComments) {
+            script = script.split('\n').filter(line => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('#!')) return true;
+                return !trimmed.startsWith('#');
+            }).filter(line => line.trim() !== '').join('\n');
+        }
+
+        if (!query) {
+            preEl.innerHTML = escapeHtml(script);
+            if (countEl) countEl.innerText = '';
+            return;
+        }
+
+        const lines = script.split('\n');
+        let matchCount = 0;
+        const highlighted = lines.map(line => {
+            if (line.toLowerCase().includes(query)) {
+                matchCount++;
+                const escaped = escapeHtml(line);
+                const reg = new RegExp(`(${escapeRegExp(escapeHtml(query))})`, 'gi');
+                return `<mark style="background: #ffea79; color: #000; border-radius: 2px;">${escaped.replace(reg, '<span style="background:#ff9800; color:#fff; font-weight:bold;">$1</span>')}</mark>`;
+            }
+            return escapeHtml(line);
+        }).join('\n');
+
+        preEl.innerHTML = highlighted;
+        if (countEl) {
+            countEl.innerText = `Найдено строк: ${matchCount}`;
+        }
+    }
+
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
     function copyText(id, buttonElement) {
         const output = document.getElementById(id);
+        if (!output) return;
         navigator.clipboard.writeText(output.innerText).then(() => {
-            const originalText = buttonElement.innerText;
-            buttonElement.innerText = 'Скопировано!';
-            buttonElement.disabled = true;
-            setTimeout(() => {
-                buttonElement.innerText = originalText;
-                buttonElement.disabled = false;
-            }, 2000);
+            if (buttonElement) {
+                const originalText = buttonElement.innerText;
+                buttonElement.innerText = 'Скопировано!';
+                buttonElement.disabled = true;
+                setTimeout(() => {
+                    buttonElement.innerText = originalText;
+                    buttonElement.disabled = false;
+                }, 2000);
+            }
+            showToast("Скрипт скопирован в буфер!");
         }).catch(err => {
             alert("Ошибка при копировании: " + err);
         });
+    }
+
+    function copyCurrentTabScript() {
+        const preEl = document.querySelector('#scriptsContainer pre');
+        if (preEl) {
+            navigator.clipboard.writeText(preEl.innerText).then(() => {
+                showToast(`Скрипт "${activeTabDeviceName}" скопирован!`);
+            });
+        }
+    }
+
+    function downloadSingleScript(deviceName) {
+        let script = generatedScriptsStore[deviceName];
+        if (!script) return;
+        const removeComments = document.getElementById('removeComments').checked;
+        if (removeComments) {
+            script = script.split('\n').filter(line => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('#!')) return true;
+                return !trimmed.startsWith('#');
+            }).filter(line => line.trim() !== '').join('\n');
+        }
+
+        const filename = `${deviceName.toLowerCase().replace(/[^a-z0-9_-]/g, '_')}.sh`;
+        const blob = new Blob([script], { type: 'text/x-shellscript;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        showToast(`Файл ${filename} скачан!`);
+    }
+
+    function downloadAllScripts() {
+        const keys = Object.keys(generatedScriptsStore);
+        if (keys.length === 0) {
+            generateScript();
+        }
+        Object.keys(generatedScriptsStore).forEach((deviceName, index) => {
+            setTimeout(() => {
+                downloadSingleScript(deviceName);
+            }, index * 200);
+        });
+    }
+
+    let toastTimer = null;
+    function showToast(text) {
+        const toast = document.getElementById('copyToast');
+        const toastText = document.getElementById('copyToastText');
+        if (!toast || !toastText) return;
+        toastText.innerText = text;
+        toast.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2500);
+    }
+
+    // ==========================================
+    // ВАЛИДАТОР СЕТЕВЫХ КОЛЛИЗИЙ И ПЕРЕСЕЧЕНИЙ
+    // ==========================================
+    function ipToLong(ip) {
+        const parts = ip.trim().split('.');
+        if (parts.length !== 4) return null;
+        return parts.reduce((acc, octet) => {
+            const num = parseInt(octet, 10);
+            if (isNaN(num) || num < 0 || num > 255) return null;
+            return (acc << 8) + num;
+        }, 0) >>> 0;
+    }
+
+    function getSubnetRange(ipStr, cidr) {
+        const ipNum = ipToLong(ipStr);
+        if (ipNum === null) return null;
+        const maskNum = cidr === 0 ? 0 : (~0 << (32 - cidr)) >>> 0;
+        const start = (ipNum & maskNum) >>> 0;
+        const end = (start | (~maskNum >>> 0)) >>> 0;
+        return { start, end };
+    }
+
+    function validateSubnetCollisions() {
+        const subnets = [
+            { id: '100', name: 'HQ Серверы', val: document.getElementById('subnet100')?.value, hosts: document.getElementById('hosts100')?.value },
+            { id: '200', name: 'HQ Клиенты', val: document.getElementById('subnet200')?.value, hosts: document.getElementById('hosts200')?.value },
+            { id: '999', name: 'HQ Управление', val: document.getElementById('subnet999')?.value, hosts: document.getElementById('hosts999')?.value },
+            { id: 'Br',  name: 'LAN Филиала (BR)', val: document.getElementById('subnetBr')?.value, hosts: document.getElementById('hostsBr')?.value },
+            { id: 'IspHq', name: 'ISP HQ Линк', val: document.getElementById('subnetIspHq')?.value, hosts: document.getElementById('hostsIsp')?.value },
+            { id: 'IspBr', name: 'ISP BR Линк', val: document.getElementById('subnetIspBr')?.value, hosts: document.getElementById('hostsIsp')?.value },
+            { id: 'Gre', name: 'GRE Туннель', val: document.getElementById('subnetGre')?.value, hosts: document.getElementById('hostsGre')?.value }
+        ];
+
+        const calculated = [];
+        const collisions = [];
+
+        subnets.forEach(s => {
+            if (!s.val) return;
+            const cidr = parseInt(getCidr(s.hosts), 10);
+            const range = getSubnetRange(s.val, cidr);
+            if (range) {
+                calculated.push({ ...s, cidr, ...range });
+            }
+        });
+
+        for (let i = 0; i < calculated.length; i++) {
+            for (let j = i + 1; j < calculated.length; j++) {
+                const a = calculated[i];
+                const b = calculated[j];
+                // Проверка пересечения отрезков [start, end]
+                if (Math.max(a.start, b.start) <= Math.min(a.end, b.end)) {
+                    collisions.push(`${a.name} (/${a.cidr}) ⚡ ${b.name} (/${b.cidr})`);
+                }
+            }
+        }
+
+        const panel = document.getElementById('validationPanel');
+        const title = document.getElementById('validationTitle');
+        const details = document.getElementById('validationDetails');
+        const icon = document.getElementById('validationIcon');
+        const badges = document.getElementById('validationBadges');
+
+        if (!panel) return;
+
+        if (collisions.length > 0) {
+            panel.className = 'validation-panel invalid';
+            if (icon) icon.innerText = '🚨';
+            if (title) title.innerText = `Обнаружен конфликт адресного пространства (${collisions.length})!`;
+            if (details) details.innerText = `Пересекающиеся диапазоны: ${collisions.join('; ')}. Пакеты будут маршрутизироваться некорректно!`;
+            if (badges) {
+                badges.innerHTML = `<span class="collision-badge err">КОЛЛИЗИЯ ПОДСЕТЕЙ</span>`;
+            }
+        } else {
+            panel.className = 'validation-panel valid';
+            if (icon) icon.innerText = '🛡️';
+            if (title) title.innerText = 'Сеть сбалансирована: конфликтов адресации не обнаружено';
+            if (details) details.innerText = 'Все 6 подсетей и GRE туннель рассчитаны изолированно без наложений.';
+            if (badges) {
+                badges.innerHTML = `<span class="collision-badge ok">VALID /${calculated.length} ПОДСЕТЕЙ</span>`;
+            }
+        }
+    }
+
+    // ==========================================
+    // ИНТЕРАКТИВНАЯ КАРТА ТОПОЛОГИИ СЕТИ (SVG)
+    // ==========================================
+    function updateNetworkTopology() {
+        const svg = document.getElementById('networkTopologySvg');
+        if (!svg) return;
+
+        const ifaceCfg = parseInterfaceConfig(document.getElementById('ifacePrefix')?.value || 'enp7s');
+        const domain = document.getElementById('domain')?.value || 'quantumflux.local';
+        const mask100 = getCidr(document.getElementById('hosts100')?.value);
+        const mask200 = getCidr(document.getElementById('hosts200')?.value);
+        const mask999 = getCidr(document.getElementById('hosts999')?.value);
+        const maskBr = getCidr(document.getElementById('hostsBr')?.value);
+        const maskIsp = getCidr(document.getElementById('hostsIsp')?.value);
+        const maskGre = getCidr(document.getElementById('hostsGre')?.value);
+
+        const getBase = (ip) => (ip || '0.0.0.0').split('.').slice(0, 3).join('.');
+        const baseIspHq = getBase(document.getElementById('subnetIspHq')?.value);
+        const baseIspBr = getBase(document.getElementById('subnetIspBr')?.value);
+        const base100 = getBase(document.getElementById('subnet100')?.value);
+        const base200 = getBase(document.getElementById('subnet200')?.value);
+        const base999 = getBase(document.getElementById('subnet999')?.value);
+        const baseBr = getBase(document.getElementById('subnetBr')?.value);
+        const baseGre = getBase(document.getElementById('subnetGre')?.value);
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const nodeBg = isDark ? '#1f242c' : '#ffffff';
+        const nodeBorder = isDark ? '#388bfd' : '#007bff';
+        const textColor = isDark ? '#f0f6fc' : '#212529';
+        const subTextColor = isDark ? '#8b949e' : '#6c757d';
+        const wireColor = isDark ? '#30363d' : '#ced4da';
+        const linkIspColor = '#17a2b8';
+        const greColor = '#ff9800';
+
+        svg.innerHTML = `
+            <defs>
+                <linearGradient id="ispGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#17a2b8" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#007bff" stop-opacity="0.1"/>
+                </linearGradient>
+                <linearGradient id="greGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ff9800"/>
+                    <stop offset="100%" stop-color="#ff5722"/>
+                </linearGradient>
+            </defs>
+
+            <!-- ЛИНИИ СВЯЗИ (WIRES) -->
+            <!-- ISP -> HQ-RTR -->
+            <path d="M 480 70 L 250 160" stroke="${linkIspColor}" stroke-width="3" fill="none" stroke-dasharray="6,4"/>
+            <!-- ISP -> BR-RTR -->
+            <path d="M 480 70 L 710 160" stroke="${linkIspColor}" stroke-width="3" fill="none" stroke-dasharray="6,4"/>
+            
+            <!-- GRE ТУННЕЛЬ (дуга между HQ-RTR и BR-RTR) -->
+            <path d="M 250 160 Q 480 115 710 160" stroke="url(#greGrad)" stroke-width="3" fill="none" stroke-dasharray="8,5"/>
+
+            <!-- HQ-RTR -> HQ-SRV (VLAN 100) -->
+            <line x1="250" y1="160" x2="140" y2="280" stroke="${wireColor}" stroke-width="2.5"/>
+            <!-- HQ-RTR -> HQ-CLI (VLAN 200) -->
+            <line x1="250" y1="160" x2="360" y2="280" stroke="${wireColor}" stroke-width="2.5"/>
+            
+            <!-- BR-RTR -> BR-SRV (LAN BR) -->
+            <line x1="710" y1="160" x2="710" y2="280" stroke="${wireColor}" stroke-width="2.5"/>
+
+            <!-- МЕТКИ ЛИНКОВ -->
+            <!-- ISP Link HQ -->
+            <rect x="300" y="95" width="130" height="20" rx="4" fill="${nodeBg}" stroke="${linkIspColor}" stroke-width="1" opacity="0.9"/>
+            <text x="365" y="109" text-anchor="middle" font-size="10" fill="${linkIspColor}" font-weight="600">${baseIspHq}.0/${maskIsp}</text>
+
+            <!-- ISP Link BR -->
+            <rect x="530" y="95" width="130" height="20" rx="4" fill="${nodeBg}" stroke="${linkIspColor}" stroke-width="1" opacity="0.9"/>
+            <text x="595" y="109" text-anchor="middle" font-size="10" fill="${linkIspColor}" font-weight="600">${baseIspBr}.0/${maskIsp}</text>
+
+            <!-- GRE Tunnel Label -->
+            <rect x="410" y="125" width="140" height="22" rx="4" fill="${nodeBg}" stroke="${greColor}" stroke-width="1.5"/>
+            <text x="480" y="140" text-anchor="middle" font-size="10.5" fill="${greColor}" font-weight="bold">⚡ GRE: ${baseGre}.0/${maskGre}</text>
+
+            <!-- УЗЕЛ: ISP -->
+            <g class="topo-node" onclick="selectTabByName('ISP')">
+                <rect x="410" y="25" width="140" height="60" rx="8" fill="${nodeBg}" stroke="${linkIspColor}" stroke-width="2"/>
+                <text x="480" y="50" text-anchor="middle" font-size="14" font-weight="bold" fill="${textColor}">🌐 ISP</text>
+                <text x="480" y="68" text-anchor="middle" font-size="10" fill="${subTextColor}">${ifaceCfg.iface3} • Интернет</text>
+            </g>
+
+            <!-- УЗЕЛ: HQ-RTR -->
+            <g class="topo-node" onclick="selectTabByName('HQ-RTR')">
+                <rect x="175" y="130" width="150" height="70" rx="8" fill="${nodeBg}" stroke="${nodeBorder}" stroke-width="2"/>
+                <text x="250" y="155" text-anchor="middle" font-size="14" font-weight="bold" fill="${textColor}">🔀 HQ-RTR</text>
+                <text x="250" y="172" text-anchor="middle" font-size="10" fill="${subTextColor}">OSPF area 0 • DHCP</text>
+                <text x="250" y="188" text-anchor="middle" font-size="10" fill="#007bff">Ext: ${baseIspHq}.2/${maskIsp}</text>
+            </g>
+
+            <!-- УЗЕЛ: BR-RTR -->
+            <g class="topo-node" onclick="selectTabByName('BR-RTR')">
+                <rect x="635" y="130" width="150" height="70" rx="8" fill="${nodeBg}" stroke="${nodeBorder}" stroke-width="2"/>
+                <text x="710" y="155" text-anchor="middle" font-size="14" font-weight="bold" fill="${textColor}">🔀 BR-RTR</text>
+                <text x="710" y="172" text-anchor="middle" font-size="10" fill="${subTextColor}">OSPF area 0 • NAT</text>
+                <text x="710" y="188" text-anchor="middle" font-size="10" fill="#007bff">Ext: ${baseIspBr}.2/${maskIsp}</text>
+            </g>
+
+            <!-- УЗЕЛ: HQ-SRV -->
+            <g class="topo-node" onclick="selectTabByName('HQ-SRV')">
+                <rect x="65" y="250" width="150" height="70" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2"/>
+                <text x="140" y="274" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">🖥️ HQ-SRV (DNS)</text>
+                <text x="140" y="291" text-anchor="middle" font-size="10" fill="${subTextColor}">VLAN 100 • Bind9</text>
+                <text x="140" y="306" text-anchor="middle" font-size="10" fill="#28a745">${base100}.2/${mask100}</text>
+            </g>
+
+            <!-- УЗЕЛ: HQ-CLI -->
+            <g class="topo-node" onclick="selectTabByName('HQ-CLI')">
+                <rect x="285" y="250" width="150" height="70" rx="8" fill="${nodeBg}" stroke="#6f42c1" stroke-width="2"/>
+                <text x="360" y="274" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">💻 HQ-CLI (Client)</text>
+                <text x="360" y="291" text-anchor="middle" font-size="10" fill="${subTextColor}">VLAN 200 • DHCP Client</text>
+                <text x="360" y="306" text-anchor="middle" font-size="10" fill="#6f42c1">${base200}.2/${mask200}</text>
+            </g>
+
+            <!-- УЗЕЛ: BR-SRV -->
+            <g class="topo-node" onclick="selectTabByName('BR-SRV')">
+                <rect x="635" y="250" width="150" height="70" rx="8" fill="${nodeBg}" stroke="#fd7e14" stroke-width="2"/>
+                <text x="710" y="274" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">🖥️ BR-SRV (Branch)</text>
+                <text x="710" y="291" text-anchor="middle" font-size="10" fill="${subTextColor}">LAN BR • SSH</text>
+                <text x="710" y="306" text-anchor="middle" font-size="10" fill="#fd7e14">${baseBr}.2/${maskBr}</text>
+            </g>
+        `;
     }
 
     function loadPreset(type) {
         const presets = {
             'default': {
                 domain: 'quantumflux.local', timezone: 'Asia/Yekaterinburg', extDns: '8.8.8.8', cname1: 'moodle', cname2: 'wiki',
+                ifacePrefix: 'enp7s',
                 rtrUser: 'routerfox', rtrPwd: 'P@$$word', srvUser: 'cyberpanda', srvPwd: 'P@ssw0rd', srvUid: '1001', sshPort: '2020',
                 nameHqRtr: 'hq-rtr', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli', nameBrRtr: 'br-rtr', nameBrSrv: 'br-srv',
                 subnetIspHq: '172.16.4.0', subnetIspBr: '172.16.5.0',
@@ -979,6 +2540,7 @@ echo -e 'search ${domain}\\nnameserver ${ipHqVlan100Srv}' > /etc/resolv.conf`;
             },
             'preset1': {
                 domain: 'cybernet.local', timezone: 'Asia/Yekaterinburg', extDns: '8.8.8.8', cname1: 'moodle', cname2: 'wiki',
+                ifacePrefix: 'enp7s',
                 rtrUser: 'admin', rtrPwd: 'SecretPassword1!', srvUser: 'sysadmin', srvPwd: 'SecretPassword2!', srvUid: '2000', sshPort: '2222',
                 nameHqRtr: 'hq-rtr', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli', nameBrRtr: 'br-rtr', nameBrSrv: 'br-srv',
                 subnetIspHq: '192.168.4.0', subnetIspBr: '192.168.5.0',
@@ -989,6 +2551,7 @@ echo -e 'search ${domain}\\nnameserver ${ipHqVlan100Srv}' > /etc/resolv.conf`;
             },
             'preset3': {
                 domain: 'au-team.irpo', timezone: 'Asia/Yekaterinburg', extDns: '77.88.8.7', cname1: 'docker', cname2: 'web',
+                ifacePrefix: 'enp7s',
                 rtrUser: 'net_admin', rtrPwd: 'P@ssw0rd', srvUser: 'sshuser', srvPwd: 'P@ssw0rd', srvUid: '2011', sshPort: '2011',
                 nameHqRtr: 'hq-rtr', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli', nameBrRtr: 'br-rtr', nameBrSrv: 'br-srv',
                 subnetIspHq: '172.16.10.0', subnetIspBr: '172.16.20.0',
@@ -1009,76 +2572,1479 @@ echo -e 'search ${domain}\\nnameserver ${ipHqVlan100Srv}' > /etc/resolv.conf`;
             }
         }
         updateMaskHints();
+        updateIfaceHint();
+        validateSubnetCollisions();
+        updateNetworkTopology();
+        showToast(`Пресет "${type}" загружен!`);
     }
 
-    // Инициализация подсказок при загрузке
+    // Инициализация слушателей для живой валидации и обновления топологии
+    function initLiveValidationListeners() {
+        const inputIds = [
+            'subnet100', 'hosts100', 'vlan100',
+            'subnet200', 'hosts200', 'vlan200',
+            'subnet999', 'hosts999', 'vlan999',
+            'subnetBr', 'hostsBr',
+            'subnetIspHq', 'subnetIspBr', 'hostsIsp',
+            'subnetGre', 'hostsGre',
+            'ifacePrefix', 'domain'
+        ];
+        inputIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => {
+                    validateSubnetCollisions();
+                    updateNetworkTopology();
+                });
+            }
+        });
+    }
+
+    // Инициализация при старте
     updateMaskHints();
-</script>
+    updateIfaceHint();
+    validateSubnetCollisions();
+    updateNetworkTopology();
+    initLiveValidationListeners();
 
-<!-- Подключаем Firebase для чата -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    // ==========================================
+    // ЛОГИКА САМОУНИЧТОЖЕНИЯ И МИНИ-ИГР (БЕЗ ЗВУКА)
+    // ==========================================
+    let destructCountdownInterval = null;
+    let safeWireColor = 'green';
+    let isBombDefused = false;
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDk_3FBQMLqzXX3_g3fUEfte2NheCx2T2g",
-        authDomain: "my-github-chat-4b104.firebaseapp.com",
-        databaseURL: "https://my-github-chat-4b104-default-rtdb.firebaseio.com",
-        projectId: "my-github-chat-4b104",
-        storageBucket: "my-github-chat-4b104.firebasestorage.app",
-        messagingSenderId: "292325476833",
-        appId: "1:292325476833:web:9e1f69874dababdc826aa0"
-    };
+    // Инициализация игры разминирования (Мини-игра 1: Провода)
+    function initWireDefusal() {
+        const colors = ['red', 'blue', 'yellow', 'green'];
+        safeWireColor = colors[Math.floor(Math.random() * colors.length)];
+        isBombDefused = false;
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const messagesRef = ref(db, "messages");
+        const hints = {
+            'red': 'ДАТЧИК: Шунтируй провод тревоги [КРАСНЫЙ]',
+            'blue': 'ДАТЧИК: Шина питания детонатора [СИНИЙ]',
+            'yellow': 'ДАТЧИК: Заземляющий фазовый кабель [ЖЕЛТЫЙ]',
+            'green': 'ДАТЧИК: Безопасный шунт стабилизации [ЗЕЛЕНЫЙ]'
+        };
 
-    const chatBox = document.getElementById("chat-box");
-    const usernameInput = document.getElementById("username");
-    const messageInput = document.getElementById("chat-message");
-    const sendBtn = document.getElementById("send-btn");
+        const hintEl = document.getElementById('defuseHint');
+        if (hintEl) {
+            hintEl.innerText = hints[safeWireColor] || 'ДАТЧИК: Сканирование...';
+        }
 
-    function sendMessage() {
-        const name = usernameInput.value.trim() || "Аноним";
-        const text = messageInput.value.trim();
-        
-        if (text === "/clear") {
-            remove(messagesRef);
-            messageInput.value = ""; 
+        const banner = document.getElementById('defuseSuccessBanner');
+        if (banner) banner.style.display = 'none';
+
+        const units = document.querySelectorAll('.wire-unit');
+        units.forEach(u => u.classList.remove('cut'));
+    }
+
+    function cutWire(color, el) {
+        if (isBombDefused) return;
+        if (el.classList.contains('cut')) return;
+
+        el.classList.add('cut');
+
+        if (color === safeWireColor) {
+            // Успешное разминирование!
+            isBombDefused = true;
+            clearInterval(destructCountdownInterval);
+
+            const timerDisplay = document.getElementById('destructTimerDisplay');
+            if (timerDisplay) timerDisplay.innerText = 'OFF';
+
+            const hudFill = document.getElementById('destructHudFill');
+            if (hudFill) hudFill.style.width = '100%';
+
+            const banner = document.getElementById('defuseSuccessBanner');
+            if (banner) {
+                banner.style.display = 'block';
+                banner.innerHTML = `
+                    <div style="font-size: 14px; font-weight: 900;">🏆 БОМБА ОБЕЗВРЕЖЕНА! СИСТЕМА СПАСЕНА!</div>
+                    <div style="font-size: 11px; margin-top: 5px; opacity: 0.95;">
+                        Вы успешно перерезали правильный провод (${color.toUpperCase()}) и предотвратили катастрофу.
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 8px; margin-top: 8px;">
+                        <button onclick="cancelSelfDestruct()" class="btn-copy" style="font-size: 11px; padding: 5px 12px; background: #00ff66; color: #000;">
+                            Закрыть окно
+                        </button>
+                        <button onclick="executeSelfDestruction()" class="btn-copy" style="font-size: 11px; padding: 5px 12px; background: #ff2222; color: #fff;">
+                            Всё равно взорвать! 💥
+                        </button>
+                    </div>
+                `;
+            }
+        } else {
+            // Ошибка разминирования -> МГНОВЕННАЯ ДЕТОНАЦИЯ
+            const hintEl = document.getElementById('defuseHint');
+            if (hintEl) {
+                hintEl.innerText = `💥 КРИТИЧЕСКАЯ ОШИБКА! ПЕРЕРЕЗАН НЕ ТОТ ПРОВОД (${color.toUpperCase()})!`;
+                hintEl.style.color = '#ff2222';
+            }
+            clearInterval(destructCountdownInterval);
+            setTimeout(() => {
+                executeSelfDestruction();
+            }, 300);
+        }
+    }
+
+    function openSelfDestructModal() {
+        const overlay = document.getElementById('destructOverlay');
+        const timerDisplay = document.getElementById('destructTimerDisplay');
+        const hudFill = document.getElementById('destructHudFill');
+        overlay.classList.add('active');
+        let timeLeft = 3;
+        timerDisplay.innerText = '0' + timeLeft;
+
+        initWireDefusal();
+
+        if (hudFill) {
+            hudFill.style.transition = 'none';
+            hudFill.style.width = '100%';
+            setTimeout(() => {
+                hudFill.style.transition = 'width 3s linear';
+                hudFill.style.width = '0%';
+            }, 30);
+        }
+
+        clearInterval(destructCountdownInterval);
+        destructCountdownInterval = setInterval(() => {
+            if (isBombDefused) return;
+            timeLeft--;
+            if (timeLeft > 0) {
+                timerDisplay.innerText = '0' + timeLeft;
+            } else {
+                clearInterval(destructCountdownInterval);
+                executeSelfDestruction();
+            }
+        }, 1000);
+    }
+
+    function cancelSelfDestruct() {
+        clearInterval(destructCountdownInterval);
+        document.getElementById('destructOverlay').classList.remove('active');
+    }
+
+    function startSelfDestructImmediate() {
+        clearInterval(destructCountdownInterval);
+        executeSelfDestruction();
+    }
+
+    function executeSelfDestruction() {
+        clearInterval(destructCountdownInterval);
+        document.getElementById('destructOverlay').classList.remove('active');
+        const container = document.querySelector('.container');
+        document.body.classList.add('shaking');
+
+        // Показ трещин экрана монитора
+        const crackOverlay = document.getElementById('glassCrackOverlay');
+        if (crackOverlay) {
+            crackOverlay.classList.add('active');
+        }
+
+        // Ослепляющая термоядерная вспышка (без звука)
+        const flash = document.getElementById('detonationFlash');
+        flash.style.opacity = '1';
+        setTimeout(() => { 
+            flash.style.transition = 'opacity 1s ease-out';
+            flash.style.opacity = '0'; 
+        }, 120);
+
+        const rect = container.getBoundingClientRect();
+        createCinematicExplosion(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+        container.classList.add('exploding');
+
+        setTimeout(() => {
+            document.body.classList.remove('shaking');
+            container.style.display = 'none';
+            if (crackOverlay) crackOverlay.classList.remove('active');
+            showRuinsTerminal();
+        }, 1300);
+    }
+
+    function createCinematicExplosion(x, y) {
+        const canvas = document.getElementById('destructCanvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+        const particles = [];
+        const colors = ['#ffffff', '#fff3a8', '#ff9900', '#ff3300', '#ff0033', '#8b0000', '#00d4ff'];
+
+        let shockwaveRadius1 = 10;
+        let shockwaveAlpha1 = 1;
+        let shockwaveRadius2 = 5;
+        let shockwaveAlpha2 = 0.8;
+
+        // Создаем 500 искр, обломков интерфейса и плазменных сгустков
+        for (let i = 0; i < 500; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 28 + 4;
+            particles.push({
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 11 + 3,
+                alpha: 1,
+                decay: Math.random() * 0.012 + 0.006,
+                rotation: Math.random() * Math.PI * 2,
+                rotSpeed: (Math.random() - 0.5) * 0.35,
+                isSpark: Math.random() > 0.5
+            });
+        }
+
+        // Цифровые глитч-блоки Matrix
+        const matrixDrops = [];
+        for (let i = 0; i < 40; i++) {
+            matrixDrops.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                text: ['0xDEAD', '0x00', 'NULL', 'REBOOT', 'FATAL', 'DROP', '10110'][Math.floor(Math.random() * 7)],
+                alpha: 1,
+                speed: Math.random() * 4 + 2
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Отрисовка двух расширяющихся ударных волн
+            if (shockwaveAlpha1 > 0) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(x, y, shockwaveRadius1, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 120, 0, ${shockwaveAlpha1})`;
+                ctx.lineWidth = Math.max(2, 16 * shockwaveAlpha1);
+                ctx.shadowColor = '#ff3300';
+                ctx.shadowBlur = 25;
+                ctx.stroke();
+                ctx.restore();
+
+                shockwaveRadius1 += 34;
+                shockwaveAlpha1 -= 0.022;
+            }
+
+            if (shockwaveAlpha2 > 0) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(x, y, shockwaveRadius2, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(0, 212, 255, ${shockwaveAlpha2 * 0.7})`;
+                ctx.lineWidth = Math.max(1, 10 * shockwaveAlpha2);
+                ctx.stroke();
+                ctx.restore();
+
+                shockwaveRadius2 += 22;
+                shockwaveAlpha2 -= 0.018;
+            }
+
+            // Матричные цифровые блоки
+            for (let d of matrixDrops) {
+                d.y += d.speed;
+                d.alpha -= 0.015;
+                if (d.alpha > 0) {
+                    ctx.save();
+                    ctx.font = '12px Courier New';
+                    ctx.fillStyle = `rgba(0, 255, 100, ${d.alpha})`;
+                    ctx.fillText(d.text, d.x, d.y);
+                    ctx.restore();
+                }
+            }
+
+            let alive = false;
+            for (let p of particles) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.28; // gravity
+                p.vx *= 0.985;
+                p.alpha -= p.decay;
+                p.rotation += p.rotSpeed;
+
+                if (p.alpha > 0) {
+                    alive = true;
+                    ctx.save();
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = p.isSpark ? 18 : 6;
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation);
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                }
+            }
+
+            if (alive || shockwaveAlpha1 > 0) {
+                requestAnimationFrame(animate);
+            } else {
+                canvas.style.display = 'none';
+            }
+        }
+        animate();
+    }
+
+    function switchRuinsTab(tabName) {
+        const tabs = ['log', 'arcade', 'hack', 'snake', 'brick'];
+        tabs.forEach(t => {
+            const btn = document.getElementById('btnTab' + t.charAt(0).toUpperCase() + t.slice(1));
+            const view = document.getElementById('viewRuins' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (btn) btn.classList.toggle('active', t === tabName);
+            if (view) view.classList.toggle('active', t === tabName);
+        });
+
+        stopArcadeGame();
+        stopSnakeGame();
+        stopBrickGame();
+
+        if (tabName === 'arcade') {
+            startArcadeGame();
+        } else if (tabName === 'hack') {
+            initHackerGame();
+        } else if (tabName === 'snake') {
+            startSnakeGame();
+        } else if (tabName === 'brick') {
+            startBrickGame();
+        }
+    }
+
+    function showRuinsTerminal() {
+        const ruins = document.getElementById('ruinsScreen');
+        const term = document.getElementById('terminalLog');
+        term.innerHTML = '';
+        ruins.classList.add('active');
+
+        switchRuinsTab('log');
+
+        const logs = [
+            "[!] ИНИЦИАЛИЗАЦИЯ ПРОТОКОЛА ЛИКВИДАЦИИ...",
+            "[✓] Сетевой стек ALT Linux: ДЕСТАБИЛИЗИРОВАН",
+            "[✓] Сетевые интерфейсы /etc/net/ifaces: СТЁРТЫ В ПЕПЕЛ",
+            "[✓] Маршрутизаторы HQ-RTR, BR-RTR и ISP: ЛИКВИДИРОВАНЫ",
+            "[✓] Демоны FRR OSPF, BIND9 DNS, DHCPD: УНИЧТОЖЕНЫ",
+            "[✓] Правила nftables masquerade: РАСПЛАВЛЕНЫ",
+            "[✓] Учётные записи пользователей и sudoers: УДАЛЕНЫ",
+            "[✓] 100% цифровых следов успешно стёрто.",
+            "[*] СТАТУС: СИСТЕМА ПРЕВРАЩЕНА В ЧИСТЫЙ ЛИСТ."
+        ];
+
+        let idx = 0;
+        function typeLine() {
+            if (idx < logs.length) {
+                const line = document.createElement('div');
+                line.style.opacity = '0';
+                line.style.transform = 'translateY(5px)';
+                line.style.transition = 'all 0.2s';
+                line.innerText = logs[idx];
+                if (idx === logs.length - 1) {
+                    line.style.color = '#00ff66';
+                    line.style.fontWeight = 'bold';
+                    line.style.marginTop = '8px';
+                }
+                term.appendChild(line);
+                setTimeout(() => {
+                    line.style.opacity = '1';
+                    line.style.transform = 'translateY(0)';
+                }, 20);
+                idx++;
+                setTimeout(typeLine, 180);
+            }
+        }
+        typeLine();
+    }
+
+    function restoreSystem() {
+        stopArcadeGame();
+        stopSnakeGame();
+        stopBrickGame();
+        document.getElementById('ruinsScreen').classList.remove('active');
+        const container = document.querySelector('.container');
+        container.style.display = '';
+        container.classList.remove('exploding');
+        container.style.opacity = '0';
+        container.style.transform = 'scale(0.92)';
+        container.style.filter = 'contrast(200%)';
+
+        setTimeout(() => {
+            container.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            container.style.opacity = '1';
+            container.style.transform = 'scale(1)';
+            container.style.filter = 'contrast(100%)';
+            setTimeout(() => {
+                container.style.transition = '';
+            }, 600);
+        }, 50);
+    }
+
+    // ==========================================
+    // МИНИ-ИГРА 2: CYBER FALLOUT RUNNER (CANVAS)
+    // ==========================================
+    let arcadeAnimId = null;
+    let arcadeRunning = false;
+    let arcadeScore = 0;
+    let arcadeLives = 3;
+    let arcadePlayer = { x: 380, y: 335, w: 42, h: 26, targetX: 380 };
+    let arcadeItems = [];
+    let arcadeStars = [];
+    let arcadePopups = [];
+
+    function startArcadeGame() {
+        stopArcadeGame();
+        const canvas = document.getElementById('arcadeCanvas');
+        if (!canvas) return;
+
+        arcadeRunning = true;
+        arcadeScore = 0;
+        arcadeLives = 3;
+        arcadeItems = [];
+        arcadePopups = [];
+        arcadePlayer.x = canvas.width / 2;
+        arcadePlayer.targetX = canvas.width / 2;
+        arcadePlayer.y = 335;
+
+        const best = parseInt(localStorage.getItem('fallout_best_score') || '0', 10);
+        document.getElementById('arcadeBestScore').innerText = best;
+        document.getElementById('arcadeScore').innerText = '0';
+        updateArcadeLivesDisplay();
+
+        // Фоновые неоновые звёзды
+        arcadeStars = [];
+        for (let i = 0; i < 45; i++) {
+            arcadeStars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                s: Math.random() * 2 + 1,
+                vy: Math.random() * 0.8 + 0.4
+            });
+        }
+
+        setupArcadeListeners(canvas);
+        arcadeLoop();
+    }
+
+    function stopArcadeGame() {
+        arcadeRunning = false;
+        if (arcadeAnimId) {
+            cancelAnimationFrame(arcadeAnimId);
+            arcadeAnimId = null;
+        }
+    }
+
+    function updateArcadeLivesDisplay() {
+        const el = document.getElementById('arcadeLives');
+        if (el) {
+            el.innerText = '❤️'.repeat(Math.max(0, arcadeLives));
+        }
+    }
+
+    let arcadeListenersAttached = false;
+    function setupArcadeListeners(canvas) {
+        if (arcadeListenersAttached) return;
+        arcadeListenersAttached = true;
+
+        const setTargetX = (clientX) => {
+            const rect = canvas.getBoundingClientRect();
+            const scale = canvas.width / rect.width;
+            arcadePlayer.targetX = (clientX - rect.left) * scale;
+        };
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (arcadeRunning) setTargetX(e.clientX);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (arcadeRunning && e.touches.length > 0) {
+                setTargetX(e.touches[0].clientX);
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        window.addEventListener('keydown', (e) => {
+            if (!arcadeRunning) return;
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                arcadePlayer.targetX -= 45;
+            } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                arcadePlayer.targetX += 45;
+            }
+        });
+    }
+
+    function arcadeLoop() {
+        if (!arcadeRunning) return;
+        const canvas = document.getElementById('arcadeCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#06090e';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Плавное движение фоновых звезд
+        ctx.fillStyle = 'rgba(0, 212, 255, 0.45)';
+        for (let s of arcadeStars) {
+            s.y += s.vy;
+            if (s.y > canvas.height) s.y = 0;
+            ctx.fillRect(s.x, s.y, s.s, s.s);
+        }
+
+        // Плавное следование корабля
+        arcadePlayer.x += (arcadePlayer.targetX - arcadePlayer.x) * 0.18;
+        arcadePlayer.x = Math.max(arcadePlayer.w / 2, Math.min(canvas.width - arcadePlayer.w / 2, arcadePlayer.x));
+
+        // Отрисовка корабля игрока (Неоновый нано-дрон)
+        ctx.save();
+        ctx.translate(arcadePlayer.x, arcadePlayer.y);
+        ctx.fillStyle = '#00d4ff';
+        ctx.shadowColor = '#00d4ff';
+        ctx.shadowBlur = 14;
+
+        ctx.beginPath();
+        ctx.moveTo(0, -12);
+        ctx.lineTo(arcadePlayer.w / 2, 10);
+        ctx.lineTo(0, 4);
+        ctx.lineTo(-arcadePlayer.w / 2, 10);
+        ctx.closePath();
+        ctx.fill();
+
+        // Защитный энергетический купол вокруг дрона
+        ctx.beginPath();
+        ctx.arc(0, 0, arcadePlayer.w / 2 + 4, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 212, 255, 0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Пламя маршевого двигателя
+        ctx.fillStyle = '#ff9900';
+        ctx.fillRect(-4, 6, 8, Math.random() * 10 + 5);
+        ctx.restore();
+
+        // Спавн падающих объектов (Сниженная комфортная частота)
+        if (Math.random() < 0.022) {
+            const isHazard = Math.random() > 0.45;
+            arcadeItems.push({
+                x: Math.random() * (canvas.width - 60) + 30,
+                y: -25,
+                size: 26,
+                isHazard: isHazard,
+                type: isHazard ? (Math.random() > 0.5 ? '☢️' : '🔥') : (Math.random() > 0.5 ? '💎' : '💾'),
+                speed: Math.random() * 0.9 + 1.2, // Комфортная скорость падения
+                points: isHazard ? 0 : (Math.random() > 0.5 ? 25 : 15)
+            });
+        }
+
+        // Обновление и отрисовка предметов
+        for (let i = arcadeItems.length - 1; i >= 0; i--) {
+            const item = arcadeItems[i];
+            item.y += item.speed;
+
+            ctx.save();
+            ctx.font = '22px Segoe UI, Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(item.type, item.x, item.y);
+            ctx.restore();
+
+            // Проверка коллизии с игроком
+            const dx = Math.abs(item.x - arcadePlayer.x);
+            const dy = Math.abs(item.y - arcadePlayer.y);
+
+            if (dx < (arcadePlayer.w / 2 + 12) && dy < 20) {
+                if (item.isHazard) {
+                    arcadeLives--;
+                    updateArcadeLivesDisplay();
+                    if (arcadeLives <= 0) {
+                        arcadeGameOver(ctx, canvas);
+                        return;
+                    }
+                } else {
+                    arcadeScore += item.points;
+                    document.getElementById('arcadeScore').innerText = arcadeScore;
+                    const best = parseInt(localStorage.getItem('fallout_best_score') || '0', 10);
+                    if (arcadeScore > best) {
+                        localStorage.setItem('fallout_best_score', arcadeScore);
+                        document.getElementById('arcadeBestScore').innerText = arcadeScore;
+                    }
+
+                    // Всплывающие очки
+                    arcadePopups.push({
+                        x: item.x,
+                        y: item.y,
+                        text: `+${item.points}`,
+                        alpha: 1
+                    });
+                }
+                arcadeItems.splice(i, 1);
+                continue;
+            }
+
+            if (item.y > canvas.height + 25) {
+                arcadeItems.splice(i, 1);
+            }
+        }
+
+        // Всплывающий текст с очками
+        for (let i = arcadePopups.length - 1; i >= 0; i--) {
+            const p = arcadePopups[i];
+            p.y -= 1.2;
+            p.alpha -= 0.03;
+            if (p.alpha <= 0) {
+                arcadePopups.splice(i, 1);
+                continue;
+            }
+            ctx.save();
+            ctx.font = 'bold 16px -apple-system, Segoe UI, sans-serif';
+            ctx.fillStyle = `rgba(0, 255, 200, ${p.alpha})`;
+            ctx.textAlign = 'center';
+            ctx.fillText(p.text, p.x, p.y);
+            ctx.restore();
+        }
+
+        arcadeAnimId = requestAnimationFrame(arcadeLoop);
+    }
+
+    function arcadeGameOver(ctx, canvas) {
+        arcadeRunning = false;
+        ctx.save();
+        ctx.fillStyle = 'rgba(10, 3, 3, 0.88)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#ff3333';
+        ctx.font = 'bold 28px -apple-system, Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = '#ff0000';
+        ctx.shadowBlur = 20;
+        ctx.fillText('💀 ДРОН УНИЧТОЖЕН!', canvas.width / 2, canvas.height / 2 - 25);
+
+        ctx.fillStyle = '#f0f6fc';
+        ctx.font = '16px -apple-system, Segoe UI, sans-serif';
+        ctx.shadowBlur = 0;
+        ctx.fillText(`ИТОГОВЫЙ СЧЁТ: ${arcadeScore}`, canvas.width / 2, canvas.height / 2 + 15);
+
+        ctx.fillStyle = '#00d4ff';
+        ctx.font = '14px -apple-system, Segoe UI, sans-serif';
+        ctx.fillText('Нажмите кнопку [🔄 Начать заново] выше для перезапуска', canvas.width / 2, canvas.height / 2 + 50);
+        ctx.restore();
+    }
+
+    // ==========================================
+    // МИНИ-ИГРА 3: HACK CORE (ВЗЛОМ 4-ЗНАЧНОГО КОДА)
+    // ==========================================
+    let hackerSecretCode = '1234';
+    let hackerAttemptsLeft = 6;
+    let hackerGameOver = false;
+
+    function initHackerGame() {
+        // Генерация 4 случайных уникальных цифр
+        const digits = ['0','1','2','3','4','5','6','7','8','9'];
+        for (let i = digits.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [digits[i], digits[j]] = [digits[j], digits[i]];
+        }
+        hackerSecretCode = digits.slice(0, 4).join('');
+        hackerAttemptsLeft = 6;
+        hackerGameOver = false;
+
+        const attemptsEl = document.getElementById('hackAttemptsLeft');
+        if (attemptsEl) attemptsEl.innerText = `Попыток: ${hackerAttemptsLeft}/6`;
+
+        const logsEl = document.getElementById('hackerLogs');
+        if (logsEl) {
+            logsEl.innerHTML = `<div style="color: #8b949e;">> Квантовый дешифратор инициализирован. Загадан 4-значный ключ деактивации.</div>`;
+        }
+        const input = document.getElementById('hackerInput');
+        if (input) {
+            input.value = '';
+            input.disabled = false;
+            input.focus();
+        }
+    }
+
+    function resetHackerGame() {
+        initHackerGame();
+    }
+
+    function submitHackerCode() {
+        if (hackerGameOver) return;
+        const input = document.getElementById('hackerInput');
+        const logsEl = document.getElementById('hackerLogs');
+        const attemptsEl = document.getElementById('hackAttemptsLeft');
+        if (!input || !logsEl) return;
+
+        const guess = input.value.trim();
+        if (guess.length !== 4 || !/^\d{4}$/.test(guess)) {
+            logsEl.innerHTML += `<div style="color: #ff7b72; font-weight: bold; margin-bottom: 6px;">> Ошибка: код должен состоять ровно из 4 цифр (0-9)!</div>`;
+            logsEl.scrollTop = logsEl.scrollHeight;
             return;
         }
 
-        if (text !== "") {
-            push(messagesRef, {
-                name: name,
-                text: text,
-                timestamp: Date.now()
-            });
-            messageInput.value = ""; 
+        hackerAttemptsLeft--;
+        if (attemptsEl) attemptsEl.innerText = `Попыток: ${hackerAttemptsLeft}/6`;
+
+        // Считаем быков (на месте) и коров (есть, но не на месте)
+        let exact = 0;
+        let partial = 0;
+        for (let i = 0; i < 4; i++) {
+            if (guess[i] === hackerSecretCode[i]) {
+                exact++;
+            } else if (hackerSecretCode.includes(guess[i])) {
+                partial++;
+            }
+        }
+
+        const attemptNum = 6 - hackerAttemptsLeft;
+
+        if (exact === 4) {
+            hackerGameOver = true;
+            logsEl.innerHTML += `
+                <div class="hack-log-row" style="border-left-color: #3fb950;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="color:#8b949e; font-size:13px; font-weight:600;">Попытка ${attemptNum}:</span>
+                        <span class="hack-log-code" style="color: #3fb950;">${guess}</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <span class="hack-stat-badge exact">🟢 4 точных</span>
+                    </div>
+                </div>
+                <div style="background: rgba(46,160,67,0.18); border: 1px solid #3fb950; border-radius: 8px; padding: 12px 16px; margin-top: 10px; color: #3fb950;">
+                    <div style="font-weight: 800; font-size: 15px;">🎉 ПАРОЛЬ ВЕРЕН! КОД: ${guess}</div>
+                    <div style="font-size: 13px; color: #f0f6fc; margin-top: 4px;">Доступ к квантовому ядру открыт. Все системы восстановлены!</div>
+                </div>
+            `;
+            input.disabled = true;
+        } else if (hackerAttemptsLeft <= 0) {
+            hackerGameOver = true;
+            logsEl.innerHTML += `
+                <div class="hack-log-row" style="border-left-color: #f85149;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="color:#8b949e; font-size:13px; font-weight:600;">Попытка 6:</span>
+                        <span class="hack-log-code" style="color: #f85149;">${guess}</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <span class="hack-stat-badge exact">🟢 Точных: ${exact}</span>
+                        <span class="hack-stat-badge partial">🟡 Не на месте: ${partial}</span>
+                    </div>
+                </div>
+                <div style="background: rgba(248,81,73,0.18); border: 1px solid #f85149; border-radius: 8px; padding: 12px 16px; margin-top: 10px; color: #ff7b72;">
+                    <div style="font-weight: 800; font-size: 15px;">❌ ВСЕ 6 ПОПЫТОК ИСЧЕРПАНЫ! ТЕРМИНАЛ ЗАБЛОКИРОВАН.</div>
+                    <div style="font-size: 13px; color: #e6edf3; margin-top: 4px;">Правильный секретный код был: <b style="color: #58a6ff; font-family: monospace; font-size: 16px;">${hackerSecretCode}</b>. Нажмите [СБРОСИТЬ] для новой игры.</div>
+                </div>
+            `;
+            input.disabled = true;
+        } else {
+            logsEl.innerHTML += `
+                <div class="hack-log-row">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="color:#8b949e; font-size:13px; font-weight:600;">Попытка ${attemptNum}:</span>
+                        <span class="hack-log-code">${guess}</span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <span class="hack-stat-badge exact">🟢 Точных: ${exact}</span>
+                        <span class="hack-stat-badge partial">🟡 Не на месте: ${partial}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        input.value = '';
+        logsEl.scrollTop = logsEl.scrollHeight;
+    }
+
+    // ==========================================
+    // МИНИ-ИГРА 4: CYBER SNAKE (СЕТЕВОЙ ЧЕРВЬ)
+    // ==========================================
+    const SNAKE_COLS = 38;
+    const SNAKE_ROWS = 19;
+    const SNAKE_CELL = 20;
+
+    let snakeBody = [];
+    let snakeDir = { x: 1, y: 0 };
+    let snakeNextDir = { x: 1, y: 0 };
+    let snakeFood = null;
+    let snakeScore = 0;
+    let snakeRunning = false;
+    let snakeTimer = null;
+    let snakeSpeed = 105;
+    let snakeListenersAttached = false;
+
+    const SNAKE_PACKETS = ['DHCP', 'DNS', 'VLAN', 'SSH', 'BGP', 'OSPF', 'ROOT', 'ICMP', 'HTTP'];
+
+    function startSnakeGame() {
+        stopSnakeGame();
+        const canvas = document.getElementById('snakeCanvas');
+        if (!canvas) return;
+
+        snakeScore = 0;
+        snakeSpeed = 105;
+        snakeDir = { x: 1, y: 0 };
+        snakeNextDir = { x: 1, y: 0 };
+        snakeBody = [
+            { x: 9, y: 9 },
+            { x: 8, y: 9 },
+            { x: 7, y: 9 }
+        ];
+
+        document.getElementById('snakeScore').innerText = '0';
+        document.getElementById('snakeLength').innerText = snakeBody.length;
+        const best = parseInt(localStorage.getItem('cyber_snake_best') || '0', 10);
+        document.getElementById('snakeBestScore').innerText = best;
+
+        spawnSnakeFood();
+        setupSnakeListeners();
+
+        snakeRunning = true;
+        renderSnake();
+        scheduleSnakeTick();
+    }
+
+    function stopSnakeGame() {
+        snakeRunning = false;
+        if (snakeTimer) {
+            clearTimeout(snakeTimer);
+            snakeTimer = null;
         }
     }
 
-    sendBtn.addEventListener("click", sendMessage);
-    messageInput.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") sendMessage();
-    });
+    function scheduleSnakeTick() {
+        if (!snakeRunning) return;
+        snakeTimer = setTimeout(() => {
+            stepSnake();
+            if (snakeRunning) scheduleSnakeTick();
+        }, snakeSpeed);
+    }
 
-    onChildAdded(messagesRef, (snapshot) => {
-        const data = snapshot.val();
-        const msgDiv = document.createElement("div");
-        msgDiv.className = "chat-message";
-        msgDiv.innerHTML = `<strong>${data.name}:</strong> ${data.text}`;
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    function setupSnakeListeners() {
+        if (snakeListenersAttached) return;
+        snakeListenersAttached = true;
 
-    // Очищаем окно чата у всех, если база данных была очищена
-    onValue(messagesRef, (snapshot) => {
-        if (!snapshot.exists()) {
-            chatBox.innerHTML = "";
+        window.addEventListener('keydown', (e) => {
+            const activeView = document.getElementById('viewRuinsSnake');
+            if (!activeView || !activeView.classList.contains('active')) return;
+
+            let handled = true;
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                case 'ц':
+                case 'Ц':
+                    handleSnakeDir(0, -1);
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                case 'ы':
+                case 'Ы':
+                    handleSnakeDir(0, 1);
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                case 'ф':
+                case 'Ф':
+                    handleSnakeDir(-1, 0);
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                case 'в':
+                case 'В':
+                    handleSnakeDir(1, 0);
+                    break;
+                case ' ':
+                    if (!snakeRunning) startSnakeGame();
+                    break;
+                default:
+                    handled = false;
+            }
+            if (handled && e.key.startsWith('Arrow')) e.preventDefault();
+        });
+    }
+
+    function handleSnakeDir(dx, dy) {
+        if (!snakeRunning) return;
+        // Запрет разворота на 180 градусов
+        if (dx !== 0 && snakeDir.x === -dx) return;
+        if (dy !== 0 && snakeDir.y === -dy) return;
+        snakeNextDir = { x: dx, y: dy };
+    }
+
+    function spawnSnakeFood() {
+        let attempts = 0;
+        while (attempts < 500) {
+            const fx = Math.floor(Math.random() * SNAKE_COLS);
+            const fy = Math.floor(Math.random() * SNAKE_ROWS);
+            const collides = snakeBody.some(seg => seg.x === fx && seg.y === fy);
+            if (!collides) {
+                const isGold = Math.random() < 0.12;
+                const label = isGold ? '0-DAY' : SNAKE_PACKETS[Math.floor(Math.random() * SNAKE_PACKETS.length)];
+                snakeFood = { x: fx, y: fy, label: label, isGold: isGold };
+                return;
+            }
+            attempts++;
         }
-    });
+    }
+
+    function stepSnake() {
+        snakeDir = { ...snakeNextDir };
+        const head = snakeBody[0];
+        const nextX = head.x + snakeDir.x;
+        const nextY = head.y + snakeDir.y;
+
+        // Коллизия со стенами памяти
+        if (nextX < 0 || nextX >= SNAKE_COLS || nextY < 0 || nextY >= SNAKE_ROWS) {
+            snakeGameOver('СБОЙ АДРЕСАЦИИ: ВЫХОД ЗА ПРЕДЕЛЫ СТЕКА');
+            return;
+        }
+
+        // Коллизия с собственным телом
+        for (let i = 0; i < snakeBody.length; i++) {
+            if (snakeBody[i].x === nextX && snakeBody[i].y === nextY) {
+                snakeGameOver('СБОЙ ПАМЯТИ: ПЕРЕКРЁСТНЫЙ ЗАХВАТ БУФЕРА');
+                return;
+            }
+        }
+
+        const newHead = { x: nextX, y: nextY };
+        snakeBody.unshift(newHead);
+
+        // Поедание пакета данных
+        if (snakeFood && nextX === snakeFood.x && nextY === snakeFood.y) {
+            const pts = snakeFood.isGold ? 50 : 15;
+            snakeScore += pts;
+            document.getElementById('snakeScore').innerText = snakeScore;
+            document.getElementById('snakeLength').innerText = snakeBody.length;
+
+            const best = parseInt(localStorage.getItem('cyber_snake_best') || '0', 10);
+            if (snakeScore > best) {
+                localStorage.setItem('cyber_snake_best', snakeScore);
+                document.getElementById('snakeBestScore').innerText = snakeScore;
+            }
+
+            // Плавное ускорение
+            snakeSpeed = Math.max(62, snakeSpeed - 1.2);
+            spawnSnakeFood();
+        } else {
+            snakeBody.pop();
+        }
+
+        renderSnake();
+    }
+
+    function renderSnake() {
+        const canvas = document.getElementById('snakeCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // Фоновая сетка
+        ctx.fillStyle = '#05080c';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = 'rgba(0, 255, 102, 0.04)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= canvas.width; x += SNAKE_CELL) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, canvas.height);
+            ctx.stroke();
+        }
+        for (let y = 0; y <= canvas.height; y += SNAKE_CELL) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(canvas.width, y);
+            ctx.stroke();
+        }
+
+        // Отрисовка пакета (Food)
+        if (snakeFood) {
+            const fx = snakeFood.x * SNAKE_CELL;
+            const fy = snakeFood.y * SNAKE_CELL;
+
+            ctx.save();
+            if (snakeFood.isGold) {
+                ctx.fillStyle = '#ffcc00';
+                ctx.shadowColor = '#ffaa00';
+                ctx.shadowBlur = 14;
+            } else {
+                ctx.fillStyle = '#00ff88';
+                ctx.shadowColor = '#00ff88';
+                ctx.shadowBlur = 10;
+            }
+
+            ctx.beginPath();
+            ctx.roundRect(fx + 2, fy + 2, SNAKE_CELL - 4, SNAKE_CELL - 4, 4);
+            ctx.fill();
+
+            // Текст протокола
+            ctx.font = 'bold 9px monospace';
+            ctx.fillStyle = '#05080c';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(snakeFood.label.slice(0, 4), fx + SNAKE_CELL / 2, fy + SNAKE_CELL / 2);
+            ctx.restore();
+        }
+
+        // Отрисовка тела червя с градиентом
+        const total = snakeBody.length;
+        for (let i = total - 1; i >= 0; i--) {
+            const seg = snakeBody[i];
+            const sx = seg.x * SNAKE_CELL;
+            const sy = seg.y * SNAKE_CELL;
+
+            ctx.save();
+            if (i === 0) {
+                // Голова
+                ctx.fillStyle = '#00ffff';
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.roundRect(sx + 1, sy + 1, SNAKE_CELL - 2, SNAKE_CELL - 2, 5);
+                ctx.fill();
+
+                // Глазки червя
+                ctx.fillStyle = '#04070c';
+                let eye1 = { x: sx + 6, y: sy + 6 };
+                let eye2 = { x: sx + 14, y: sy + 6 };
+                if (snakeDir.x === 1) {
+                    eye1 = { x: sx + 14, y: sy + 5 };
+                    eye2 = { x: sx + 14, y: sy + 15 };
+                } else if (snakeDir.x === -1) {
+                    eye1 = { x: sx + 6, y: sy + 5 };
+                    eye2 = { x: sx + 6, y: sy + 15 };
+                } else if (snakeDir.y === 1) {
+                    eye1 = { x: sx + 5, y: sy + 14 };
+                    eye2 = { x: sx + 15, y: sy + 14 };
+                }
+                ctx.beginPath();
+                ctx.arc(eye1.x, eye1.y, 2, 0, Math.PI * 2);
+                ctx.arc(eye2.x, eye2.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Сегмент тела
+                const ratio = i / total;
+                const g = Math.floor(255 - ratio * 140);
+                const b = Math.floor(180 - ratio * 140);
+                ctx.fillStyle = `rgb(0, ${g}, ${b})`;
+                ctx.beginPath();
+                ctx.roundRect(sx + 2, sy + 2, SNAKE_CELL - 4, SNAKE_CELL - 4, 3);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+    }
+
+    function snakeGameOver(reason) {
+        stopSnakeGame();
+        const canvas = document.getElementById('snakeCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(7, 3, 5, 0.88)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#00ff66';
+        ctx.font = 'bold 28px -apple-system, Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = '#00ff66';
+        ctx.shadowBlur = 18;
+        ctx.fillText('💀 ЧЕРВЬ ЛИКВИДИРОВАН!', canvas.width / 2, canvas.height / 2 - 28);
+
+        ctx.fillStyle = '#ff7b72';
+        ctx.font = '14px -apple-system, Segoe UI, sans-serif';
+        ctx.shadowBlur = 0;
+        ctx.fillText(reason || 'СБОЙ БУФЕРА', canvas.width / 2, canvas.height / 2);
+
+        ctx.fillStyle = '#f0f6fc';
+        ctx.font = '16px -apple-system, Segoe UI, sans-serif';
+        ctx.fillText(`ИТОГОВЫЙ СЧЁТ: ${snakeScore}  |  ДЛИНА: ${snakeBody.length}`, canvas.width / 2, canvas.height / 2 + 28);
+
+        ctx.fillStyle = '#58a6ff';
+        ctx.font = '14px -apple-system, Segoe UI, sans-serif';
+        ctx.fillText('Нажмите кнопку [🔄 Начать заново] выше или Пробел для перезапуска', canvas.width / 2, canvas.height / 2 + 60);
+        ctx.restore();
+    }
+
+    // ==========================================
+    // МИНИ-ИГРА 5: FIREWALL BREAKER (ARKANOID)
+    // ==========================================
+    let brickRunning = false;
+    let brickAnimId = null;
+    let brickScore = 0;
+    let brickLives = 3;
+    let brickBlocks = [];
+    let brickParticles = [];
+    let brickPaddle = { x: 320, y: 350, w: 120, h: 14, targetX: 320 };
+    let brickBall = { x: 380, y: 335, vx: 3.6, vy: -3.8, r: 7, launched: true };
+    let brickListenersAttached = false;
+
+    function startBrickGame() {
+        stopBrickGame();
+        const canvas = document.getElementById('brickCanvas');
+        if (!canvas) return;
+
+        brickScore = 0;
+        brickLives = 3;
+        brickParticles = [];
+
+        brickPaddle.w = 120;
+        brickPaddle.h = 14;
+        brickPaddle.x = (canvas.width - brickPaddle.w) / 2;
+        brickPaddle.targetX = brickPaddle.x;
+
+        brickBall.r = 7;
+        resetBrickBall(canvas);
+
+        document.getElementById('brickScore').innerText = '0';
+        updateBrickLivesDisplay();
+        const best = parseInt(localStorage.getItem('breakout_best_score') || '0', 10);
+        document.getElementById('brickBestScore').innerText = best;
+
+        // Создание сетки правил файрвола (5 рядов по 8 блоков = 40 блоков)
+        brickBlocks = [];
+        const rows = [
+            { label: 'DROP', color: '#ff3344', maxHits: 2, pts: 40 },
+            { label: 'REJECT', color: '#ff8800', maxHits: 1, pts: 30 },
+            { label: 'NFTABLES', color: '#b388ff', maxHits: 1, pts: 20 },
+            { label: 'IPTABLES', color: '#00d4ff', maxHits: 1, pts: 15 },
+            { label: 'ACCEPT', color: '#00ff66', maxHits: 1, pts: 10 }
+        ];
+
+        const cols = 8;
+        const bWidth = 80;
+        const bHeight = 22;
+        const gapX = 8;
+        const gapY = 8;
+        const totalW = cols * bWidth + (cols - 1) * gapX;
+        const startX = (canvas.width - totalW) / 2;
+        const startY = 38;
+
+        for (let r = 0; r < rows.length; r++) {
+            const rowData = rows[r];
+            for (let c = 0; c < cols; c++) {
+                brickBlocks.push({
+                    x: startX + c * (bWidth + gapX),
+                    y: startY + r * (bHeight + gapY),
+                    w: bWidth,
+                    h: bHeight,
+                    label: rowData.label,
+                    color: rowData.color,
+                    hits: rowData.maxHits,
+                    maxHits: rowData.maxHits,
+                    pts: rowData.pts,
+                    alive: true
+                });
+            }
+        }
+
+        updateBrickLeftDisplay();
+        setupBrickListeners(canvas);
+
+        brickRunning = true;
+        brickLoop();
+    }
+
+    function stopBrickGame() {
+        brickRunning = false;
+        if (brickAnimId) {
+            cancelAnimationFrame(brickAnimId);
+            brickAnimId = null;
+        }
+    }
+
+    function updateBrickLivesDisplay() {
+        const el = document.getElementById('brickLives');
+        if (el) {
+            el.innerText = '❤️❤️❤️'.slice(0, Math.max(0, brickLives * 2));
+        }
+    }
+
+    function updateBrickLeftDisplay() {
+        const el = document.getElementById('brickLeft');
+        if (el) {
+            const count = brickBlocks.filter(b => b.alive).length;
+            el.innerText = count;
+        }
+    }
+
+    function resetBrickBall(canvas) {
+        brickBall.x = brickPaddle.x + brickPaddle.w / 2;
+        brickBall.y = brickPaddle.y - 12;
+        const angle = (Math.random() * 0.6 - 0.3) * Math.PI; // небольшой случайный наклон
+        const speed = 5.2;
+        brickBall.vx = speed * Math.sin(angle);
+        brickBall.vy = -Math.abs(speed * Math.cos(angle));
+        brickBall.launched = true;
+    }
+
+    function setupBrickListeners(canvas) {
+        if (brickListenersAttached) return;
+        brickListenersAttached = true;
+
+        const setTarget = (clientX) => {
+            const rect = canvas.getBoundingClientRect();
+            const scale = canvas.width / rect.width;
+            const mouseX = (clientX - rect.left) * scale;
+            brickPaddle.targetX = mouseX - brickPaddle.w / 2;
+        };
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (brickRunning) setTarget(e.clientX);
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (brickRunning && e.touches.length > 0) {
+                setTarget(e.touches[0].clientX);
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        window.addEventListener('keydown', (e) => {
+            const activeView = document.getElementById('viewRuinsBrick');
+            if (!activeView || !activeView.classList.contains('active')) return;
+
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.key === 'ф' || e.key === 'Ф') {
+                brickPaddle.targetX -= 45;
+            } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'в' || e.key === 'В') {
+                brickPaddle.targetX += 45;
+            } else if (e.key === ' ' && !brickRunning) {
+                startBrickGame();
+            }
+        });
+    }
+
+    function brickLoop() {
+        if (!brickRunning) return;
+        const canvas = document.getElementById('brickCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // Очистка холста
+        ctx.fillStyle = '#06090f';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Плавное следование каретки
+        brickPaddle.x += (brickPaddle.targetX - brickPaddle.x) * 0.22;
+        brickPaddle.x = Math.max(0, Math.min(canvas.width - brickPaddle.w, brickPaddle.x));
+
+        // Обновление положения мяча
+        brickBall.x += brickBall.vx;
+        brickBall.y += brickBall.vy;
+
+        // Отскок от левой и правой стенки
+        if (brickBall.x - brickBall.r <= 0) {
+            brickBall.x = brickBall.r;
+            brickBall.vx = Math.abs(brickBall.vx);
+        } else if (brickBall.x + brickBall.r >= canvas.width) {
+            brickBall.x = canvas.width - brickBall.r;
+            brickBall.vx = -Math.abs(brickBall.vx);
+        }
+
+        // Отскок от потолка
+        if (brickBall.y - brickBall.r <= 0) {
+            brickBall.y = brickBall.r;
+            brickBall.vy = Math.abs(brickBall.vy);
+        }
+
+        // Проверка падения мяча в бездну
+        if (brickBall.y - brickBall.r > canvas.height) {
+            brickLives--;
+            updateBrickLivesDisplay();
+            if (brickLives <= 0) {
+                brickGameOver(false);
+                return;
+            } else {
+                resetBrickBall(canvas);
+            }
+        }
+
+        // Коллизия с кареткой (Buffer)
+        if (
+            brickBall.y + brickBall.r >= brickPaddle.y &&
+            brickBall.y - brickBall.r <= brickPaddle.y + brickPaddle.h &&
+            brickBall.x >= brickPaddle.x - 4 &&
+            brickBall.x <= brickPaddle.x + brickPaddle.w + 4 &&
+            brickBall.vy > 0
+        ) {
+            // Динамический угол отражения в зависимости от точки удара
+            const hitPoint = (brickBall.x - (brickPaddle.x + brickPaddle.w / 2)) / (brickPaddle.w / 2);
+            const clamped = Math.max(-1, Math.min(1, hitPoint));
+            const maxAngle = (70 * Math.PI) / 180;
+            const currentSpeed = Math.min(7.8, Math.hypot(brickBall.vx, brickBall.vy) + 0.05);
+
+            brickBall.vx = currentSpeed * Math.sin(clamped * maxAngle);
+            brickBall.vy = -Math.abs(currentSpeed * Math.cos(clamped * maxAngle));
+            brickBall.y = brickPaddle.y - brickBall.r - 1;
+
+            // Искры от удара об каретку
+            for (let i = 0; i < 6; i++) {
+                brickParticles.push({
+                    x: brickBall.x,
+                    y: brickPaddle.y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: -Math.random() * 3 - 1,
+                    alpha: 1,
+                    color: '#00d4ff'
+                });
+            }
+        }
+
+        // Коллизия с блоками правил файрвола
+        let aliveCount = 0;
+        for (let i = 0; i < brickBlocks.length; i++) {
+            const b = brickBlocks[i];
+            if (!b.alive) continue;
+            aliveCount++;
+
+            if (
+                brickBall.x + brickBall.r >= b.x &&
+                brickBall.x - brickBall.r <= b.x + b.w &&
+                brickBall.y + brickBall.r >= b.y &&
+                brickBall.y - brickBall.r <= b.y + b.h
+            ) {
+                // Определение стороны удара
+                const prevX = brickBall.x - brickBall.vx;
+                const prevY = brickBall.y - brickBall.vy;
+
+                if (prevX < b.x || prevX > b.x + b.w) {
+                    brickBall.vx = -brickBall.vx;
+                } else {
+                    brickBall.vy = -brickBall.vy;
+                }
+
+                b.hits--;
+
+                // Искры
+                for (let p = 0; p < 8; p++) {
+                    brickParticles.push({
+                        x: brickBall.x,
+                        y: brickBall.y,
+                        vx: (Math.random() - 0.5) * 5,
+                        vy: (Math.random() - 0.5) * 5,
+                        alpha: 1,
+                        color: b.color
+                    });
+                }
+
+                if (b.hits <= 0) {
+                    b.alive = false;
+                    brickScore += b.pts;
+                    document.getElementById('brickScore').innerText = brickScore;
+
+                    const best = parseInt(localStorage.getItem('breakout_best_score') || '0', 10);
+                    if (brickScore > best) {
+                        localStorage.setItem('breakout_best_score', brickScore);
+                        document.getElementById('brickBestScore').innerText = brickScore;
+                    }
+                    updateBrickLeftDisplay();
+                }
+                break;
+            }
+        }
+
+        // Проверка победы (все блоки уничтожены)
+        if (aliveCount === 0) {
+            brickGameOver(true);
+            return;
+        }
+
+        // Отрисовка блоков
+        for (let b of brickBlocks) {
+            if (!b.alive) continue;
+
+            ctx.save();
+            ctx.fillStyle = b.color;
+            ctx.shadowColor = b.color;
+            ctx.shadowBlur = b.hits < b.maxHits ? 4 : 8;
+            ctx.globalAlpha = b.hits < b.maxHits ? 0.75 : 1;
+
+            ctx.beginPath();
+            ctx.roundRect(b.x, b.y, b.w, b.h, 4);
+            ctx.fill();
+
+            // Метка правила
+            ctx.fillStyle = '#06090f';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowBlur = 0;
+            ctx.fillText(b.label, b.x + b.w / 2, b.y + b.h / 2);
+
+            ctx.restore();
+        }
+
+        // Отрисовка каретки игрока (Buffer 10Gbps)
+        ctx.save();
+        ctx.fillStyle = '#00d4ff';
+        ctx.shadowColor = '#00d4ff';
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.roundRect(brickPaddle.x, brickPaddle.y, brickPaddle.w, brickPaddle.h, 6);
+        ctx.fill();
+
+        ctx.fillStyle = '#06090f';
+        ctx.font = 'bold 9px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('BUFFER 10Gbps', brickPaddle.x + brickPaddle.w / 2, brickPaddle.y + brickPaddle.h / 2);
+        ctx.restore();
+
+        // Отрисовка мяча (SYN-ACK Packet)
+        ctx.save();
+        ctx.fillStyle = '#ffaa00';
+        ctx.shadowColor = '#ffcc00';
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.arc(brickBall.x, brickBall.y, brickBall.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Отрисовка и угасание искр
+        for (let i = brickParticles.length - 1; i >= 0; i--) {
+            const p = brickParticles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.04;
+            if (p.alpha <= 0) {
+                brickParticles.splice(i, 1);
+                continue;
+            }
+            ctx.save();
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillRect(p.x, p.y, 3, 3);
+            ctx.restore();
+        }
+
+        brickAnimId = requestAnimationFrame(brickLoop);
+    }
+
+    function brickGameOver(won) {
+        stopBrickGame();
+        const canvas = document.getElementById('brickCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(7, 3, 5, 0.88)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = won ? '#00ff66' : '#ff4444';
+        ctx.font = 'bold 28px -apple-system, Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.shadowColor = won ? '#00ff66' : '#ff0000';
+        ctx.shadowBlur = 20;
+        ctx.fillText(won ? '🎉 ФАЙРВОЛ ПОЛНОСТЬЮ ПРОБИТ!' : '🛑 ПАКЕТЫ ЗАБЛОКИРОВАНЫ!', canvas.width / 2, canvas.height / 2 - 25);
+
+        ctx.fillStyle = '#f0f6fc';
+        ctx.font = '16px -apple-system, Segoe UI, sans-serif';
+        ctx.shadowBlur = 0;
+        ctx.fillText(won ? `ВСЕ 40 ПРАВИЛ УСПЕШНО ОБОЙДЕНЫ! СЧЁТ: ${brickScore}` : `ИТОГОВЫЙ СЧЁТ: ${brickScore}`, canvas.width / 2, canvas.height / 2 + 15);
+
+        ctx.fillStyle = '#ffaa00';
+        ctx.font = '14px -apple-system, Segoe UI, sans-serif';
+        ctx.fillText('Нажмите кнопку [🔄 Начать заново] выше или Пробел для новой игры', canvas.width / 2, canvas.height / 2 + 50);
+        ctx.restore();
+    }
 </script>
 </body>
 </html>
