@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Генератор Bash-скриптов и настроек EcoRouter / ALT Linux (Демоэкзамен Модуль 1 + Модуль 2)">
+    <meta name="description" content="Генератор Bash-скриптов и настроек EcoRouter / ALT Linux (Демоэкзамен Модуль 1 + Модуль 2)">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
     <title>Генератор сетевых настроек | Демоэкзамен (Модуль 1 + Модуль 2)</title>
@@ -43,8 +42,8 @@
 
         .form-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
         }
 
         .form-group {
@@ -55,13 +54,13 @@
         label {
             font-weight: bold;
             margin-bottom: 5px;
-            font-size: 13.5px;
+            font-size: 13px;
         }
 
         input[type="text"],
         input[type="number"],
         select {
-            padding: 10px;
+            padding: 9px 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 14px;
@@ -76,13 +75,13 @@
         }
 
         button {
-            padding: 10px 20px;
+            padding: 10px 18px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
-            transition: all 0.25s;
+            transition: all 0.2s;
         }
 
         .btn-generate {
@@ -112,6 +111,11 @@
 
         .btn-preset:hover {
             background-color: #138496;
+        }
+
+        .btn-preset.active-preset {
+            background-color: #28a745;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);
         }
 
         .module-switch-bar {
@@ -189,7 +193,7 @@
             user-select: none;
             outline: none;
             color: #0056b3;
-            margin-top: 20px;
+            margin-top: 18px;
             font-weight: bold;
         }
 
@@ -414,15 +418,8 @@
         }
 
         @keyframes pulseErr {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.5;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         /* Вкладки скриптов */
@@ -596,8 +593,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
             <div>
                 <h1>Генератор сетевых и серверных настроек (Модуль 1 + Модуль 2)</h1>
-                <div class="subtitle">Модуль 1 (Задания 1–11: Сеть, VLAN, GRE, OSPF, NAT, DHCP, DNS) + Модуль 2 (Задания
-                    1–8: Samba DC, RAID0, NFS, Chrony, Ansible, Docker, LAMP, DNAT)</div>
+                <div class="subtitle">Модуль 1 (Задания 1–11: Сеть, VLAN, GRE, OSPF, NAT, DHCP, DNS) + Модуль 2 (Задания 1–8: Samba DC, RAID0, NFS, Chrony, Ansible, Docker, LAMP, DNAT)</div>
             </div>
             <div style="display: flex; gap: 14px; align-items: center;">
                 <button id="themeToggle" onclick="toggleTheme()"
@@ -606,31 +602,32 @@
             </div>
         </div>
 
-        <h3>Готовые пресеты адресации</h3>
+        <h3>Готовые пресеты адресации (меняют все подсети и IP-адреса устройств)</h3>
         <div class="buttons" style="margin-top: 10px; flex-wrap: wrap;">
-            <button class="btn-preset" onclick="loadPreset('de2027')">🏆 Стандарт ДЭ (10.10.x.x / 10.20.x.x)</button>
-            <button class="btn-preset" onclick="loadPreset('default')">🎯 Вариант 172.16.x.x (au-team.irpo)</button>
-            <button class="btn-preset" onclick="loadPreset('preset1')">🌐 Вариант 192.168.x.x (au-team.irpo)</button>
+            <button id="btnPresetDefault" class="btn-preset active-preset" onclick="loadPreset('default', this)">🎯 Пресет 1: 172.16.x.x (По тексту задания)</button>
+            <button id="btnPresetDe2027" class="btn-preset" onclick="loadPreset('de2027', this)">🏆 Пресет 2: 10.10.x.x / 10.20.x.x (Стандарт ДЭ)</button>
+            <button id="btnPreset192Full" class="btn-preset" onclick="loadPreset('preset192full', this)">🌐 Пресет 3: Полный 192.168.x.x (Все сети 192.168)</button>
+            <button id="btnPreset192Mix" class="btn-preset" onclick="loadPreset('preset192mix', this)">⚙️ Пресет 4: 192.168.x.x + ISP 172.16.1.0/2.0</button>
         </div>
 
         <h3>Общие настройки системы (Модуль 1 + Модуль 2)</h3>
         <div class="form-section">
             <div class="form-group">
                 <label for="ifacePrefix">Префикс интерфейса Linux (ens3, enp7s, eth0):</label>
-                <input type="text" id="ifacePrefix" value="ens3" list="ifaceSuggestions"
-                    placeholder="ens3, enp7s, ens33, eth0..." oninput="updateIfaceHint()">
+                <input type="text" id="ifacePrefix" value="enp7s" list="ifaceSuggestions"
+                    placeholder="ens3, enp7s, ens18, eth0..." oninput="onAnyFieldChange()">
                 <datalist id="ifaceSuggestions">
-                    <option value="ens3">ens3 (ens3, ens4, ens5)</option>
                     <option value="enp7s">enp7s (enp7s1, enp7s2, enp7s3)</option>
+                    <option value="ens3">ens3 (ens3, ens4, ens5)</option>
                     <option value="ens">ens (ens1, ens2, ens3)</option>
                     <option value="ens18">ens18 (ens18, ens19, ens20)</option>
                     <option value="eth0">eth0 (eth0, eth1, eth2)</option>
                 </datalist>
                 <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
                     <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
-                        onclick="setIfacePrefix('ens3')">ens3 (3, 4, 5)</button>
-                    <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
                         onclick="setIfacePrefix('enp7s')">enp7s (1, 2, 3)</button>
+                    <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
+                        onclick="setIfacePrefix('ens3')">ens3 (3, 4, 5)</button>
                     <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
                         onclick="setIfacePrefix('ens18')">ens18 (18, 19, 20)</button>
                     <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
@@ -640,79 +637,78 @@
             </div>
             <div class="form-group">
                 <label for="domain">Домен DNS и Samba AD (М1 п. 9–10, М2 п. 1):</label>
-                <input type="text" id="domain" value="au-team.irpo">
+                <input type="text" id="domain" value="au-team.irpo" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="timezone">Часовой пояс Linux (М1 п. 11):</label>
-                <input type="text" id="timezone" value="Europe/Moscow">
+                <input type="text" id="timezone" value="Asia/Yekaterinburg" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="ecoTz">Часовой пояс EcoRouter (М1 п. 11):</label>
-                <input type="text" id="ecoTz" value="utc+3">
+                <input type="text" id="ecoTz" value="utc+5" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="extDns">Внешний DNS 1 (М1 п. 10):</label>
-                <input type="text" id="extDns" value="77.88.8.7">
+                <input type="text" id="extDns" value="77.88.8.7" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="extDns2">Внешний DNS 2 (М1 п. 10):</label>
-                <input type="text" id="extDns2" value="77.88.8.3">
+                <input type="text" id="extDns2" value="77.88.8.3" oninput="onAnyFieldChange()">
             </div>
         </div>
 
-        <h3>Пользователи, SSH и безопасность (М1 п. 3, 5, 7 + М2 п. 1, 5, 8)</h3>
+        <h3>Пользователи, SSH и параметры Модуля 2</h3>
         <div class="form-section">
             <div class="form-group">
                 <label for="rtrUser">Пользователь HQ-RTR и BR-RTR (М1 п. 3):</label>
-                <input type="text" id="rtrUser" value="net_admin">
+                <input type="text" id="rtrUser" value="net_admin" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="rtrPwd">Пароль Router / OSPF MD5 (М1 п. 3, 7):</label>
-                <input type="text" id="rtrPwd" value="P@ssw0rd">
+                <input type="text" id="rtrPwd" value="P@ssw0rd" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="srvUser">Пользователь HQ-SRV и BR-SRV (М1 п. 3, 5):</label>
-                <input type="text" id="srvUser" value="sshuser">
+                <input type="text" id="srvUser" value="sshuser" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="srvPwd">Пароль Server / Samba / MariaDB:</label>
-                <input type="text" id="srvPwd" value="P@ssw0rd">
+                <input type="text" id="srvPwd" value="P@ssw0rd" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="srvUid">UID пользователя sshuser (М1 п. 3):</label>
-                <input type="text" id="srvUid" value="2027">
+                <input type="text" id="srvUid" value="2027" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="sshPort">Порт SSH и проброса (М1 п. 5, М2 п. 8):</label>
-                <input type="text" id="sshPort" value="2027">
+                <input type="text" id="sshPort" value="2027" oninput="onAnyFieldChange()">
             </div>
-        </div>
-
-        <h3>Настройки Модуля 2 (Samba DC, RAID 0, NFS, Chrony, Docker, LAMP, DNAT)</h3>
-        <div class="form-section">
             <div class="form-group">
                 <label for="adGroup">Группа и префикс пользователей AD (М2 п. 1):</label>
-                <input type="text" id="adGroup" value="hq">
+                <input type="text" id="adGroup" value="hq" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="raidDisks">Диски для RAID 0 md0 на HQ-SRV (М2 п. 2):</label>
-                <input type="text" id="raidDisks" value="/dev/sdb /dev/sdc">
+                <input type="text" id="raidDisks" value="/dev/sdb /dev/sdc" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="ntpUpstream">Вышестоящий NTP сервер на ISP (М2 п. 4):</label>
-                <input type="text" id="ntpUpstream" value="ntp0.ntp-servers.net">
+                <input type="text" id="ntpUpstream" value="ntp0.ntp-servers.net" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="ntpStratum">Стратум Chrony на ISP (М2 п. 4):</label>
-                <input type="number" id="ntpStratum" value="5">
+                <input type="number" id="ntpStratum" value="5" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label for="webExtPort">Внешний порт Web/Docker для проброса (М2 п. 6, 8):</label>
-                <input type="number" id="webExtPort" value="8080">
+                <input type="number" id="webExtPort" value="8080" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
-                <label for="webDbInfo">База и пользователь MariaDB на HQ-SRV (М2 п. 7):</label>
-                <input type="text" id="webDbInfo" value="webdb / web">
+                <label for="webDbName">Имя БД и пользователя MariaDB (М2 п. 7):</label>
+                <div style="display: flex; gap: 6px;">
+                    <input type="text" id="webDbName" value="webdb" placeholder="БД (webdb)" style="width: 50%;" oninput="onAnyFieldChange()">
+                    <input type="text" id="webDbUser" value="web" placeholder="Юзер (web)" style="width: 50%;" oninput="onAnyFieldChange()">
+                </div>
             </div>
         </div>
 
@@ -722,93 +718,84 @@
             </summary>
             <div style="margin-top: 15px;">
                 <div class="form-section">
-                    <div class="form-group"><label>HQ-RTR:</label><input type="text" id="nameHqRtr" value="hq-rtr">
-                    </div>
-                    <div class="form-group"><label>HQ-SW:</label><input type="text" id="nameHqSw" value="hq-sw"></div>
-                    <div class="form-group"><label>HQ-SRV:</label><input type="text" id="nameHqSrv" value="hq-srv">
-                    </div>
-                    <div class="form-group"><label>HQ-CLI:</label><input type="text" id="nameHqCli" value="hq-cli">
-                    </div>
-                    <div class="form-group"><label>BR-RTR:</label><input type="text" id="nameBrRtr" value="br-rtr">
-                    </div>
-                    <div class="form-group"><label>BR-FW:</label><input type="text" id="nameBrFw" value="br-fw"></div>
-                    <div class="form-group"><label>BR-SRV:</label><input type="text" id="nameBrSrv" value="br-srv">
-                    </div>
-                    <div class="form-group"><label>CNAME 1:</label><input type="text" id="cname1" value="moodle"></div>
-                    <div class="form-group"><label>CNAME 2:</label><input type="text" id="cname2" value="wiki"></div>
-                    <div class="form-group"><label>Запись web:</label><input type="text" id="cnameWeb" value="web">
-                    </div>
-                    <div class="form-group"><label>Запись docker:</label><input type="text" id="cnameDocker"
-                            value="docker"></div>
+                    <div class="form-group"><label>HQ-RTR:</label><input type="text" id="nameHqRtr" value="hq-rtr" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-SW:</label><input type="text" id="nameHqSw" value="hq-sw" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-SRV:</label><input type="text" id="nameHqSrv" value="hq-srv" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-CLI:</label><input type="text" id="nameHqCli" value="hq-cli" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-RTR:</label><input type="text" id="nameBrRtr" value="br-rtr" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-FW:</label><input type="text" id="nameBrFw" value="br-fw" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-SRV:</label><input type="text" id="nameBrSrv" value="br-srv" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>CNAME 1:</label><input type="text" id="cname1" value="moodle" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>CNAME 2:</label><input type="text" id="cname2" value="wiki" oninput="onAnyFieldChange()"></div>
                 </div>
             </div>
         </details>
 
-        <h3>Сетевые настройки и маски (Модуль 1, п. 1, 2, 6)</h3>
+        <h3>Сетевые подсети и маски (При изменении подсети все IP-адреса пересчитываются автоматически)</h3>
 
         <h4>Сегмент HQ (Главный офис: HQ-RTR, HQ-SW, HQ-SRV, HQ-CLI)</h4>
         <div class="form-section">
             <div class="form-group">
                 <label>VLAN 100 ID (SRV-NET -> HQ-SRV):</label>
-                <input type="number" id="vlan100" value="100">
+                <input type="number" id="vlan100" value="100" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label>Подсеть VLAN 100 (HQ-SRV):</label>
-                <input type="text" id="subnet100" value="10.10.100.0">
+                <input type="text" id="subnet100" value="172.16.100.0" oninput="onSubnetChange('100')">
             </div>
             <div class="form-group">
                 <label>Хостов VLAN 100 (не более 32 адресов) <span id="hint100" class="mask-hint"></span>:</label>
-                <input type="number" id="hosts100" value="30" oninput="updateMaskHints()" min="1" max="254">
+                <input type="number" id="hosts100" value="30" oninput="onSubnetChange('100')" min="1" max="254">
             </div>
 
             <div class="form-group">
                 <label>VLAN 200 ID (CLI-NET -> HQ-CLI):</label>
-                <input type="number" id="vlan200" value="200">
+                <input type="number" id="vlan200" value="200" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label>Подсеть VLAN 200 (HQ-CLI):</label>
-                <input type="text" id="subnet200" value="10.10.200.0">
+                <input type="text" id="subnet200" value="172.16.200.0" oninput="onSubnetChange('200')">
             </div>
             <div class="form-group">
                 <label>Хостов VLAN 200 (не более 16 адресов) <span id="hint200" class="mask-hint"></span>:</label>
-                <input type="number" id="hosts200" value="14" oninput="updateMaskHints()" min="1" max="254">
+                <input type="number" id="hosts200" value="14" oninput="onSubnetChange('200')" min="1" max="254">
             </div>
 
             <div class="form-group">
                 <label>VLAN 999 ID (Управление HQ-SW):</label>
-                <input type="number" id="vlan999" value="999">
+                <input type="number" id="vlan999" value="999" oninput="onAnyFieldChange()">
             </div>
             <div class="form-group">
                 <label>Подсеть VLAN 999 (Управление):</label>
-                <input type="text" id="subnet999" value="10.10.30.0">
+                <input type="text" id="subnet999" value="172.16.99.0" oninput="onSubnetChange('999')">
             </div>
             <div class="form-group">
                 <label>Хостов VLAN 999 (не более 8 адресов) <span id="hint999" class="mask-hint"></span>:</label>
-                <input type="number" id="hosts999" value="6" oninput="updateMaskHints()" min="1" max="254">
+                <input type="number" id="hosts999" value="6" oninput="onSubnetChange('999')" min="1" max="254">
             </div>
         </div>
 
         <h4>Внешние сети ISP и туннель GRE (п. 2, 6)</h4>
         <div class="form-section">
             <div class="form-group">
-                <label>Сеть ISP-HQ (172.16.1.0/28):</label>
-                <input type="text" id="subnetIspHq" value="172.16.1.0">
+                <label>Сеть ISP-HQ (в сторону HQ-RTR):</label>
+                <input type="text" id="subnetIspHq" value="172.16.1.0" oninput="onSubnetChange('IspHq')">
             </div>
             <div class="form-group">
-                <label>Сеть ISP-BR (172.16.2.0/28):</label>
-                <input type="text" id="subnetIspBr" value="172.16.2.0">
+                <label>Сеть ISP-BR (в сторону BR-RTR):</label>
+                <input type="text" id="subnetIspBr" value="172.16.2.0" oninput="onSubnetChange('IspBr')">
             </div>
             <div class="form-group">
                 <label>Хостов ISP (/28 = 14) <span id="hintIsp" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsIsp" value="14" oninput="updateMaskHints()" min="1" max="254">
+                <input type="number" id="hostsIsp" value="14" oninput="onSubnetChange('Isp')" min="1" max="254">
             </div>
             <div class="form-group">
-                <label>Сеть GRE (из 10.10.10.0/24):</label>
-                <input type="text" id="subnetGre" value="10.10.10.0">
+                <label>Сеть GRE (между HQ-RTR и BR-RTR):</label>
+                <input type="text" id="subnetGre" value="10.10.10.0" oninput="onSubnetChange('Gre')">
             </div>
             <div class="form-group">
                 <label>Хостов GRE (мин. маска /30) <span id="hintGre" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsGre" value="2" oninput="updateMaskHints()" min="1" max="254">
+                <input type="number" id="hostsGre" value="2" oninput="onSubnetChange('Gre')" min="1" max="254">
             </div>
         </div>
 
@@ -816,30 +803,58 @@
         <div class="form-section">
             <div class="form-group">
                 <label>Сеть FW-NET (BR-RTR &lt;-&gt; BR-FW):</label>
-                <input type="text" id="subnetFwNet" value="10.20.10.0">
+                <input type="text" id="subnetFwNet" value="172.16.3.0" oninput="onSubnetChange('FwNet')">
             </div>
             <div class="form-group">
                 <label>Хостов FW-NET (мин. маска /30) <span id="hintFwNet" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsFwNet" value="2" oninput="updateMaskHints()" min="1" max="254">
+                <input type="number" id="hostsFwNet" value="2" oninput="onSubnetChange('FwNet')" min="1" max="254">
             </div>
             <div class="form-group">
                 <label>Сеть BR-NET (BR-FW &lt;-&gt; BR-SRV):</label>
-                <input type="text" id="subnetBrNet" value="10.20.20.0">
+                <input type="text" id="subnetBrNet" value="172.16.4.0" oninput="onSubnetChange('BrNet')">
             </div>
             <div class="form-group">
                 <label>Хостов BR-NET (не более 16 адресов) <span id="hintBrNet" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsBrNet" value="14" oninput="updateMaskHints()" min="1" max="254">
+                <input type="number" id="hostsBrNet" value="14" oninput="onSubnetChange('BrNet')" min="1" max="254">
             </div>
         </div>
+
+        <!-- Блок точных IP-адресов всех интерфейсов устройств -->
+        <details open>
+            <summary>
+                <h3>Точные IPv4-адреса интерфейсов устройств (Авторасчёт по пресету + ручное редактирование)</h3>
+            </summary>
+            <div style="margin-top: 12px;">
+                <div class="form-section">
+                    <div class="form-group"><label>ISP (к HQ-RTR):</label><input type="text" id="ipIspHqInput" value="172.16.1.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-RTR (WAN к ISP):</label><input type="text" id="ipHqExtInput" value="172.16.1.2" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>ISP (к BR-RTR):</label><input type="text" id="ipIspBrInput" value="172.16.2.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-RTR (WAN к ISP):</label><input type="text" id="ipBrExtInput" value="172.16.2.2" oninput="onAnyFieldChange()"></div>
+
+                    <div class="form-group"><label>HQ-RTR (VLAN 100 шлюз):</label><input type="text" id="ipHqVlan100RtrInput" value="172.16.100.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-SRV (VLAN 100 сервер):</label><input type="text" id="ipHqVlan100SrvInput" value="172.16.100.2" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-RTR (VLAN 200 шлюз):</label><input type="text" id="ipHqVlan200RtrInput" value="172.16.200.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-CLI (VLAN 200 клиент):</label><input type="text" id="ipHqVlan200CliInput" value="172.16.200.2" oninput="onAnyFieldChange()"></div>
+
+                    <div class="form-group"><label>HQ-RTR (VLAN 999 шлюз):</label><input type="text" id="ipHqVlan999RtrInput" value="172.16.99.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-SW (VLAN 999 MGMT):</label><input type="text" id="ipHqSwMgtInput" value="172.16.99.2" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-RTR (GRE туннель):</label><input type="text" id="ipGreHqInput" value="10.10.10.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-RTR (GRE туннель):</label><input type="text" id="ipGreBrInput" value="10.10.10.2" oninput="onAnyFieldChange()"></div>
+
+                    <div class="form-group"><label>BR-RTR (FW-NET к BR-FW):</label><input type="text" id="ipBrFwRtrInput" value="172.16.3.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-FW (FW-NET к BR-RTR):</label><input type="text" id="ipBrFwFwInput" value="172.16.3.2" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-FW (BR-NET шлюз):</label><input type="text" id="ipBrNetFwInput" value="172.16.4.1" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-SRV (BR-NET сервер):</label><input type="text" id="ipBrNetSrvInput" value="172.16.4.2" oninput="onAnyFieldChange()"></div>
+                </div>
+            </div>
+        </details>
 
         <!-- Панель автоматической валидации -->
         <div id="validationPanel" class="validation-panel valid">
             <span id="validationIcon" style="font-size: 22px;">🛡️</span>
             <div style="flex: 1;">
-                <div style="font-weight: bold; font-size: 15px;" id="validationTitle">Сеть сбалансирована: конфликтов
-                    адресации не обнаружено</div>
-                <div style="font-size: 12.5px; opacity: 0.9; margin-top: 3px;" id="validationDetails">Все 8 подсетей и
-                    GRE туннель распределены изолированно без пересечений.</div>
+                <div style="font-weight: bold; font-size: 15px;" id="validationTitle">Сеть сбалансирована: конфликтов адресации не обнаружено</div>
+                <div style="font-size: 12.5px; opacity: 0.9; margin-top: 3px;" id="validationDetails">Все 8 подсетей и GRE туннель распределены изолированно без пересечений.</div>
             </div>
             <div id="validationBadges"></div>
         </div>
@@ -849,16 +864,15 @@
             <div class="topology-header">
                 <div class="topology-title">
                     <span>🗺️</span>
-                    <span>Интерактивная схема топологии (Модуль 1 + Модуль 2)</span>
-                    <span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 8px;">(Кликните на узел
-                        для открытия его скрипта)</span>
+                    <span>Интерактивная схема топологии с текущими IP-адресами узлов</span>
+                    <span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 8px;">(Кликните на узел для открытия его скрипта)</span>
                 </div>
                 <div style="font-size: 12px; color: #888;" id="topoStatusSummary">
                     HQ (RAID0 + NFS + LAMP + AD Client) • BR (Samba DC + Ansible + Docker) • ISP (Chrony Stratum 5)
                 </div>
             </div>
             <div style="overflow-x: auto; width: 100%; display: flex; justify-content: center;">
-                <svg id="networkTopologySvg" viewBox="0 0 1000 430"
+                <svg id="networkTopologySvg" viewBox="0 0 1000 435"
                     style="width: 100%; max-width: 1000px; height: auto; min-width: 780px; font-family: 'Segoe UI', Tahoma, sans-serif; user-select: none;">
                 </svg>
             </div>
@@ -867,19 +881,14 @@
         <!-- Переключатель модулей -->
         <div class="module-switch-bar">
             <span style="font-weight: bold; font-size: 14px;">Режим отображения скриптов:</span>
-            <button type="button" id="modBtnAll" class="btn-mod active" onclick="setModuleFilter('all')">🔥 Модуль 1 +
-                Модуль 2 (Полный)</button>
-            <button type="button" id="modBtnM1" class="btn-mod" onclick="setModuleFilter('m1')">🌐 Только Модуль 1
-                (Задания 1–11)</button>
-            <button type="button" id="modBtnM2" class="btn-mod" onclick="setModuleFilter('m2')">🚀 Только Модуль 2
-                (Задания 1–8)</button>
+            <button type="button" id="modBtnAll" class="btn-mod active" onclick="setModuleFilter('all')">🔥 Модуль 1 + Модуль 2 (Полный)</button>
+            <button type="button" id="modBtnM1" class="btn-mod" onclick="setModuleFilter('m1')">🌐 Только Модуль 1 (Задания 1–11)</button>
+            <button type="button" id="modBtnM2" class="btn-mod" onclick="setModuleFilter('m2')">🚀 Только Модуль 2 (Задания 1–8)</button>
             <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
                 <input type="checkbox" id="removeComments" onchange="renderScriptTabsAndActive()"
                     style="width: 18px; height: 18px; cursor: pointer; margin: 0;">
-                <label for="removeComments" style="margin: 0; cursor: pointer; font-weight: bold;">Без
-                    комментариев</label>
-                <button class="btn-generate" onclick="generateScript()" style="padding: 8px 16px; font-size: 14px;">⚡
-                    Обновить скрипты</button>
+                <label for="removeComments" style="margin: 0; cursor: pointer; font-weight: bold;">Без комментариев</label>
+                <button class="btn-generate" onclick="generateScript(false)" style="padding: 8px 16px; font-size: 14px;">⚡ Обновить скрипты</button>
             </div>
         </div>
 
@@ -917,7 +926,7 @@
             document.getElementById('modBtnAll').className = 'btn-mod' + (mode === 'all' ? ' active' : '');
             document.getElementById('modBtnM1').className = 'btn-mod' + (mode === 'm1' ? ' active' : '');
             document.getElementById('modBtnM2').className = 'btn-mod' + (mode === 'm2' ? ' active' : '');
-            generateScript();
+            generateScript(true);
         }
 
         function toggleTheme() {
@@ -925,9 +934,7 @@
             const isDark = document.body.classList.contains('dark-theme');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             document.getElementById('themeToggle').innerText = isDark ? '☀️' : '🌙';
-            if (typeof updateNetworkTopology === 'function') {
-                updateNetworkTopology();
-            }
+            updateNetworkTopology();
         }
 
         if (localStorage.getItem('theme') === 'light') {
@@ -936,7 +943,7 @@
         }
 
         function parseInterfaceConfig(val) {
-            let raw = (val || 'ens3').trim();
+            let raw = (val || 'enp7s').trim();
             const match = raw.match(/^([a-zA-Z0-9]*[a-zA-Z_-])(\d+)$/);
             if (match) {
                 const prefix = match[1];
@@ -964,7 +971,7 @@
 
         function updateIfaceHint() {
             const inputEl = document.getElementById('ifacePrefix');
-            const raw = (inputEl ? inputEl.value : 'ens3').trim();
+            const raw = (inputEl ? inputEl.value : 'enp7s').trim();
             const cfg = parseInterfaceConfig(raw);
             const hintEl = document.getElementById('ifaceHint');
             if (hintEl) {
@@ -976,9 +983,7 @@
             const el = document.getElementById('ifacePrefix');
             if (el) {
                 el.value = val;
-                updateIfaceHint();
-                validateSubnetCollisions();
-                generateScript();
+                onAnyFieldChange();
             }
         }
 
@@ -1015,8 +1020,13 @@
             });
         }
 
+        function cleanIpString(str) {
+            return (str || '').split('/')[0].trim();
+        }
+
         function getIpOffset(subnetStr, offset) {
-            const parts = (subnetStr || '10.10.100.0').trim().split('.');
+            const clean = cleanIpString(subnetStr || '172.16.100.0');
+            const parts = clean.split('.');
             if (parts.length === 4) {
                 const oct0 = parseInt(parts[0], 10) || 0;
                 const oct1 = parseInt(parts[1], 10) || 0;
@@ -1024,15 +1034,75 @@
                 const oct3 = parseInt(parts[3], 10) || 0;
                 return `${oct0}.${oct1}.${oct2}.${oct3 + offset}`;
             }
-            return subnetStr;
+            return clean;
         }
 
         function getLastUsableIp(subnetStr, cidrStr) {
+            const clean = cleanIpString(subnetStr);
             const cidr = parseInt(cidrStr, 10) || 24;
-            const range = getSubnetRange(subnetStr, cidr);
-            if (!range) return getIpOffset(subnetStr, 14);
+            const range = getSubnetRange(clean, cidr);
+            if (!range) return getIpOffset(clean, 14);
             const lastHost = (range.end - 1) >>> 0;
             return `${(lastHost >>> 24) & 255}.${(lastHost >>> 16) & 255}.${(lastHost >>> 8) & 255}.${lastHost & 255}`;
+        }
+
+        // Автоматический пересчёт IP-адресов устройств из базовых адресов подсетей
+        function recalcDeviceIpsFromSubnets(whichSubnet) {
+            const s100 = cleanIpString(document.getElementById('subnet100').value);
+            const s200 = cleanIpString(document.getElementById('subnet200').value);
+            const s999 = cleanIpString(document.getElementById('subnet999').value);
+            const sIspHq = cleanIpString(document.getElementById('subnetIspHq').value);
+            const sIspBr = cleanIpString(document.getElementById('subnetIspBr').value);
+            const sGre = cleanIpString(document.getElementById('subnetGre').value);
+            const sFwNet = cleanIpString(document.getElementById('subnetFwNet').value);
+            const sBrNet = cleanIpString(document.getElementById('subnetBrNet').value);
+
+            if (!whichSubnet || whichSubnet === 'IspHq' || whichSubnet === 'Isp') {
+                document.getElementById('ipIspHqInput').value = getIpOffset(sIspHq, 1);
+                document.getElementById('ipHqExtInput').value = getIpOffset(sIspHq, 2);
+            }
+            if (!whichSubnet || whichSubnet === 'IspBr' || whichSubnet === 'Isp') {
+                document.getElementById('ipIspBrInput').value = getIpOffset(sIspBr, 1);
+                document.getElementById('ipBrExtInput').value = getIpOffset(sIspBr, 2);
+            }
+            if (!whichSubnet || whichSubnet === '100') {
+                document.getElementById('ipHqVlan100RtrInput').value = getIpOffset(s100, 1);
+                document.getElementById('ipHqVlan100SrvInput').value = getIpOffset(s100, 2);
+            }
+            if (!whichSubnet || whichSubnet === '200') {
+                document.getElementById('ipHqVlan200RtrInput').value = getIpOffset(s200, 1);
+                document.getElementById('ipHqVlan200CliInput').value = getIpOffset(s200, 2);
+            }
+            if (!whichSubnet || whichSubnet === '999') {
+                document.getElementById('ipHqVlan999RtrInput').value = getIpOffset(s999, 1);
+                document.getElementById('ipHqSwMgtInput').value = getIpOffset(s999, 2);
+            }
+            if (!whichSubnet || whichSubnet === 'Gre') {
+                document.getElementById('ipGreHqInput').value = getIpOffset(sGre, 1);
+                document.getElementById('ipGreBrInput').value = getIpOffset(sGre, 2);
+            }
+            if (!whichSubnet || whichSubnet === 'FwNet') {
+                document.getElementById('ipBrFwRtrInput').value = getIpOffset(sFwNet, 1);
+                document.getElementById('ipBrFwFwInput').value = getIpOffset(sFwNet, 2);
+            }
+            if (!whichSubnet || whichSubnet === 'BrNet') {
+                document.getElementById('ipBrNetFwInput').value = getIpOffset(sBrNet, 1);
+                document.getElementById('ipBrNetSrvInput').value = getIpOffset(sBrNet, 2);
+            }
+        }
+
+        function onSubnetChange(whichSubnet) {
+            updateMaskHints();
+            recalcDeviceIpsFromSubnets(whichSubnet);
+            validateSubnetCollisions();
+            generateScript(true);
+        }
+
+        function onAnyFieldChange() {
+            updateMaskHints();
+            updateIfaceHint();
+            validateSubnetCollisions();
+            generateScript(true);
         }
 
         function combineMod(m1, m2) {
@@ -1043,10 +1113,46 @@
             return `${m1}\n\n${m2}`;
         }
 
-        let generatedScriptsStore = {};
-        let activeTabDeviceName = "BR-SRV";
+        // Генератор динамических обратных зон DNS (без дублирования зон и с точными октетами)
+        function buildDynamicBindReverseZones(domain, nameHqSrv, records) {
+            const zonesMap = {};
+            records.forEach(r => {
+                const parts = cleanIpString(r.ip).split('.');
+                if (parts.length !== 4) return;
+                const zoneName = `${parts[2]}.${parts[1]}.${parts[0]}.in-addr.arpa`;
+                const hostOctet = parts[3];
+                if (!zonesMap[zoneName]) {
+                    zonesMap[zoneName] = [];
+                }
+                if (!zonesMap[zoneName].some(item => item.octet === hostOctet && item.fqdn === r.fqdn)) {
+                    zonesMap[zoneName].push({ octet: hostOctet, fqdn: r.fqdn });
+                }
+            });
 
-        function generateScript() {
+            let rfc1912Blocks = [];
+            let zoneFilesCreation = [];
+
+            Object.keys(zonesMap).forEach(zoneName => {
+                rfc1912Blocks.push(`zone "${zoneName}" IN {\n    type master;\n    file "/etc/bind/zone/${zoneName}";\n};`);
+                const ptrLines = zonesMap[zoneName].map(p => `${p.octet.padEnd(3, ' ')} IN PTR  ${p.fqdn}.`).join('\n');
+                zoneFilesCreation.push(`cat << 'EOF' > /etc/bind/zone/${zoneName}
+$TTL 86400
+@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. ( 2026101901 3600 1800 604800 86400 )
+@   IN NS   ${nameHqSrv}.${domain}.
+${ptrLines}
+EOF`);
+            });
+
+            return {
+                rfc1912Text: rfc1912Blocks.join('\n\n'),
+                zoneFilesText: zoneFilesCreation.join('\n\n')
+            };
+        }
+
+        let generatedScriptsStore = {};
+        let activeTabDeviceName = "HQ-RTR (EcoRouter)";
+
+        function generateScript(silent = false) {
             const ifaceCfg = parseInterfaceConfig(document.getElementById('ifacePrefix').value);
             const iface1 = ifaceCfg.iface1;
             const iface2 = ifaceCfg.iface2;
@@ -1056,8 +1162,8 @@
             const realmUpper = domain.toUpperCase();
             const netbiosDomain = domain.split('.')[0].toUpperCase();
 
-            const tz = (document.getElementById('timezone').value || 'Europe/Moscow').trim();
-            const ecoTz = (document.getElementById('ecoTz').value || 'utc+3').trim();
+            const tz = (document.getElementById('timezone').value || 'Asia/Yekaterinburg').trim();
+            const ecoTz = (document.getElementById('ecoTz').value || 'utc+5').trim();
             const rtrUser = (document.getElementById('rtrUser').value || 'net_admin').trim();
             const rtrPwd = (document.getElementById('rtrPwd').value || 'P@ssw0rd').trim();
             const srvUser = (document.getElementById('srvUser').value || 'sshuser').trim();
@@ -1070,13 +1176,13 @@
             const ntpUpstream = (document.getElementById('ntpUpstream').value || 'ntp0.ntp-servers.net').trim();
             const ntpStratum = (document.getElementById('ntpStratum').value || '5').trim();
             const webExtPort = (document.getElementById('webExtPort').value || '8080').trim();
+            const webDbName = (document.getElementById('webDbName').value || 'webdb').trim();
+            const webDbUser = (document.getElementById('webDbUser').value || 'web').trim();
 
             const extDns = (document.getElementById('extDns').value || '77.88.8.7').trim();
             const extDns2 = (document.getElementById('extDns2').value || '77.88.8.3').trim();
             const cname1 = (document.getElementById('cname1').value || 'moodle').trim();
             const cname2 = (document.getElementById('cname2').value || 'wiki').trim();
-            const cnameWeb = (document.getElementById('cnameWeb').value || 'web').trim();
-            const cnameDocker = (document.getElementById('cnameDocker').value || 'docker').trim();
 
             const vlan100Id = document.getElementById('vlan100').value || '100';
             const vlan200Id = document.getElementById('vlan200').value || '200';
@@ -1090,14 +1196,14 @@
             const nameBrFw = (document.getElementById('nameBrFw').value || 'br-fw').trim();
             const nameBrSrv = (document.getElementById('nameBrSrv').value || 'br-srv').trim();
 
-            const subnet100Val = document.getElementById('subnet100').value.trim();
-            const subnet200Val = document.getElementById('subnet200').value.trim();
-            const subnet999Val = document.getElementById('subnet999').value.trim();
-            const subnetIspHqVal = document.getElementById('subnetIspHq').value.trim();
-            const subnetIspBrVal = document.getElementById('subnetIspBr').value.trim();
-            const subnetGreVal = document.getElementById('subnetGre').value.trim();
-            const subnetFwNetVal = document.getElementById('subnetFwNet').value.trim();
-            const subnetBrNetVal = document.getElementById('subnetBrNet').value.trim();
+            const subnet100Val = cleanIpString(document.getElementById('subnet100').value);
+            const subnet200Val = cleanIpString(document.getElementById('subnet200').value);
+            const subnet999Val = cleanIpString(document.getElementById('subnet999').value);
+            const subnetIspHqVal = cleanIpString(document.getElementById('subnetIspHq').value);
+            const subnetIspBrVal = cleanIpString(document.getElementById('subnetIspBr').value);
+            const subnetGreVal = cleanIpString(document.getElementById('subnetGre').value);
+            const subnetFwNetVal = cleanIpString(document.getElementById('subnetFwNet').value);
+            const subnetBrNetVal = cleanIpString(document.getElementById('subnetBrNet').value);
 
             const mask100 = getCidr(document.getElementById('hosts100').value);
             const mask200 = getCidr(document.getElementById('hosts200').value);
@@ -1107,33 +1213,33 @@
             const maskFwNet = getCidr(document.getElementById('hostsFwNet').value);
             const maskBrNet = getCidr(document.getElementById('hostsBrNet').value);
 
-            // Вычисление IP-адресов узлов
-            const ipIspHq = getIpOffset(subnetIspHqVal, 1);       // 172.16.1.1 (ISP)
-            const ipHqExt = getIpOffset(subnetIspHqVal, 2);       // 172.16.1.2 (HQ-RTR WAN)
-            const ipIspBr = getIpOffset(subnetIspBrVal, 1);       // 172.16.2.1 (ISP)
-            const ipBrExt = getIpOffset(subnetIspBrVal, 2);       // 172.16.2.2 (BR-RTR WAN)
+            // Чтение точных IP-адресов устройств из полей формы
+            const ipIspHq = cleanIpString(document.getElementById('ipIspHqInput').value);
+            const ipHqExt = cleanIpString(document.getElementById('ipHqExtInput').value);
+            const ipIspBr = cleanIpString(document.getElementById('ipIspBrInput').value);
+            const ipBrExt = cleanIpString(document.getElementById('ipBrExtInput').value);
 
-            const ipHqVlan100Rtr = getIpOffset(subnet100Val, 1);  // .1 (HQ-RTR VLAN 100)
-            const ipHqVlan100Srv = getIpOffset(subnet100Val, 2);  // .2 (HQ-SRV)
+            const ipHqVlan100Rtr = cleanIpString(document.getElementById('ipHqVlan100RtrInput').value);
+            const ipHqVlan100Srv = cleanIpString(document.getElementById('ipHqVlan100SrvInput').value);
             const lastIp100 = getLastUsableIp(subnet100Val, mask100);
 
-            const ipHqVlan200Rtr = getIpOffset(subnet200Val, 1);  // .1 (HQ-RTR VLAN 200)
-            const ipHqVlan200Cli = getIpOffset(subnet200Val, 2);  // .2 (HQ-CLI)
+            const ipHqVlan200Rtr = cleanIpString(document.getElementById('ipHqVlan200RtrInput').value);
+            const ipHqVlan200Cli = cleanIpString(document.getElementById('ipHqVlan200CliInput').value);
             const lastIp200 = getLastUsableIp(subnet200Val, mask200);
 
-            const ipHqVlan999Rtr = getIpOffset(subnet999Val, 1);  // .1 (HQ-RTR VLAN 999)
-            const ipHqSwMgt = getIpOffset(subnet999Val, 2);       // .2 (HQ-SW MGMT)
+            const ipHqVlan999Rtr = cleanIpString(document.getElementById('ipHqVlan999RtrInput').value);
+            const ipHqSwMgt = cleanIpString(document.getElementById('ipHqSwMgtInput').value);
             const lastIp999 = getLastUsableIp(subnet999Val, mask999);
 
-            const ipGreHq = getIpOffset(subnetGreVal, 1);         // 10.10.10.1 (HQ-RTR tunnel.0)
-            const ipGreBr = getIpOffset(subnetGreVal, 2);         // 10.10.10.2 (BR-RTR tunnel.0)
+            const ipGreHq = cleanIpString(document.getElementById('ipGreHqInput').value);
+            const ipGreBr = cleanIpString(document.getElementById('ipGreBrInput').value);
 
-            const ipBrFwRtr = getIpOffset(subnetFwNetVal, 1);     // .1 (BR-RTR в сторону BR-FW)
-            const ipBrFwFw = getIpOffset(subnetFwNetVal, 2);      // .2 (BR-FW в сторону BR-RTR)
+            const ipBrFwRtr = cleanIpString(document.getElementById('ipBrFwRtrInput').value);
+            const ipBrFwFw = cleanIpString(document.getElementById('ipBrFwFwInput').value);
             const lastIpFwNet = getLastUsableIp(subnetFwNetVal, maskFwNet);
 
-            const ipBrNetFw = getIpOffset(subnetBrNetVal, 1);     // .1 (BR-FW в сторону BR-SRV)
-            const ipBrNetSrv = getIpOffset(subnetBrNetVal, 2);    // .2 (BR-SRV)
+            const ipBrNetFw = cleanIpString(document.getElementById('ipBrNetFwInput').value);
+            const ipBrNetSrv = cleanIpString(document.getElementById('ipBrNetSrvInput').value);
             const lastIpBrNet = getLastUsableIp(subnetBrNetVal, maskBrNet);
 
             const cidrToNetmask = {
@@ -1147,16 +1253,18 @@
             };
             const netmask200 = cidrToNetmask[mask200] || '255.255.255.240';
 
-            const p100 = subnet100Val.split('.');
-            const revZone100 = `${p100[2]}.${p100[1]}.${p100[0]}.in-addr.arpa`;
-            const p200 = subnet200Val.split('.');
-            const revZone200 = `${p200[2]}.${p200[1]}.${p200[0]}.in-addr.arpa`;
-            const p999 = subnet999Val.split('.');
-            const revZone999 = `${p999[2]}.${p999[1]}.${p999[0]}.in-addr.arpa`;
-            const pFw = subnetFwNetVal.split('.');
-            const revZoneFw = `${pFw[2]}.${pFw[1]}.${pFw[0]}.in-addr.arpa`;
-            const pBr = subnetBrNetVal.split('.');
-            const revZoneBr = `${pBr[2]}.${pBr[1]}.${pBr[0]}.in-addr.arpa`;
+            // Формирование обратных зон DNS по реальным IP-адресам устройств
+            const revDnsData = buildDynamicBindReverseZones(domain, nameHqSrv, [
+                { ip: ipHqVlan100Rtr, fqdn: `${nameHqRtr}.${domain}` },
+                { ip: ipHqVlan100Srv, fqdn: `${nameHqSrv}.${domain}` },
+                { ip: ipHqVlan200Rtr, fqdn: `${nameHqRtr}.${domain}` },
+                { ip: ipHqVlan200Cli, fqdn: `${nameHqCli}.${domain}` },
+                { ip: ipHqSwMgt, fqdn: `${nameHqSw}.${domain}` },
+                { ip: ipBrFwRtr, fqdn: `${nameBrRtr}.${domain}` },
+                { ip: ipBrFwFw, fqdn: `${nameBrFw}.${domain}` },
+                { ip: ipBrNetFw, fqdn: `${nameBrFw}.${domain}` },
+                { ip: ipBrNetSrv, fqdn: `${nameBrSrv}.${domain}` }
+            ]);
 
             // =========================================================================
             // 1. ISP (Модуль 1: п. 1, 2, 11 | Модуль 2: п. 4 Chrony NTP Server)
@@ -1249,11 +1357,11 @@ ip domain-name ${domain}
 ip name-server ${ipHqVlan100Srv}
 ntp timezone ${ecoTz}
 
-! Пользователь net_admin с максимальными привилегиями (п. 3)
+! Пользователь ${rtrUser} с максимальными привилегиями (п. 3)
 username ${rtrUser} password ${rtrPwd} role admin
 exit
 
-! Логические интерфейсы: WAN (isp) и VLAN 100, 200, 999 (п. 1, 2, 4, 8)
+! Логические интерфейсы: WAN (isp) и VLAN ${vlan100Id}, ${vlan200Id}, ${vlan999Id} (п. 1, 2, 4, 8)
 interface isp
  description "WAN to ISP"
  ip address ${ipHqExt}/${maskIsp}
@@ -1335,7 +1443,6 @@ ip nat source dynamic inside-to-outside pool VLAN${vlan200Id} overload interface
 ip nat source dynamic inside-to-outside pool VLAN${vlan999Id} overload interface isp
 
 ! Сервер DHCP для сети HQ-CLI (п. 9)
-! Примечание: для работы Samba AD в Модуле 2 можно указать первым DNS ${ipBrNetSrv} и вторым ${ipHqVlan100Srv}
 ip pool VLAN${vlan200Id}
  range ${ipHqVlan200Cli}-${lastIp200}
 exit
@@ -1355,7 +1462,7 @@ end
 write memory`;
 
             const hqRtrEcoM2 = `! ======= [МОДУЛЬ 2] HQ-RTR (EcoRouter CLI): Задания 5 и 8 =======
-! - Пункт 5: Подготовка SSH для подключения Ansible без интерактивного подтверждения (security none)
+! - Пункт 5: Подготовка SSH для подключения Ansible (security none)
 ! - Пункт 8: Статическая трансляция портов (DNAT / Port Forwarding):
 !   * Внешний порт ${webExtPort} (${ipHqExt}:${webExtPort}) -> Веб-приложение на HQ-SRV (${ipHqVlan100Srv}:80)
 !   * Внешний порт ${sshPort} (${ipHqExt}:${sshPort}) -> SSH на HQ-SRV (${ipHqVlan100Srv}:${sshPort})
@@ -1623,6 +1730,7 @@ systemctl enable --now sshd
 systemctl restart sshd
 
 # DNS-сервер BIND9 (п. 10)
+rm -rf /etc/bind/zone/* /var/lib/bind/etc/zone/* 2>/dev/null || true
 mkdir -p /etc/bind/zone /var/lib/bind/etc/zone
 
 cat << 'EOF' > /etc/bind/options.conf
@@ -1652,26 +1760,8 @@ zone "${domain}" IN {
     type master;
     file "/etc/bind/zone/${domain}";
 };
-zone "${revZone100}" IN {
-    type master;
-    file "/etc/bind/zone/${revZone100}";
-};
-zone "${revZone200}" IN {
-    type master;
-    file "/etc/bind/zone/${revZone200}";
-};
-zone "${revZone999}" IN {
-    type master;
-    file "/etc/bind/zone/${revZone999}";
-};
-zone "${revZoneFw}" IN {
-    type master;
-    file "/etc/bind/zone/${revZoneFw}";
-};
-zone "${revZoneBr}" IN {
-    type master;
-    file "/etc/bind/zone/${revZoneBr}";
-};
+
+${revDnsData.rfc1912Text}
 EOF
 
 cat << 'EOF' > /etc/bind/zone/${domain}
@@ -1690,48 +1780,9 @@ ${nameBrSrv}      IN A    ${ipBrNetSrv}
 
 ${cname1}         IN CNAME ${nameHqSrv}.${domain}.
 ${cname2}         IN CNAME ${nameHqSrv}.${domain}.
-${cnameWeb}       IN A    ${ipIspBr}
-${cnameDocker}    IN A    ${ipIspHq}
 EOF
 
-cat << 'EOF' > /etc/bind/zone/${revZone100}
-$TTL 86400
-@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. ( 2026101901 3600 1800 604800 86400 )
-@   IN NS   ${nameHqSrv}.${domain}.
-1   IN PTR  ${nameHqRtr}.${domain}.
-2   IN PTR  ${nameHqSrv}.${domain}.
-EOF
-
-cat << 'EOF' > /etc/bind/zone/${revZone200}
-$TTL 86400
-@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. ( 2026101901 3600 1800 604800 86400 )
-@   IN NS   ${nameHqSrv}.${domain}.
-1   IN PTR  ${nameHqRtr}.${domain}.
-2   IN PTR  ${nameHqCli}.${domain}.
-EOF
-
-cat << 'EOF' > /etc/bind/zone/${revZone999}
-$TTL 86400
-@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. ( 2026101901 3600 1800 604800 86400 )
-@   IN NS   ${nameHqSrv}.${domain}.
-2   IN PTR  ${nameHqSw}.${domain}.
-EOF
-
-cat << 'EOF' > /etc/bind/zone/${revZoneFw}
-$TTL 86400
-@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. ( 2026101901 3600 1800 604800 86400 )
-@   IN NS   ${nameHqSrv}.${domain}.
-1   IN PTR  ${nameBrRtr}.${domain}.
-2   IN PTR  ${nameBrFw}.${domain}.
-EOF
-
-cat << 'EOF' > /etc/bind/zone/${revZoneBr}
-$TTL 86400
-@   IN SOA  ${nameHqSrv}.${domain}. root.${domain}. ( 2026101901 3600 1800 604800 86400 )
-@   IN NS   ${nameHqSrv}.${domain}.
-1   IN PTR  ${nameBrFw}.${domain}.
-2   IN PTR  ${nameBrSrv}.${domain}.
-EOF
+${revDnsData.zoneFilesText}
 
 cp -f /etc/bind/zone/* /var/lib/bind/etc/zone/ 2>/dev/null || true
 chown -R root:named /etc/bind/zone /var/lib/bind/etc/zone 2>/dev/null || true
@@ -1748,22 +1799,18 @@ echo -e "search ${domain}\nnameserver 127.0.0.1" > /etc/resolv.conf`;
 # -------------------------------------------------------------------------
 apt-get update && apt-get install -y mdadm fdisk e2fsprogs
 
-# Остановка старого массива (если есть) и очистка суперблоков на дисках (${raidDisks})
 umount /raid 2>/dev/null || true
 mdadm --stop /dev/md0 2>/dev/null || true
 wipefs -a ${raidDisks} 2>/dev/null || true
 
-# Создание массива RAID уровня 0 из двух дисков 1 Гб
 yes | mdadm --create /dev/md0 --level=0 --raid-devices=2 ${raidDisks}
 
-# Сохранение конфигурации массива в /etc/mdadm.conf
 echo "DEVICE partitions" > /etc/mdadm.conf
 mdadm --detail --scan >> /etc/mdadm.conf
 
-# Создание раздела (или форматирование напрямую в ext4) и монтирование в /raid
 mkfs.ext4 -F /dev/md0
 mkdir -p /raid
-sed -i '\|/raid|d' /etc/fstab
+sed -i '\\|/raid|d' /etc/fstab
 echo "/dev/md0 /raid ext4 defaults,nofail 0 0" >> /etc/fstab
 systemctl daemon-reload
 mount -a
@@ -1777,7 +1824,6 @@ apt-get install -y nfs-server
 mkdir -p /raid/nfs
 chmod -R 777 /raid/nfs
 
-# Доступ на чтение и запись исключительно для подсети HQ-CLI (${subnet200Val}/${mask200})
 cat << 'EOF' > /etc/exports
 /raid/nfs ${subnet200Val}/${mask200}(rw,sync,no_subtree_check,no_root_squash)
 EOF
@@ -1798,43 +1844,38 @@ systemctl restart chronyd
 chronyc sources -v
 
 # -------------------------------------------------------------------------
-# ПУНКТ 7: Веб-приложение (Apache + MariaDB + импорт dump.sql из Additional.iso)
+# ПУНКТ 7: Веб-приложение (Apache + MariaDB + импорт dump.sql в ${webDbName})
 # -------------------------------------------------------------------------
-apt-get install -y apache2 apache2-mod_php8.2 php8.2-mysqlnd mariadb-server iconv 2>/dev/null || \
+apt-get install -y apache2 apache2-mod_php8.2 php8.2-mysqlnd mariadb-server iconv 2>/dev/null || \\
 apt-get install -y lamp-server mariadb-server iconv
 
 systemctl enable --now mariadb
 systemctl enable --now httpd2
 
-# Монтирование образа Additional.iso
 mkdir -p /mnt/iso
 mount /dev/sr0 /mnt/iso 2>/dev/null || mount /dev/sr1 /mnt/iso 2>/dev/null || true
 
-# Создание базы данных webdb и пользователя web с паролем ${srvPwd}
-mariadb -u root << 'EOF'
-CREATE DATABASE IF NOT EXISTS webdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS 'web'@'localhost' IDENTIFIED BY '${srvPwd}';
-ALTER USER 'web'@'localhost' IDENTIFIED BY '${srvPwd}';
-GRANT ALL PRIVILEGES ON webdb.* TO 'web'@'localhost' WITH GRANT OPTION;
+mariadb -u root << EOF
+CREATE DATABASE IF NOT EXISTS ${webDbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS '${webDbUser}'@'localhost' IDENTIFIED BY '${srvPwd}';
+ALTER USER '${webDbUser}'@'localhost' IDENTIFIED BY '${srvPwd}';
+GRANT ALL PRIVILEGES ON ${webDbName}.* TO '${webDbUser}'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 EOF
 
-# Импорт схемы и данных из dump.sql в БД webdb (с защитой кодировки)
 if [ -f /mnt/iso/web/dump.sql ]; then
     iconv -f US-ASCII -t UTF-8 /mnt/iso/web/dump.sql -o /tmp/dump_utf8.sql 2>/dev/null || cp /mnt/iso/web/dump.sql /tmp/dump_utf8.sql
-    mariadb -u web -p"${srvPwd}" webdb < /tmp/dump_utf8.sql
+    mariadb -u ${webDbUser} -p"${srvPwd}" ${webDbName} < /tmp/dump_utf8.sql
 fi
 
-# Копирование файлов index.php и logo.png в корневой каталог сайта (/var/www/html)
 cp -f /mnt/iso/web/index.php /var/www/html/index.php
 cp -f /mnt/iso/web/logo.png /var/www/html/logo.png
 rm -f /var/www/html/index.html 2>/dev/null || true
 
-# Подстановка правильных учётных данных подключения к БД в index.php
-sed -i 's/\$servername\s*=.*/\$servername = "localhost";/g' /var/www/html/index.php
-sed -i 's/\$username\s*=.*/\$username = "web";/g' /var/www/html/index.php
-sed -i 's/\$password\s*=.*/\$password = "${srvPwd}";/g' /var/www/html/index.php
-sed -i 's/\$dbname\s*=.*/\$dbname = "webdb";/g' /var/www/html/index.php
+sed -i 's/\\$servername\\s*=.*/\\$servername = "localhost";/g' /var/www/html/index.php
+sed -i 's/\\$username\\s*=.*/\\$username = "${webDbUser}";/g' /var/www/html/index.php
+sed -i 's/\\$password\\s*=.*/\\$password = "${srvPwd}";/g' /var/www/html/index.php
+sed -i 's/\\$dbname\\s*=.*/\\$dbname = "${webDbName}";/g' /var/www/html/index.php
 
 chmod -R 755 /var/www/html
 systemctl restart httpd2
@@ -1846,7 +1887,7 @@ curl -I http://127.0.0.1/index.php`;
             const hqCliM1 = `# ======= [МОДУЛЬ 1] HQ-CLI (Клиентская рабочая станция HQ - ALT Linux) =======
 # Задания 1, 9, 11:
 # - Полное доменное имя: ${nameHqCli}.${domain}
-# - Получение сетевых настроек по DHCP от HQ-RTR
+# - Получение сетевых настроек по DHCP от HQ-RTR (ожидаемый IP: ${ipHqVlan200Cli}/${mask200}, шлюз: ${ipHqVlan200Rtr})
 # - Часовой пояс: ${tz}
 
 hostnamectl set-hostname ${nameHqCli}.${domain}
@@ -1884,18 +1925,15 @@ chronyc sources -v
 # -------------------------------------------------------------------------
 # ПУНКТ 1: Ввод машины HQ-CLI в домен Samba DC (${domain}) и настройка sudo
 # -------------------------------------------------------------------------
-# Указываем контроллер домена BR-SRV (${ipBrNetSrv}) первым DNS-сервером для обнаружения SRV-записей AD
 cat << 'EOF' > /etc/resolv.conf
 search ${domain}
 nameserver ${ipBrNetSrv}
 nameserver ${ipHqVlan100Srv}
 EOF
 
-# Ввод в домен с помощью system-auth (или realm join)
-system-auth write ad ${domain} ${nameHqCli} ${netbiosDomain} Administrator "${srvPwd}" || \
+system-auth write ad ${domain} ${nameHqCli} ${netbiosDomain} Administrator "${srvPwd}" || \\
 echo "${srvPwd}" | realm join -U Administrator ${domain}
 
-# Разрешение входа доменным пользователям и создание домашних каталогов
 pam-config -a --mkhomedir 2>/dev/null || true
 systemctl restart sssd
 
@@ -1909,15 +1947,14 @@ EOF
 chmod 440 /etc/sudoers.d/${adGroup}
 visudo -c
 
-# Проверка получения пользователей из домена
-id hquser1
+id ${adGroup}user1
 
 # -------------------------------------------------------------------------
-# ПУНКТ 3: Автомонтирование сетевой папки NFS с HQ-SRV в /mnt/nfs
+# ПУНКТ 3: Автомонтирование сетевой папки NFS с HQ-SRV (${ipHqVlan100Srv}) в /mnt/nfs
 # -------------------------------------------------------------------------
 mkdir -p /mnt/nfs
 chmod 777 /mnt/nfs
-sed -i '\|/mnt/nfs|d' /etc/fstab
+sed -i '\\|/mnt/nfs|d' /etc/fstab
 echo "${ipHqVlan100Srv}:/raid/nfs /mnt/nfs nfs defaults,_netdev,nofail 0 0" >> /etc/fstab
 systemctl daemon-reload
 mount -av
@@ -1937,7 +1974,7 @@ ip domain-name ${domain}
 ip name-server ${ipHqVlan100Srv}
 ntp timezone ${ecoTz}
 
-! Пользователь net_admin с максимальными привилегиями (п. 3)
+! Пользователь ${rtrUser} с максимальными привилегиями (п. 3)
 username ${rtrUser} password ${rtrPwd} role admin
 exit
 
@@ -2274,16 +2311,13 @@ chronyc sources -v
 # -------------------------------------------------------------------------
 apt-get install -y task-samba-dc
 
-# Остановка старых служб и очистка баз перед провижинингом
 systemctl stop samba bind krb5kdc 2>/dev/null || true
 rm -f /etc/samba/smb.conf
 rm -rf /var/lib/samba/* /var/cache/samba/*
 
-# Обязательная запись в /etc/hosts для корректной привязки Samba DNS
 sed -i "/${nameBrSrv}/d" /etc/hosts
 echo "${ipBrNetSrv} ${nameBrSrv}.${domain} ${nameBrSrv}" >> /etc/hosts
 
-# Развёртывание домена Active Directory
 samba-tool domain provision \\
     --realm=${realmUpper} \\
     --domain=${netbiosDomain} \\
@@ -2296,18 +2330,15 @@ samba-tool domain provision \\
 cp -f /var/lib/samba/private/krb5.conf /etc/krb5.conf
 systemctl enable --now samba
 
-# Переключение локального DNS на 127.0.0.1
 echo -e "search ${domain}\nnameserver 127.0.0.1\nnameserver ${ipHqVlan100Srv}" > /etc/resolv.conf
 
-# Настройка политики паролей:
-# - Минимальная длина пароля: 8 символов
-# - Блокировка учётной записи после 5 неудачных попыток входа
+# Политика паролей: мин. длина 8 символов, блокировка после 5 неудачных попыток
 samba-tool domain passwordsettings set \\
     --min-pwd-length=8 \\
     --account-lockout-threshold=5 \\
     --complexity=on
 
-# Создание группы ${adGroup} и 5 пользователей (${adGroup}user1 .. ${adGroup}user5), добавление в группу ${adGroup}
+# Создание группы ${adGroup} и 5 пользователей (${adGroup}user1 .. ${adGroup}user5)
 samba-tool group add ${adGroup}
 for i in {1..5}; do
     samba-tool user create "${adGroup}user\${i}" "${srvPwd}"
@@ -2319,7 +2350,7 @@ samba-tool domain passwordsettings show
 samba-tool group listmembers ${adGroup}
 
 # -------------------------------------------------------------------------
-# ПУНКТ 5: Конфигурация Ansible в /etc/ansible (инвентарь: HQ-SRV, HQ-CLI, HQ-RTR, BR-RTR)
+# ПУНКТ 5: Конфигурация Ansible в /etc/ansible (инвентарь: ${nameHqSrv}, ${nameHqCli}, ${nameHqRtr}, ${nameBrRtr})
 # -------------------------------------------------------------------------
 apt-get install -y ansible sshpass python3-module-paramiko
 
@@ -2334,51 +2365,45 @@ command_warnings = False
 timeout = 30
 EOF
 
-# Генерация SSH-ключа (если еще не создан)
 [ -f ~/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa
 
-# ВАРИАНТ А: Инвентарь /etc/ansible/hosts, если HQ-RTR и BR-RTR на базе EcoRouter:
-# (Не забудьте выполнить на HQ-RTR и BR-RTR в режиме configure terminal команду: security none)
+# ВАРИАНТ А: Инвентарь /etc/ansible/hosts, если ${nameHqRtr} и ${nameBrRtr} на базе EcoRouter:
 cat << 'EOF' > /etc/ansible/hosts
 [servers]
-hq-srv ansible_host=${ipHqVlan100Srv} ansible_port=${sshPort} ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
-hq-cli ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=root ansible_ssh_pass=${srvPwd}
+${nameHqSrv} ansible_host=${ipHqVlan100Srv} ansible_port=${sshPort} ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
+${nameHqCli} ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=root ansible_ssh_pass=${srvPwd}
 
 [routers]
-hq-rtr ansible_host=${ipHqVlan100Rtr} ansible_user=${rtrUser} ansible_password=${rtrPwd} ansible_connection=network_cli ansible_network_os=ios
-br-rtr ansible_host=${ipBrFwRtr} ansible_user=${rtrUser} ansible_password=${rtrPwd} ansible_connection=network_cli ansible_network_os=ios
+${nameHqRtr} ansible_host=${ipHqVlan100Rtr} ansible_user=${rtrUser} ansible_password=${rtrPwd} ansible_connection=network_cli ansible_network_os=ios
+${nameBrRtr} ansible_host=${ipBrFwRtr} ansible_user=${rtrUser} ansible_password=${rtrPwd} ansible_connection=network_cli ansible_network_os=ios
 EOF
 
-# ВАРИАНТ Б (Раскомментируйте, если HQ-RTR и BR-RTR работают на базе ALT Linux):
+# ВАРИАНТ Б (Раскомментируйте, если ${nameHqRtr} и ${nameBrRtr} работают на базе ALT Linux):
 # cat << 'EOF' > /etc/ansible/hosts
 # [servers]
-# hq-srv ansible_host=${ipHqVlan100Srv} ansible_port=${sshPort} ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
-# hq-cli ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=root ansible_ssh_pass=${srvPwd}
+# ${nameHqSrv} ansible_host=${ipHqVlan100Srv} ansible_port=${sshPort} ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
+# ${nameHqCli} ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=root ansible_ssh_pass=${srvPwd}
 #
 # [routers]
-# hq-rtr ansible_host=${ipHqVlan100Rtr} ansible_port=22 ansible_user=${rtrUser} ansible_ssh_pass=${rtrPwd}
-# br-rtr ansible_host=${ipBrFwRtr} ansible_port=22 ansible_user=${rtrUser} ansible_ssh_pass=${rtrPwd}
+# ${nameHqRtr} ansible_host=${ipHqVlan100Rtr} ansible_port=22 ansible_user=${rtrUser} ansible_ssh_pass=${rtrPwd}
+# ${nameBrRtr} ansible_host=${ipBrFwRtr} ansible_port=22 ansible_user=${rtrUser} ansible_ssh_pass=${rtrPwd}
 # EOF
 
-# Проверка ответа pong со всех устройств инвентаря:
 ansible all -m ping
 
 # -------------------------------------------------------------------------
-# ПУНКТ 6: Развёртывание веб-приложения testapp и БД mariadb в Docker
+# ПУНКТ 6: Развёртывание веб-приложения testapp и БД mariadb в Docker (порт ${webExtPort})
 # -------------------------------------------------------------------------
 apt-get install -y docker-engine docker-compose-v2 2>/dev/null || apt-get install -y docker-engine docker-compose
 systemctl enable --now docker
 
-# Монтирование диска Additional.iso
 mkdir -p /mnt/iso /opt/testapp
 mount /dev/sr0 /mnt/iso 2>/dev/null || mount /dev/sr1 /mnt/iso 2>/dev/null || true
 
-# Загрузка образов site_latest и mariadb_latest из директории docker в Additional.iso
 for img in /mnt/iso/docker/*; do
     [ -f "\$img" ] && [[ "\$img" != *.yaml ]] && [[ "\$img" != *.yml ]] && docker load -i "\$img"
 done
 
-# Копирование файла compose.yaml и запуск стека контейнеров
 cp -f /mnt/iso/docker/compose.yaml /opt/testapp/compose.yaml 2>/dev/null || true
 cd /opt/testapp
 docker compose up -d 2>/dev/null || docker-compose up -d
@@ -2430,8 +2455,6 @@ ${nameBrFw}.${domain}.       | A/PTR | ${ipBrFwFw} (и ${ipBrNetFw})
 ${nameBrSrv}.${domain}.      | A/PTR | ${ipBrNetSrv}
 ${cname1}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
 ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
-${cnameWeb}.${domain}.       | A     | ${ipIspBr}
-${cnameDocker}.${domain}.    | A     | ${ipIspHq}
 
 ================================================================================
 СВЕДЕНИЯ ДЛЯ ОТЧЁТА ПО МОДУЛЮ 1 (Пункты 4, 6, 7, 9)
@@ -2474,7 +2497,7 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
    - Клиенты NTP: HQ-SRV, HQ-CLI, BR-RTR, BR-SRV
 
 5. Ansible на BR-SRV (Пункт 5):
-   - Рабочий каталог: /etc/ansible, инвентарь: /etc/ansible/hosts (узлы: hq-srv, hq-cli, hq-rtr, br-rtr)
+   - Рабочий каталог: /etc/ansible, инвентарь: /etc/ansible/hosts (узлы: ${nameHqSrv}, ${nameHqCli}, ${nameHqRtr}, ${nameBrRtr})
 
 6. Веб-приложение в Docker на BR-SRV (Пункт 6):
    - Образы: site_latest и mariadb_latest (из Additional.iso/docker), файл: compose.yaml
@@ -2482,7 +2505,7 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
 
 7. Веб-приложение на HQ-SRV (Пункт 7):
    - Веб-сервер: Apache2 (httpd2), порт 80, корневой каталог: /var/www/html (файлы index.php, logo.png)
-   - СУБД: MariaDB, база данных: webdb (импортирована из dump.sql), пользователь БД: web, пароль: ${srvPwd}
+   - СУБД: MariaDB, база данных: ${webDbName} (импортирована из dump.sql), пользователь БД: ${webDbUser}, пароль: ${srvPwd}
 
 8. Статическая трансляция портов DNAT (Пункт 8):
    - HQ-RTR: ${ipHqExt}:${webExtPort} -> ${ipHqVlan100Srv}:80 (Web HQ-SRV), ${ipHqExt}:${sshPort} -> ${ipHqVlan100Srv}:${sshPort} (SSH HQ-SRV)
@@ -2504,6 +2527,9 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
 
             renderScriptTabsAndActive();
             updateNetworkTopology();
+            if (!silent) {
+                showToast("Все скрипты и IP-адреса обновлены!");
+            }
         }
 
         function renderScriptTabsAndActive() {
@@ -2520,7 +2546,7 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
             const removeComments = document.getElementById('removeComments').checked;
             const keys = Object.keys(generatedScriptsStore);
             if (!keys.includes(activeTabDeviceName)) {
-                activeTabDeviceName = keys[0] || "BR-SRV";
+                activeTabDeviceName = keys[0] || "HQ-RTR (EcoRouter)";
             }
 
             keys.forEach(deviceName => {
@@ -2596,7 +2622,7 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
                 const tabsBar = document.getElementById('scriptTabsBar');
                 if (tabsBar) tabsBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             } else {
-                generateScript();
+                generateScript(true);
                 activeTabDeviceName = name;
                 renderScriptTabsAndActive();
             }
@@ -2703,7 +2729,7 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
         function downloadAllScripts() {
             const keys = Object.keys(generatedScriptsStore);
             if (keys.length === 0) {
-                generateScript();
+                generateScript(true);
             }
             Object.keys(generatedScriptsStore).forEach((deviceName, index) => {
                 setTimeout(() => {
@@ -2726,7 +2752,7 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
         }
 
         function ipToLong(ip) {
-            const parts = (ip || '').trim().split('.');
+            const parts = cleanIpString(ip).split('.');
             if (parts.length !== 4) return null;
             return parts.reduce((acc, octet) => {
                 const num = parseInt(octet, 10);
@@ -2817,14 +2843,28 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
             const maskFwNet = getCidr(document.getElementById('hostsFwNet')?.value);
             const maskBrNet = getCidr(document.getElementById('hostsBrNet')?.value);
 
-            const subnet100Val = document.getElementById('subnet100')?.value || '10.10.100.0';
-            const subnet200Val = document.getElementById('subnet200')?.value || '10.10.200.0';
-            const subnet999Val = document.getElementById('subnet999')?.value || '10.10.30.0';
-            const subnetIspHqVal = document.getElementById('subnetIspHq')?.value || '172.16.1.0';
-            const subnetIspBrVal = document.getElementById('subnetIspBr')?.value || '172.16.2.0';
-            const subnetGreVal = document.getElementById('subnetGre')?.value || '10.10.10.0';
-            const subnetFwNetVal = document.getElementById('subnetFwNet')?.value || '10.20.10.0';
-            const subnetBrNetVal = document.getElementById('subnetBrNet')?.value || '10.20.20.0';
+            const subnet100Val = cleanIpString(document.getElementById('subnet100')?.value);
+            const subnet200Val = cleanIpString(document.getElementById('subnet200')?.value);
+            const subnet999Val = cleanIpString(document.getElementById('subnet999')?.value);
+            const subnetIspHqVal = cleanIpString(document.getElementById('subnetIspHq')?.value);
+            const subnetIspBrVal = cleanIpString(document.getElementById('subnetIspBr')?.value);
+            const subnetGreVal = cleanIpString(document.getElementById('subnetGre')?.value);
+            const subnetFwNetVal = cleanIpString(document.getElementById('subnetFwNet')?.value);
+            const subnetBrNetVal = cleanIpString(document.getElementById('subnetBrNet')?.value);
+
+            const ipIspHq = cleanIpString(document.getElementById('ipIspHqInput')?.value);
+            const ipHqExt = cleanIpString(document.getElementById('ipHqExtInput')?.value);
+            const ipIspBr = cleanIpString(document.getElementById('ipIspBrInput')?.value);
+            const ipBrExt = cleanIpString(document.getElementById('ipBrExtInput')?.value);
+            const ipHqVlan100Srv = cleanIpString(document.getElementById('ipHqVlan100SrvInput')?.value);
+            const ipHqVlan200Cli = cleanIpString(document.getElementById('ipHqVlan200CliInput')?.value);
+            const ipHqSwMgt = cleanIpString(document.getElementById('ipHqSwMgtInput')?.value);
+            const ipGreHq = cleanIpString(document.getElementById('ipGreHqInput')?.value);
+            const ipGreBr = cleanIpString(document.getElementById('ipGreBrInput')?.value);
+            const ipBrFwRtr = cleanIpString(document.getElementById('ipBrFwRtrInput')?.value);
+            const ipBrFwFw = cleanIpString(document.getElementById('ipBrFwFwInput')?.value);
+            const ipBrNetFw = cleanIpString(document.getElementById('ipBrNetFwInput')?.value);
+            const ipBrNetSrv = cleanIpString(document.getElementById('ipBrNetSrvInput')?.value);
 
             const isDark = document.body.classList.contains('dark-theme');
             const nodeBg = isDark ? '#1a1f26' : '#ffffff';
@@ -2847,44 +2887,44 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
             </defs>
 
             <!-- ГРАНИЦЫ ОФИСОВ -->
-            <rect x="20" y="100" width="465" height="315" rx="14" fill="none" stroke="${areaBorder}" stroke-width="2.5" stroke-dasharray="8,6"/>
+            <rect x="20" y="100" width="465" height="320" rx="14" fill="none" stroke="${areaBorder}" stroke-width="2.5" stroke-dasharray="8,6"/>
             <text x="35" y="122" fill="#28a745" font-size="13" font-weight="bold">СЕГМЕНТ HQ (Главный офис)</text>
 
-            <rect x="535" y="100" width="445" height="315" rx="14" fill="none" stroke="${areaBorder}" stroke-width="2.5" stroke-dasharray="8,6"/>
+            <rect x="535" y="100" width="445" height="320" rx="14" fill="none" stroke="${areaBorder}" stroke-width="2.5" stroke-dasharray="8,6"/>
             <text x="550" y="122" fill="#28a745" font-size="13" font-weight="bold">СЕГМЕНТ BR (Филиал)</text>
 
             <!-- ЛИНИИ СВЯЗИ -->
             <line x1="500" y1="35" x2="500" y2="55" stroke="${wireColor}" stroke-width="2.5"/>
-            <path d="M 445 72 L 260 135" stroke="${ispWireColor}" stroke-width="3" fill="none"/>
-            <path d="M 555 72 L 750 135" stroke="${ispWireColor}" stroke-width="3" fill="none"/>
+            <path d="M 435 72 L 260 135" stroke="${ispWireColor}" stroke-width="3" fill="none"/>
+            <path d="M 565 72 L 750 135" stroke="${ispWireColor}" stroke-width="3" fill="none"/>
 
             <!-- GRE ТУННЕЛЬ -->
-            <path d="M 325 152 Q 500 112 675 152" stroke="url(#greGrad)" stroke-width="3.5" fill="none" stroke-dasharray="8,5"/>
+            <path d="M 335 152 Q 500 112 665 152" stroke="url(#greGrad)" stroke-width="3.5" fill="none" stroke-dasharray="8,5"/>
 
             <!-- HQ-RTR -> HQ-SW -> HQ-SRV / HQ-CLI -->
-            <line x1="260" y1="180" x2="260" y2="235" stroke="${wireColor}" stroke-width="3"/>
+            <line x1="260" y1="185" x2="260" y2="235" stroke="${wireColor}" stroke-width="3"/>
             <line x1="185" y1="262" x2="115" y2="262" stroke="${wireColor}" stroke-width="2.5"/>
-            <line x1="260" y1="285" x2="260" y2="340" stroke="${wireColor}" stroke-width="2.5"/>
+            <line x1="260" y1="288" x2="260" y2="340" stroke="${wireColor}" stroke-width="2.5"/>
 
             <!-- BR-RTR -> BR-FW -> BR-SRV -->
-            <line x1="750" y1="180" x2="750" y2="235" stroke="${wireColor}" stroke-width="3"/>
-            <line x1="750" y1="285" x2="750" y2="340" stroke="${wireColor}" stroke-width="3"/>
+            <line x1="750" y1="185" x2="750" y2="235" stroke="${wireColor}" stroke-width="3"/>
+            <line x1="750" y1="288" x2="750" y2="340" stroke="${wireColor}" stroke-width="3"/>
 
             <!-- МЕТКИ СЕТЕЙ -->
-            <rect x="285" y="84" width="130" height="19" rx="4" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
-            <text x="350" y="97" text-anchor="middle" font-size="9.5" fill="${ispWireColor}" font-weight="bold">ISP-HQ: ${subnetIspHqVal}/${maskIsp}</text>
+            <rect x="285" y="84" width="135" height="19" rx="4" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
+            <text x="352" y="97" text-anchor="middle" font-size="9.5" fill="${ispWireColor}" font-weight="bold">ISP-HQ: ${subnetIspHqVal}/${maskIsp}</text>
 
-            <rect x="585" y="84" width="130" height="19" rx="4" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
-            <text x="650" y="97" text-anchor="middle" font-size="9.5" fill="${ispWireColor}" font-weight="bold">ISP-BR: ${subnetIspBrVal}/${maskIsp}</text>
+            <rect x="580" y="84" width="135" height="19" rx="4" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
+            <text x="647" y="97" text-anchor="middle" font-size="9.5" fill="${ispWireColor}" font-weight="bold">ISP-BR: ${subnetIspBrVal}/${maskIsp}</text>
 
-            <rect x="420" y="122" width="160" height="21" rx="4" fill="${nodeBg}" stroke="${greColor}" stroke-width="1.5"/>
-            <text x="500" y="136" text-anchor="middle" font-size="9.5" fill="${greColor}" font-weight="bold">GRE + OSPF MD5: ${subnetGreVal}/${maskGre}</text>
+            <rect x="415" y="122" width="170" height="21" rx="4" fill="${nodeBg}" stroke="${greColor}" stroke-width="1.5"/>
+            <text x="500" y="136" text-anchor="middle" font-size="9.5" fill="${greColor}" font-weight="bold">GRE: ${ipGreHq} ↔ ${ipGreBr} (/${maskGre})</text>
 
-            <text x="270" y="212" font-size="9.5" fill="${subTextColor}" font-weight="bold">HQ-NET (VLAN ${subnet999Val}/${mask999})</text>
+            <text x="270" y="214" font-size="9.5" fill="${subTextColor}" font-weight="bold">HQ-NET (VLAN 999: ${subnet999Val}/${mask999})</text>
             <text x="145" y="220" font-size="9.5" fill="#28a745" font-weight="bold">SRV-NET: ${subnet100Val}/${mask100}</text>
             <text x="270" y="318" font-size="9.5" fill="#6f42c1" font-weight="bold">CLI-NET: ${subnet200Val}/${mask200}</text>
 
-            <text x="760" y="212" font-size="9.5" fill="#fd7e14" font-weight="bold">FW-NET: ${subnetFwNetVal}/${maskFwNet}</text>
+            <text x="760" y="214" font-size="9.5" fill="#fd7e14" font-weight="bold">FW-NET: ${subnetFwNetVal}/${maskFwNet}</text>
             <text x="760" y="318" font-size="9.5" fill="#20c997" font-weight="bold">BR-NET: ${subnetBrNetVal}/${maskBrNet}</text>
 
             <!-- УЗЛЫ -->
@@ -2894,85 +2934,72 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
             </g>
 
             <g class="topo-node" onclick="selectTabByName('ISP')">
-                <rect x="430" y="44" width="140" height="50" rx="8" fill="${nodeBg}" stroke="#17a2b8" stroke-width="2" filter="url(#shadow)"/>
-                <text x="500" y="64" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">🌐 ISP</text>
-                <text x="500" y="81" text-anchor="middle" font-size="9" fill="${subTextColor}">NAT • Chrony Stratum 5</text>
+                <rect x="420" y="42" width="160" height="54" rx="8" fill="${nodeBg}" stroke="#17a2b8" stroke-width="2" filter="url(#shadow)"/>
+                <text x="500" y="61" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🌐 ISP (Chrony)</text>
+                <text x="500" y="76" text-anchor="middle" font-size="9" fill="#17a2b8" font-weight="bold">${ipIspHq} | ${ipIspBr}</text>
+                <text x="500" y="89" text-anchor="middle" font-size="8.5" fill="${subTextColor}">WAN: DHCP • NAT PAT</text>
             </g>
 
             <g class="topo-node" onclick="selectTabByName('HQ-RTR (EcoRouter)')">
-                <rect x="180" y="128" width="160" height="54" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
-                <text x="260" y="147" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">🔀 HQ-RTR</text>
-                <text x="260" y="162" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">DNAT 8080/2027 • DHCP</text>
-                <text x="260" y="175" text-anchor="middle" font-size="8.5" fill="${subTextColor}">EcoRouter / ALT Linux</text>
+                <rect x="175" y="128" width="170" height="58" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
+                <text x="260" y="146" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🔀 HQ-RTR</text>
+                <text x="260" y="161" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">WAN: ${ipHqExt} | GRE: ${ipGreHq}</text>
+                <text x="260" y="175" text-anchor="middle" font-size="8.5" fill="${subTextColor}">DNAT 8080/2027 • DHCP</text>
             </g>
 
             <g class="topo-node" onclick="selectTabByName('BR-RTR (EcoRouter)')">
-                <rect x="670" y="128" width="160" height="54" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
-                <text x="750" y="147" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">🔀 BR-RTR</text>
-                <text x="750" y="162" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">DNAT 8080/2027 • NTP</text>
-                <text x="750" y="175" text-anchor="middle" font-size="8.5" fill="${subTextColor}">EcoRouter / ALT Linux</text>
+                <rect x="665" y="128" width="170" height="58" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
+                <text x="750" y="146" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🔀 BR-RTR</text>
+                <text x="750" y="161" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">WAN: ${ipBrExt} | LAN: ${ipBrFwRtr}</text>
+                <text x="750" y="175" text-anchor="middle" font-size="8.5" fill="${subTextColor}">DNAT 8080/2027 • GRE: ${ipGreBr}</text>
             </g>
 
             <g class="topo-node" onclick="selectTabByName('HQ-SW (OVS)')">
-                <rect x="185" y="235" width="150" height="50" rx="8" fill="${nodeBg}" stroke="#17a2b8" stroke-width="2" filter="url(#shadow)"/>
-                <text x="260" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">🎛️ HQ-SW</text>
-                <text x="260" y="272" text-anchor="middle" font-size="9.5" fill="${subTextColor}">OVS: VLAN 100/200/999</text>
+                <rect x="180" y="235" width="160" height="54" rx="8" fill="${nodeBg}" stroke="#17a2b8" stroke-width="2" filter="url(#shadow)"/>
+                <text x="260" y="254" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🎛️ HQ-SW (OVS)</text>
+                <text x="260" y="269" text-anchor="middle" font-size="9" fill="#17a2b8" font-weight="bold">MGMT: ${ipHqSwMgt}/${mask999}</text>
+                <text x="260" y="282" text-anchor="middle" font-size="8.5" fill="${subTextColor}">VLAN 100 / 200 / 999</text>
             </g>
 
             <g class="topo-node" onclick="selectTabByName('HQ-SRV')">
-                <rect x="28" y="228" width="128" height="68" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
-                <text x="92" y="247" text-anchor="middle" font-size="12" font-weight="bold" fill="${textColor}">🖥️ HQ-SRV</text>
-                <text x="92" y="261" text-anchor="middle" font-size="8.8" fill="#28a745">BIND9 • RAID0 /raid</text>
-                <text x="92" y="274" text-anchor="middle" font-size="8.8" fill="#28a745">NFS • Apache+MariaDB</text>
-                <text x="92" y="287" text-anchor="middle" font-size="8.5" fill="${subTextColor}">VLAN 100 (.2)</text>
+                <rect x="25" y="228" width="134" height="68" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
+                <text x="92" y="246" text-anchor="middle" font-size="12" font-weight="bold" fill="${textColor}">🖥️ HQ-SRV</text>
+                <text x="92" y="260" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">${ipHqVlan100Srv}/${mask100}</text>
+                <text x="92" y="273" text-anchor="middle" font-size="8.5" fill="${textColor}">DNS • RAID0 • NFS</text>
+                <text x="92" y="286" text-anchor="middle" font-size="8.5" fill="${subTextColor}">Apache + MariaDB</text>
             </g>
 
             <g class="topo-node" onclick="selectTabByName('HQ-CLI')">
-                <rect x="180" y="338" width="160" height="62" rx="8" fill="${nodeBg}" stroke="#6f42c1" stroke-width="2" filter="url(#shadow)"/>
-                <text x="260" y="357" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">💻 HQ-CLI</text>
-                <text x="260" y="372" text-anchor="middle" font-size="9" fill="#6f42c1">Введён в Samba AD (hq)</text>
-                <text x="260" y="385" text-anchor="middle" font-size="8.5" fill="${subTextColor}">/mnt/nfs • sudo cat,grep,id</text>
+                <rect x="175" y="338" width="170" height="64" rx="8" fill="${nodeBg}" stroke="#6f42c1" stroke-width="2" filter="url(#shadow)"/>
+                <text x="260" y="356" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">💻 HQ-CLI</text>
+                <text x="260" y="371" text-anchor="middle" font-size="9" fill="#6f42c1" font-weight="bold">DHCP: ${ipHqVlan200Cli}/${mask200}</text>
+                <text x="260" y="384" text-anchor="middle" font-size="8.5" fill="${textColor}">Samba AD • /mnt/nfs</text>
+                <text x="260" y="396" text-anchor="middle" font-size="8" fill="${subTextColor}">sudo: cat, grep, id</text>
             </g>
 
             <g class="topo-node" onclick="selectTabByName('BR-FW')">
-                <rect x="675" y="235" width="150" height="50" rx="8" fill="${nodeBg}" stroke="#fd7e14" stroke-width="2" filter="url(#shadow)"/>
-                <text x="750" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="${textColor}">🧱 BR-FW</text>
-                <text x="750" y="272" text-anchor="middle" font-size="9.5" fill="${subTextColor}">OSPF к BR-RTR • FW</text>
+                <rect x="665" y="235" width="170" height="54" rx="8" fill="${nodeBg}" stroke="#fd7e14" stroke-width="2" filter="url(#shadow)"/>
+                <text x="750" y="254" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🧱 BR-FW</text>
+                <text x="750" y="269" text-anchor="middle" font-size="9" fill="#fd7e14" font-weight="bold">${ipBrFwFw} | ${ipBrNetFw}</text>
+                <text x="750" y="282" text-anchor="middle" font-size="8.5" fill="${subTextColor}">OSPF Area 0 к BR-RTR</text>
             </g>
 
             <g class="topo-node" onclick="selectTabByName('BR-SRV')">
                 <rect x="665" y="335" width="170" height="66" rx="8" fill="${nodeBg}" stroke="#20c997" stroke-width="2" filter="url(#shadow)"/>
-                <text x="750" y="354" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🖥️ BR-SRV</text>
-                <text x="750" y="368" text-anchor="middle" font-size="9" fill="#20c997">Samba DC • Ansible</text>
-                <text x="750" y="381" text-anchor="middle" font-size="9" fill="#20c997">Docker testapp:8080</text>
-                <text x="750" y="394" text-anchor="middle" font-size="8.5" fill="${subTextColor}">BR-NET (.2) • SSH:2027</text>
+                <text x="750" y="353" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🖥️ BR-SRV</text>
+                <text x="750" y="367" text-anchor="middle" font-size="9" fill="#20c997" font-weight="bold">${ipBrNetSrv}/${maskBrNet}</text>
+                <text x="750" y="380" text-anchor="middle" font-size="8.5" fill="${textColor}">Samba DC • Ansible</text>
+                <text x="750" y="393" text-anchor="middle" font-size="8.5" fill="${subTextColor}">Docker testapp:8080</text>
             </g>
             `;
         }
 
-        function loadPreset(type) {
+        function loadPreset(type, btnEl) {
             const presets = {
-                'de2027': {
-                    domain: 'au-team.irpo', timezone: 'Europe/Moscow', ecoTz: 'utc+3',
-                    extDns: '77.88.8.7', extDns2: '77.88.8.3',
-                    cname1: 'moodle', cname2: 'wiki', cnameWeb: 'web', cnameDocker: 'docker',
-                    ifacePrefix: 'ens3',
-                    rtrUser: 'net_admin', rtrPwd: 'P@ssw0rd',
-                    srvUser: 'sshuser', srvPwd: 'P@ssw0rd', srvUid: '2027', sshPort: '2027',
-                    nameHqRtr: 'hq-rtr', nameHqSw: 'hq-sw', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli',
-                    nameBrRtr: 'br-rtr', nameBrFw: 'br-fw', nameBrSrv: 'br-srv',
-                    subnetIspHq: '172.16.1.0', subnetIspBr: '172.16.2.0', hostsIsp: '14',
-                    subnet100: '10.10.100.0', hosts100: '30', vlan100: '100',
-                    subnet200: '10.10.200.0', hosts200: '14', vlan200: '200',
-                    subnet999: '10.10.30.0', hosts999: '6', vlan999: '999',
-                    subnetGre: '10.10.10.0', hostsGre: '2',
-                    subnetFwNet: '10.20.10.0', hostsFwNet: '2',
-                    subnetBrNet: '10.20.20.0', hostsBrNet: '14'
-                },
                 'default': {
                     domain: 'au-team.irpo', timezone: 'Asia/Yekaterinburg', ecoTz: 'utc+5',
                     extDns: '77.88.8.7', extDns2: '77.88.8.3',
-                    cname1: 'moodle', cname2: 'wiki', cnameWeb: 'web', cnameDocker: 'docker',
+                    cname1: 'moodle', cname2: 'wiki',
                     ifacePrefix: 'enp7s',
                     rtrUser: 'net_admin', rtrPwd: 'P@ssw0rd',
                     srvUser: 'sshuser', srvPwd: 'P@ssw0rd', srvUid: '2027', sshPort: '2027',
@@ -2986,11 +3013,45 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
                     subnetFwNet: '172.16.3.0', hostsFwNet: '2',
                     subnetBrNet: '172.16.4.0', hostsBrNet: '14'
                 },
-                'preset1': {
+                'de2027': {
                     domain: 'au-team.irpo', timezone: 'Europe/Moscow', ecoTz: 'utc+3',
                     extDns: '77.88.8.7', extDns2: '77.88.8.3',
-                    cname1: 'moodle', cname2: 'wiki', cnameWeb: 'web', cnameDocker: 'docker',
+                    cname1: 'moodle', cname2: 'wiki',
                     ifacePrefix: 'ens3',
+                    rtrUser: 'net_admin', rtrPwd: 'P@ssw0rd',
+                    srvUser: 'sshuser', srvPwd: 'P@ssw0rd', srvUid: '2027', sshPort: '2027',
+                    nameHqRtr: 'hq-rtr', nameHqSw: 'hq-sw', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli',
+                    nameBrRtr: 'br-rtr', nameBrFw: 'br-fw', nameBrSrv: 'br-srv',
+                    subnetIspHq: '172.16.1.0', subnetIspBr: '172.16.2.0', hostsIsp: '14',
+                    subnet100: '10.10.100.0', hosts100: '30', vlan100: '100',
+                    subnet200: '10.10.200.0', hosts200: '14', vlan200: '200',
+                    subnet999: '10.10.30.0', hosts999: '6', vlan999: '999',
+                    subnetGre: '10.10.10.0', hostsGre: '2',
+                    subnetFwNet: '10.20.10.0', hostsFwNet: '2',
+                    subnetBrNet: '10.20.20.0', hostsBrNet: '14'
+                },
+                'preset192full': {
+                    domain: 'au-team.irpo', timezone: 'Europe/Moscow', ecoTz: 'utc+3',
+                    extDns: '77.88.8.7', extDns2: '77.88.8.3',
+                    cname1: 'moodle', cname2: 'wiki',
+                    ifacePrefix: 'enp7s',
+                    rtrUser: 'net_admin', rtrPwd: 'P@ssw0rd',
+                    srvUser: 'sshuser', srvPwd: 'P@ssw0rd', srvUid: '2027', sshPort: '2027',
+                    nameHqRtr: 'hq-rtr', nameHqSw: 'hq-sw', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli',
+                    nameBrRtr: 'br-rtr', nameBrFw: 'br-fw', nameBrSrv: 'br-srv',
+                    subnetIspHq: '192.168.1.0', subnetIspBr: '192.168.2.0', hostsIsp: '14',
+                    subnet100: '192.168.100.0', hosts100: '30', vlan100: '100',
+                    subnet200: '192.168.200.0', hosts200: '14', vlan200: '200',
+                    subnet999: '192.168.99.0', hosts999: '6', vlan999: '999',
+                    subnetGre: '192.168.10.0', hostsGre: '2',
+                    subnetFwNet: '192.168.3.0', hostsFwNet: '2',
+                    subnetBrNet: '192.168.4.0', hostsBrNet: '14'
+                },
+                'preset192mix': {
+                    domain: 'au-team.irpo', timezone: 'Europe/Moscow', ecoTz: 'utc+3',
+                    extDns: '77.88.8.7', extDns2: '77.88.8.3',
+                    cname1: 'moodle', cname2: 'wiki',
+                    ifacePrefix: 'enp7s',
                     rtrUser: 'net_admin', rtrPwd: 'P@ssw0rd',
                     srvUser: 'sshuser', srvPwd: 'P@ssw0rd', srvUid: '2027', sshPort: '2027',
                     nameHqRtr: 'hq-rtr', nameHqSw: 'hq-sw', nameHqSrv: 'hq-srv', nameHqCli: 'hq-cli',
@@ -3008,48 +3069,30 @@ ${cnameDocker}.${domain}.    | A     | ${ipIspHq}
             const data = presets[type];
             if (!data) return;
 
+            document.querySelectorAll('.btn-preset[id^="btnPreset"]').forEach(b => b.classList.remove('active-preset'));
+            if (btnEl) btnEl.classList.add('active-preset');
+
             for (const key in data) {
                 const el = document.getElementById(key);
                 if (el) {
                     el.value = data[key];
                 }
             }
+
             updateMaskHints();
             updateIfaceHint();
+            recalcDeviceIpsFromSubnets();
             validateSubnetCollisions();
-            generateScript();
+            generateScript(false);
         }
 
-        function initLiveListeners() {
-            const inputIds = [
-                'subnet100', 'hosts100', 'vlan100',
-                'subnet200', 'hosts200', 'vlan200',
-                'subnet999', 'hosts999', 'vlan999',
-                'subnetIspHq', 'subnetIspBr', 'hostsIsp',
-                'subnetGre', 'hostsGre',
-                'subnetFwNet', 'hostsFwNet',
-                'subnetBrNet', 'hostsBrNet',
-                'ifacePrefix', 'domain', 'timezone', 'ecoTz',
-                'adGroup', 'raidDisks', 'ntpUpstream', 'ntpStratum', 'webExtPort'
-            ];
-            inputIds.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('input', () => {
-                        validateSubnetCollisions();
-                        updateNetworkTopology();
-                    });
-                }
-            });
-        }
-
+        // Инициализация при старте
         updateMaskHints();
         updateIfaceHint();
+        recalcDeviceIpsFromSubnets();
         validateSubnetCollisions();
-        updateNetworkTopology();
-        initLiveListeners();
-        generateScript();
+        generateScript(true);
     </script>
 </body>
 
-</html>
+    </html> 
