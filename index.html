@@ -7,42 +7,277 @@
     <meta name="description" content="Генератор Bash-скриптов и настроек EcoRouter / ALT Linux (Демоэкзамен Модуль 1 + Модуль 2)">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
-    <title>Генератор сетевых настроек | Демоэкзамен (Модуль 1 + Модуль 2)</title>
+    <title>NetOps Generator | Демоэкзамен (Модуль 1 + Модуль 2)</title>
     <style>
+        :root {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-subcard: #f8fafc;
+            --bg-input: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-primary: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-glow: rgba(37, 99, 235, 0.2);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #0ea5e9;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+        }
+
+        body.dark-theme {
+            --bg-main: #090d16;
+            --bg-card: #111827;
+            --bg-subcard: #1a2234;
+            --bg-input: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-glow: rgba(59, 130, 246, 0.28);
+            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 15% 0%, rgba(59, 130, 246, 0.08), transparent 35%),
+                              radial-gradient(circle at 85% 10%, rgba(16, 185, 129, 0.06), transparent 35%);
+            color: var(--text-main);
             margin: 0;
             padding: 20px;
+            line-height: 1.5;
+            transition: background-color 0.25s, color 0.25s;
         }
 
         .container {
-            background: #fff;
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
         }
 
-        h1 {
-            text-align: center;
-            color: #0056b3;
-            margin-top: 5px;
-            margin-bottom: 5px;
+        /* Верхняя шапка (Header) */
+        .app-header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px 26px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+
+        .brand-title h1 {
+            font-size: 21px;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(90deg, var(--text-main), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .theme-btn {
+            background: var(--bg-subcard);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Панель пресетов */
+        .presets-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px 22px;
             margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .presets-label {
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .presets-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 9px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-preset {
+            background: var(--bg-subcard);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-preset:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-preset.active-preset {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Карточки секций настроек */
+        .cards-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .cards-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .cards-grid-2, .cards-grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .settings-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px 22px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--info));
+        }
+
+        .settings-card.accent-green::before {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .settings-card.accent-amber::before {
+            background: linear-gradient(90deg, #f59e0b, #ea580c);
+        }
+
+        .settings-card.accent-purple::before {
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 15.5px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+
+        .card-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--accent-primary);
         }
 
         .form-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 14px;
         }
 
@@ -52,367 +287,142 @@
         }
 
         label {
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 5px;
-            font-size: 13px;
+            font-size: 12.5px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         input[type="text"],
         input[type="number"],
         select {
-            padding: 9px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-
-        button {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-
-        .btn-generate {
-            background-color: #28a745;
-            color: white;
-            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
-        }
-
-        .btn-generate:hover {
-            background-color: #218838;
-            transform: translateY(-1px);
-        }
-
-        .btn-copy {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-copy:hover {
-            background-color: #0069d9;
-        }
-
-        .btn-preset {
-            background-color: #17a2b8;
-            color: white;
-        }
-
-        .btn-preset:hover {
-            background-color: #138496;
-        }
-
-        .btn-preset.active-preset {
-            background-color: #28a745;
-            box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);
-        }
-
-        .module-switch-bar {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            padding: 12px;
-            background: rgba(0, 123, 255, 0.08);
-            border: 1px solid rgba(0, 123, 255, 0.25);
-            border-radius: 8px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .btn-mod {
-            background: #e9ecef;
-            color: #333;
-            padding: 9px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-        }
-
-        body.dark-theme .btn-mod {
-            background: #21262d;
-            color: #c9d1d9;
-            border-color: #30363d;
-        }
-
-        .btn-mod.active {
-            background: #007bff;
-            color: #fff;
-            border-color: #007bff;
-            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
-        }
-
-        pre {
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-family: 'Consolas', 'Courier New', Courier, monospace;
-            min-height: 200px;
-            white-space: pre-wrap;
-            line-height: 1.45;
+            padding: 9px 12px;
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
             font-size: 13.5px;
+            font-family: 'Consolas', 'SF Mono', monospace;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        pre[contenteditable="true"]:focus {
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
             outline: none;
-            box-shadow: inset 0 0 0 2px #007bff;
-        }
-
-        h3 {
-            color: #0056b3;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-            font-size: 18px;
-        }
-
-        h4 {
-            margin-top: 15px;
-            margin-bottom: 8px;
-            color: #444;
-            border-bottom: 1px dashed #ccc;
-            padding-bottom: 3px;
-            font-size: 15px;
-        }
-
-        details summary {
-            cursor: pointer;
-            user-select: none;
-            outline: none;
-            color: #0056b3;
-            margin-top: 18px;
-            font-weight: bold;
-        }
-
-        details summary h3 {
-            display: inline-block;
-            margin-top: 0;
-        }
-
-        .device-block {
-            margin-top: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .device-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #e9ecef;
-            padding: 10px 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .device-header h2 {
-            margin: 0;
-            color: #333;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .device-block pre {
-            margin: 0;
-            border-radius: 0;
-            min-height: auto;
-        }
-
-        /* Тёмная тема */
-        body.dark-theme {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .container {
-            background: #1e1e1e;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        body.dark-theme h1,
-        body.dark-theme h3,
-        body.dark-theme details summary {
-            color: #66b2ff;
-        }
-
-        body.dark-theme .subtitle {
-            color: #999;
-        }
-
-        body.dark-theme h4 {
-            color: #aaa;
-            border-bottom-color: #444;
-        }
-
-        body.dark-theme input[type="text"],
-        body.dark-theme input[type="number"],
-        body.dark-theme select {
-            background-color: #2d2d2d;
-            color: #e0e0e0;
-            border-color: #555;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
         .mask-hint {
-            color: #007bff;
-            font-weight: bold;
-        }
-
-        body.dark-theme .mask-hint {
-            color: #66b2ff;
-        }
-
-        body.dark-theme .device-header {
-            background-color: #2d2d2d;
-        }
-
-        body.dark-theme pre[contenteditable="true"]:focus {
-            box-shadow: inset 0 0 0 2px #66b2ff;
-        }
-
-        body.dark-theme .device-header h2 {
-            color: #e0e0e0;
-        }
-
-        body.dark-theme .device-block {
-            border-color: #444;
-        }
-
-        /* Интерактивная топология сети */
-        .topology-container {
-            margin: 25px 0 15px 0;
-            background: #f8f9fa;
-            border: 1px solid #e1e4e8;
-            border-radius: 10px;
-            padding: 16px;
-            overflow-x: auto;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
-        }
-
-        body.dark-theme .topology-container {
-            background: #14171c;
-            border-color: #2c323c;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-        }
-
-        .topology-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #d0d7de;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        body.dark-theme .topology-header {
-            border-bottom-color: #30363d;
-        }
-
-        .topology-title {
-            font-size: 15px;
+            color: var(--accent-primary);
             font-weight: 700;
+            font-size: 11.5px;
+            background: rgba(59, 130, 246, 0.12);
+            padding: 1px 6px;
+            border-radius: 4px;
+        }
+
+        .quick-chips {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .chip-btn {
+            padding: 3px 8px;
+            font-size: 11.5px;
+            background: var(--bg-subcard);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .chip-btn:hover {
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        /* Выпадающие аккордеоны (Details) */
+        details.custom-drawer {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        details.custom-drawer summary {
+            padding: 14px 22px;
+            cursor: pointer;
+            user-select: none;
+            outline: none;
+            font-weight: 700;
+            font-size: 14.5px;
+            color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: #0366d6;
+            justify-content: space-between;
+            background: var(--bg-subcard);
+            transition: background 0.2s;
         }
 
-        body.dark-theme .topology-title {
-            color: #58a6ff;
+        details.custom-drawer summary:hover {
+            color: var(--accent-primary);
         }
 
-        .topo-node {
-            cursor: pointer;
-            transition: transform 0.2s, filter 0.2s;
-        }
-
-        .topo-node:hover {
-            transform: scale(1.02);
-            filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.6));
-        }
-
-        .topo-node rect {
-            transition: stroke 0.2s, fill 0.2s;
-        }
-
-        .topo-node:hover rect {
-            stroke: #00d4ff !important;
-            stroke-width: 2.5px !important;
+        .drawer-body {
+            padding: 18px 22px;
+            border-top: 1px solid var(--border-color);
         }
 
         /* Блок валидации и коллизий */
         .validation-panel {
-            margin: 15px 0 20px 0;
-            border-radius: 8px;
-            padding: 12px 18px;
+            margin: 18px 0;
+            border-radius: var(--radius-lg);
+            padding: 14px 20px;
             font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             transition: all 0.3s ease;
         }
 
         .validation-panel.valid {
-            background: rgba(40, 167, 69, 0.12);
-            border: 1px solid rgba(40, 167, 69, 0.4);
-            color: #28a745;
-        }
-
-        body.dark-theme .validation-panel.valid {
-            background: rgba(46, 160, 67, 0.15);
-            border-color: #2ea043;
-            color: #3fb950;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: var(--success);
         }
 
         .validation-panel.invalid {
-            background: rgba(220, 53, 69, 0.12);
-            border: 1px solid rgba(220, 53, 69, 0.5);
-            color: #dc3545;
-            box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
-        }
-
-        body.dark-theme .validation-panel.invalid {
-            background: rgba(248, 81, 73, 0.18);
-            border-color: #f85149;
-            color: #ff7b72;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: var(--danger);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
         }
 
         .collision-badge {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
             font-size: 11px;
-            font-weight: 700;
-            margin-left: 6px;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .collision-badge.ok {
-            background: #28a745;
+            background: var(--success);
             color: #fff;
         }
 
         .collision-badge.err {
-            background: #dc3545;
+            background: var(--danger);
             color: #fff;
             animation: pulseErr 1.5s infinite;
         }
@@ -422,26 +432,127 @@
             50% { opacity: 0.5; }
         }
 
+        /* Интерактивная топология сети */
+        .topology-container {
+            margin: 20px 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px 22px;
+            overflow-x: auto;
+            box-shadow: var(--shadow-card);
+        }
+
+        .topology-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .topology-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-primary);
+        }
+
+        .topo-node {
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        .topo-node:hover {
+            filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.65));
+        }
+
+        .topo-node:hover rect.node-card {
+            stroke: #00d4ff !important;
+            stroke-width: 2.8px !important;
+        }
+
+        .topo-node.selected-node rect.node-card {
+            stroke: #38bdf8 !important;
+            stroke-width: 3px !important;
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+        }
+
+        @keyframes dashFlow {
+            to {
+                stroke-dashoffset: -26;
+            }
+        }
+
+        .animated-link {
+            animation: dashFlow 1.2s linear infinite;
+        }
+
+        /* Панель выбора модулей */
+        .module-switch-bar {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0 14px 0;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn-mod {
+            background: var(--bg-subcard);
+            color: var(--text-muted);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-mod:hover {
+            color: var(--text-main);
+            border-color: var(--accent-primary);
+        }
+
+        .btn-mod.active {
+            background: var(--accent-primary);
+            color: #fff;
+            border-color: var(--accent-primary);
+            box-shadow: 0 3px 10px var(--accent-glow);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(16, 185, 129, 0.45);
+        }
+
         /* Вкладки скриптов */
         .script-tabs-bar {
             display: flex;
             gap: 6px;
             overflow-x: auto;
-            padding: 6px 0;
-            margin-bottom: 12px;
-            border-bottom: 2px solid rgba(0, 123, 255, 0.2);
-        }
-
-        body.dark-theme .script-tabs-bar {
-            border-bottom-color: #30363d;
+            padding: 4px 2px 10px 2px;
         }
 
         .tab-btn {
-            background: #e9ecef;
-            color: #495057;
-            border: 1px solid #ced4da;
-            border-radius: 6px 6px 0 0;
-            padding: 9px 14px;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 9px 15px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
@@ -449,40 +560,23 @@
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-        }
-
-        body.dark-theme .tab-btn {
-            background: #21262d;
-            color: #8b949e;
-            border-color: #30363d;
+            gap: 7px;
         }
 
         .tab-btn:hover {
-            background: rgba(0, 123, 255, 0.1);
-            color: #007bff;
-        }
-
-        body.dark-theme .tab-btn:hover {
-            background: #30363d;
-            color: #58a6ff;
+            color: var(--text-main);
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
         }
 
         .tab-btn.active {
-            background: #007bff;
+            background: linear-gradient(135deg, var(--accent-primary), #1d4ed8);
             color: #ffffff;
-            border-color: #007bff;
-            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.4);
+            border-color: transparent;
+            box-shadow: 0 4px 12px var(--accent-glow);
         }
 
-        body.dark-theme .tab-btn.active {
-            background: #1f6feb;
-            color: #ffffff;
-            border-color: #388bfd;
-            box-shadow: 0 0 10px rgba(56, 139, 253, 0.4);
-        }
-
-        /* Панель поиска и действий */
+        /* Панель поиска и управления кодом */
         .script-controls-bar {
             display: flex;
             justify-content: space-between;
@@ -490,54 +584,147 @@
             gap: 12px;
             flex-wrap: wrap;
             margin-bottom: 14px;
-            background: #f1f3f5;
-            padding: 10px 14px;
-            border-radius: 8px;
-        }
-
-        body.dark-theme .script-controls-bar {
-            background: #161b22;
-            border: 1px solid #30363d;
+            background: var(--bg-card);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
         }
 
         .script-search-input {
             flex: 1;
-            min-width: 220px;
-            max-width: 380px;
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            min-width: 240px;
+            max-width: 400px;
+            padding: 8px 14px;
+            border-radius: 8px;
             font-size: 13px;
-            outline: none;
         }
 
-        body.dark-theme .script-search-input {
-            background: #0d1117;
-            color: #c9d1d9;
-            border-color: #30363d;
+        .btn-copy {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-hover);
         }
 
         .btn-download-all {
-            background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
             color: white;
-            font-size: 13px;
-            padding: 8px 15px;
-            border-radius: 5px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+        }
+
+        /* Терминальное окно вывода кода */
+        .terminal-window {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        .terminal-header {
+            background: #161b22;
+            padding: 12px 18px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .terminal-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 7px;
+        }
+
+        .win-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .win-dot.red { background: #ff5f56; }
+        .win-dot.yellow { background: #ffbd2e; }
+        .win-dot.green { background: #27c93f; }
+
+        .terminal-title {
+            margin: 0;
+            color: #e6edf3;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        pre.terminal-code {
+            background-color: #0d1117;
+            color: #e6edf3;
+            padding: 18px 22px;
+            margin: 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+            min-height: 260px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 13.5px;
+        }
+
+        pre.terminal-code[contenteditable="true"]:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px #388bfd;
+        }
+
+        .badge-eco {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .badge-alt {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .badge-ovs {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
         }
 
         #copyToast {
             position: fixed;
             bottom: 28px;
             right: 28px;
-            background: #1e1e1e;
+            background: #161b22;
             color: #fff;
-            border: 1px solid #00d4ff;
-            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.35);
+            border: 1px solid #38bdf8;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
             padding: 12px 22px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             z-index: 10050;
@@ -554,277 +741,269 @@
             opacity: 1;
             transform: translateY(0);
         }
-
-        .badge-eco {
-            background: #2e7d32;
-            color: white;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-left: 5px;
-            font-weight: bold;
-        }
-
-        .badge-alt {
-            background: #c67a00;
-            color: white;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-left: 5px;
-            font-weight: bold;
-        }
-
-        .badge-ovs {
-            background: #0069d9;
-            color: white;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 3px;
-            margin-left: 5px;
-            font-weight: bold;
-        }
     </style>
 </head>
 
 <body class="dark-theme">
 
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <div>
-                <h1>Генератор сетевых и серверных настроек (Модуль 1 + Модуль 2)</h1>
-                <div class="subtitle">Модуль 1 (Задания 1–11: Сеть, VLAN, GRE, OSPF, NAT, DHCP, DNS) + Модуль 2 (Задания 1–8: Samba DC, RAID0, NFS, Chrony, Ansible, Docker, LAMP, DNAT)</div>
-            </div>
-            <div style="display: flex; gap: 14px; align-items: center;">
-                <button id="themeToggle" onclick="toggleTheme()"
-                    style="background: none; border: none; font-size: 24px; cursor: pointer; padding: 0;"
-                    title="Переключить тему">☀️</button>
-            </div>
-        </div>
-
-        <h3>Готовые пресеты адресации (меняют все подсети и IP-адреса устройств)</h3>
-        <div class="buttons" style="margin-top: 10px; flex-wrap: wrap;">
-            <button id="btnPresetDefault" class="btn-preset active-preset" onclick="loadPreset('default', this)">🎯 Пресет 1: 172.16.x.x (По тексту задания)</button>
-            <button id="btnPresetDe2027" class="btn-preset" onclick="loadPreset('de2027', this)">🏆 Пресет 2: 10.10.x.x / 10.20.x.x (Стандарт ДЭ)</button>
-            <button id="btnPreset192Full" class="btn-preset" onclick="loadPreset('preset192full', this)">🌐 Пресет 3: Полный 192.168.x.x (Все сети 192.168)</button>
-            <button id="btnPreset192Mix" class="btn-preset" onclick="loadPreset('preset192mix', this)">⚙️ Пресет 4: 192.168.x.x + ISP 172.16.1.0/2.0</button>
-        </div>
-
-        <h3>Общие настройки системы (Модуль 1 + Модуль 2)</h3>
-        <div class="form-section">
-            <div class="form-group">
-                <label for="ifacePrefix">Префикс интерфейса Linux (ens3, enp7s, eth0):</label>
-                <input type="text" id="ifacePrefix" value="enp7s" list="ifaceSuggestions"
-                    placeholder="ens3, enp7s, ens18, eth0..." oninput="onAnyFieldChange()">
-                <datalist id="ifaceSuggestions">
-                    <option value="enp7s">enp7s (enp7s1, enp7s2, enp7s3)</option>
-                    <option value="ens3">ens3 (ens3, ens4, ens5)</option>
-                    <option value="ens">ens (ens1, ens2, ens3)</option>
-                    <option value="ens18">ens18 (ens18, ens19, ens20)</option>
-                    <option value="eth0">eth0 (eth0, eth1, eth2)</option>
-                </datalist>
-                <div style="display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
-                    <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
-                        onclick="setIfacePrefix('enp7s')">enp7s (1, 2, 3)</button>
-                    <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
-                        onclick="setIfacePrefix('ens3')">ens3 (3, 4, 5)</button>
-                    <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
-                        onclick="setIfacePrefix('ens18')">ens18 (18, 19, 20)</button>
-                    <button type="button" class="btn-preset" style="padding: 3px 8px; font-size: 12px;"
-                        onclick="setIfacePrefix('eth0')">eth0 (0, 1, 2)</button>
-                </div>
-                <span id="ifaceHint" class="mask-hint" style="font-size: 12px; margin-top: 4px;"></span>
-            </div>
-            <div class="form-group">
-                <label for="domain">Домен DNS и Samba AD (М1 п. 9–10, М2 п. 1):</label>
-                <input type="text" id="domain" value="au-team.irpo" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="timezone">Часовой пояс Linux (М1 п. 11):</label>
-                <input type="text" id="timezone" value="Asia/Yekaterinburg" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="ecoTz">Часовой пояс EcoRouter (М1 п. 11):</label>
-                <input type="text" id="ecoTz" value="utc+5" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="extDns">Внешний DNS 1 (М1 п. 10):</label>
-                <input type="text" id="extDns" value="77.88.8.7" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="extDns2">Внешний DNS 2 (М1 п. 10):</label>
-                <input type="text" id="extDns2" value="77.88.8.3" oninput="onAnyFieldChange()">
-            </div>
-        </div>
-
-        <h3>Пользователи, SSH и параметры Модуля 2</h3>
-        <div class="form-section">
-            <div class="form-group">
-                <label for="rtrUser">Пользователь HQ-RTR и BR-RTR (М1 п. 3):</label>
-                <input type="text" id="rtrUser" value="net_admin" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="rtrPwd">Пароль Router / OSPF MD5 (М1 п. 3, 7):</label>
-                <input type="text" id="rtrPwd" value="P@ssw0rd" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="srvUser">Пользователь HQ-SRV и BR-SRV (М1 п. 3, 5):</label>
-                <input type="text" id="srvUser" value="sshuser" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="srvPwd">Пароль Server / Samba / MariaDB:</label>
-                <input type="text" id="srvPwd" value="P@ssw0rd" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="srvUid">UID пользователя sshuser (М1 п. 3):</label>
-                <input type="text" id="srvUid" value="2027" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="sshPort">Порт SSH и проброса (М1 п. 5, М2 п. 8):</label>
-                <input type="text" id="sshPort" value="2027" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="adGroup">Группа и префикс пользователей AD (М2 п. 1):</label>
-                <input type="text" id="adGroup" value="hq" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="raidDisks">Диски для RAID 0 md0 на HQ-SRV (М2 п. 2):</label>
-                <input type="text" id="raidDisks" value="/dev/sdb /dev/sdc" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="ntpUpstream">Вышестоящий NTP сервер на ISP (М2 п. 4):</label>
-                <input type="text" id="ntpUpstream" value="ntp0.ntp-servers.net" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="ntpStratum">Стратум Chrony на ISP (М2 п. 4):</label>
-                <input type="number" id="ntpStratum" value="5" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="webExtPort">Внешний порт Web/Docker для проброса (М2 п. 6, 8):</label>
-                <input type="number" id="webExtPort" value="8080" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label for="webDbName">Имя БД и пользователя MariaDB (М2 п. 7):</label>
-                <div style="display: flex; gap: 6px;">
-                    <input type="text" id="webDbName" value="webdb" placeholder="БД (webdb)" style="width: 50%;" oninput="onAnyFieldChange()">
-                    <input type="text" id="webDbUser" value="web" placeholder="Юзер (web)" style="width: 50%;" oninput="onAnyFieldChange()">
+        <!-- Верхняя шапка сайта -->
+        <header class="app-header">
+            <div class="brand-wrap">
+                <div class="brand-icon">⚡</div>
+                <div class="brand-title">
+                    <h1>NetOps Конфигуратор • Демоэкзамен (Модуль 1 + Модуль 2)</h1>
+                    <div class="brand-subtitle">Генератор конфигураций EcoRouter OS, Open vSwitch и ALT Linux (HQ + BR + ISP)</div>
                 </div>
             </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <button id="themeToggle" class="theme-btn" onclick="toggleTheme()" title="Переключить тему">☀️</button>
+            </div>
+        </header>
+
+        <!-- Панель быстрых пресетов -->
+        <div class="presets-bar">
+            <div class="presets-label">
+                <span>🎛️</span>
+                <span>Пресеты адресации стенда:</span>
+            </div>
+            <div class="presets-buttons">
+                <button id="btnPresetDefault" class="btn-preset active-preset" onclick="loadPreset('default', this)">🎯 172.16.x.x (По тексту задания)</button>
+                <button id="btnPresetDe2027" class="btn-preset" onclick="loadPreset('de2027', this)">🏆 10.10.x.x / 10.20.x.x (Стандарт ДЭ)</button>
+                <button id="btnPreset192Full" class="btn-preset" onclick="loadPreset('preset192full', this)">🌐 Полный 192.168.x.x</button>
+                <button id="btnPreset192Mix" class="btn-preset" onclick="loadPreset('preset192mix', this)">⚙️ 192.168.x.x + ISP 172.16.1.0/2.0</button>
+            </div>
         </div>
 
-        <details>
-            <summary>
-                <h3>Имена устройств и записи DNS (Таблица 3) (Нажмите, чтобы развернуть)</h3>
-            </summary>
-            <div style="margin-top: 15px;">
+        <!-- Основные системные и сервисные карточки -->
+        <div class="cards-grid-2">
+            <!-- Карточка 1: Базовая система и DNS -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3 class="card-title"><span>🌐</span> Система, Интерфейсы и DNS</h3>
+                    <span class="card-badge">Модуль 1 • п. 1, 9, 10, 11</span>
+                </div>
                 <div class="form-section">
-                    <div class="form-group"><label>HQ-RTR:</label><input type="text" id="nameHqRtr" value="hq-rtr" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>HQ-SW:</label><input type="text" id="nameHqSw" value="hq-sw" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>HQ-SRV:</label><input type="text" id="nameHqSrv" value="hq-srv" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>HQ-CLI:</label><input type="text" id="nameHqCli" value="hq-cli" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>BR-RTR:</label><input type="text" id="nameBrRtr" value="br-rtr" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>BR-FW:</label><input type="text" id="nameBrFw" value="br-fw" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>BR-SRV:</label><input type="text" id="nameBrSrv" value="br-srv" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>CNAME 1:</label><input type="text" id="cname1" value="moodle" oninput="onAnyFieldChange()"></div>
-                    <div class="form-group"><label>CNAME 2:</label><input type="text" id="cname2" value="wiki" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="ifacePrefix">
+                            <span>Префикс сетевых интерфейсов Linux:</span>
+                            <span id="ifaceHint" class="mask-hint"></span>
+                        </label>
+                        <input type="text" id="ifacePrefix" value="enp7s" list="ifaceSuggestions"
+                            placeholder="ens3, enp7s, ens18, eth0..." oninput="onAnyFieldChange()">
+                        <datalist id="ifaceSuggestions">
+                            <option value="enp7s">enp7s (enp7s1, enp7s2, enp7s3)</option>
+                            <option value="ens3">ens3 (ens3, ens4, ens5)</option>
+                            <option value="ens">ens (ens1, ens2, ens3)</option>
+                            <option value="ens18">ens18 (ens18, ens19, ens20)</option>
+                            <option value="eth0">eth0 (eth0, eth1, eth2)</option>
+                        </datalist>
+                        <div class="quick-chips">
+                            <button type="button" class="chip-btn" onclick="setIfacePrefix('enp7s')">enp7s (1..3)</button>
+                            <button type="button" class="chip-btn" onclick="setIfacePrefix('ens3')">ens3 (3..5)</button>
+                            <button type="button" class="chip-btn" onclick="setIfacePrefix('ens18')">ens18 (18..20)</button>
+                            <button type="button" class="chip-btn" onclick="setIfacePrefix('eth0')">eth0 (0..2)</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="domain">Домен DNS и Samba AD:</label>
+                        <input type="text" id="domain" value="au-team.irpo" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="timezone">Часовой пояс Linux:</label>
+                        <input type="text" id="timezone" value="Asia/Yekaterinburg" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="ecoTz">Часовой пояс EcoRouter:</label>
+                        <input type="text" id="ecoTz" value="utc+5" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="extDns">Внешний DNS 1 (Forwarder):</label>
+                        <input type="text" id="extDns" value="77.88.8.7" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="extDns2">Внешний DNS 2 (Forwarder):</label>
+                        <input type="text" id="extDns2" value="77.88.8.3" oninput="onAnyFieldChange()">
+                    </div>
                 </div>
             </div>
-        </details>
 
-        <h3>Сетевые подсети и маски (При изменении подсети все IP-адреса пересчитываются автоматически)</h3>
-
-        <h4>Сегмент HQ (Главный офис: HQ-RTR, HQ-SW, HQ-SRV, HQ-CLI)</h4>
-        <div class="form-section">
-            <div class="form-group">
-                <label>VLAN 100 ID (SRV-NET -> HQ-SRV):</label>
-                <input type="number" id="vlan100" value="100" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label>Подсеть VLAN 100 (HQ-SRV):</label>
-                <input type="text" id="subnet100" value="172.16.100.0" oninput="onSubnetChange('100')">
-            </div>
-            <div class="form-group">
-                <label>Хостов VLAN 100 (не более 32 адресов) <span id="hint100" class="mask-hint"></span>:</label>
-                <input type="number" id="hosts100" value="30" oninput="onSubnetChange('100')" min="1" max="254">
-            </div>
-
-            <div class="form-group">
-                <label>VLAN 200 ID (CLI-NET -> HQ-CLI):</label>
-                <input type="number" id="vlan200" value="200" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label>Подсеть VLAN 200 (HQ-CLI):</label>
-                <input type="text" id="subnet200" value="172.16.200.0" oninput="onSubnetChange('200')">
-            </div>
-            <div class="form-group">
-                <label>Хостов VLAN 200 (не более 16 адресов) <span id="hint200" class="mask-hint"></span>:</label>
-                <input type="number" id="hosts200" value="14" oninput="onSubnetChange('200')" min="1" max="254">
-            </div>
-
-            <div class="form-group">
-                <label>VLAN 999 ID (Управление HQ-SW):</label>
-                <input type="number" id="vlan999" value="999" oninput="onAnyFieldChange()">
-            </div>
-            <div class="form-group">
-                <label>Подсеть VLAN 999 (Управление):</label>
-                <input type="text" id="subnet999" value="172.16.99.0" oninput="onSubnetChange('999')">
-            </div>
-            <div class="form-group">
-                <label>Хостов VLAN 999 (не более 8 адресов) <span id="hint999" class="mask-hint"></span>:</label>
-                <input type="number" id="hosts999" value="6" oninput="onSubnetChange('999')" min="1" max="254">
+            <!-- Карточка 2: Пользователи, SSH и Сервисы Модуля 2 -->
+            <div class="settings-card accent-purple">
+                <div class="card-header">
+                    <h3 class="card-title"><span>🔐</span> Безопасность, SSH и Сервисы</h3>
+                    <span class="card-badge">М1 п. 3, 5, 7 + М2 п. 1–8</span>
+                </div>
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="rtrUser">Юзер RTR (net_admin):</label>
+                        <input type="text" id="rtrUser" value="net_admin" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="rtrPwd">Пароль RTR / OSPF MD5:</label>
+                        <input type="text" id="rtrPwd" value="P@ssw0rd" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="srvUser">Юзер SRV (sshuser):</label>
+                        <input type="text" id="srvUser" value="sshuser" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="srvPwd">Пароль SRV / AD / БД:</label>
+                        <input type="text" id="srvPwd" value="P@ssw0rd" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="srvUid">UID и Порт SSH:</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="srvUid" value="2027" title="UID sshuser" style="width: 50%;" oninput="onAnyFieldChange()">
+                            <input type="text" id="sshPort" value="2027" title="SSH Порт" style="width: 50%;" oninput="onAnyFieldChange()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="adGroup">Группа AD и Порт Web:</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="adGroup" value="hq" title="Группа AD" style="width: 50%;" oninput="onAnyFieldChange()">
+                            <input type="number" id="webExtPort" value="8080" title="Порт Web/Docker" style="width: 50%;" oninput="onAnyFieldChange()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="raidDisks">Диски RAID 0 (HQ-SRV):</label>
+                        <input type="text" id="raidDisks" value="/dev/sdb /dev/sdc" oninput="onAnyFieldChange()">
+                    </div>
+                    <div class="form-group">
+                        <label for="ntpUpstream">NTP Сервер и Стратум:</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="ntpUpstream" value="ntp0.ntp-servers.net" style="width: 70%;" oninput="onAnyFieldChange()">
+                            <input type="number" id="ntpStratum" value="5" style="width: 30%;" oninput="onAnyFieldChange()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="webDbName">MariaDB (База / Юзер):</label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="webDbName" value="webdb" style="width: 50%;" oninput="onAnyFieldChange()">
+                            <input type="text" id="webDbUser" value="web" style="width: 50%;" oninput="onAnyFieldChange()">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h4>Внешние сети ISP и туннель GRE (п. 2, 6)</h4>
-        <div class="form-section">
-            <div class="form-group">
-                <label>Сеть ISP-HQ (в сторону HQ-RTR):</label>
-                <input type="text" id="subnetIspHq" value="172.16.1.0" oninput="onSubnetChange('IspHq')">
+        <!-- 3 карточки подсетей: HQ, ISP+GRE, BR -->
+        <div class="cards-grid-3">
+            <!-- Сегмент HQ -->
+            <div class="settings-card accent-green">
+                <div class="card-header">
+                    <h3 class="card-title"><span>🏢</span> Сегмент HQ (Главный офис)</h3>
+                    <span class="card-badge">VLAN 100 / 200 / 999</span>
+                </div>
+                <div class="form-section" style="grid-template-columns: 1fr;">
+                    <div class="form-group">
+                        <label>
+                            <span>VLAN 100 (HQ-SRV, ≤32 IP):</span>
+                            <span id="hint100" class="mask-hint"></span>
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="number" id="vlan100" value="100" style="width: 25%;" title="VLAN ID" oninput="onAnyFieldChange()">
+                            <input type="text" id="subnet100" value="172.16.100.0" style="width: 50%;" oninput="onSubnetChange('100')">
+                            <input type="number" id="hosts100" value="30" style="width: 25%;" title="Хостов" oninput="onSubnetChange('100')" min="1" max="254">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span>VLAN 200 (HQ-CLI, ≤16 IP):</span>
+                            <span id="hint200" class="mask-hint"></span>
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="number" id="vlan200" value="200" style="width: 25%;" title="VLAN ID" oninput="onAnyFieldChange()">
+                            <input type="text" id="subnet200" value="172.16.200.0" style="width: 50%;" oninput="onSubnetChange('200')">
+                            <input type="number" id="hosts200" value="14" style="width: 25%;" title="Хостов" oninput="onSubnetChange('200')" min="1" max="254">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span>VLAN 999 (HQ-SW MGMT, ≤8 IP):</span>
+                            <span id="hint999" class="mask-hint"></span>
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="number" id="vlan999" value="999" style="width: 25%;" title="VLAN ID" oninput="onAnyFieldChange()">
+                            <input type="text" id="subnet999" value="172.16.99.0" style="width: 50%;" oninput="onSubnetChange('999')">
+                            <input type="number" id="hosts999" value="6" style="width: 25%;" title="Хостов" oninput="onSubnetChange('999')" min="1" max="254">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Сеть ISP-BR (в сторону BR-RTR):</label>
-                <input type="text" id="subnetIspBr" value="172.16.2.0" oninput="onSubnetChange('IspBr')">
+
+            <!-- Внешние сети ISP и GRE -->
+            <div class="settings-card">
+                <div class="card-header">
+                    <h3 class="card-title"><span>☁️</span> Линки ISP и Туннель GRE</h3>
+                    <span class="card-badge">WAN + GRE /30</span>
+                </div>
+                <div class="form-section" style="grid-template-columns: 1fr;">
+                    <div class="form-group">
+                        <label>
+                            <span>Сеть ISP-HQ (к HQ-RTR):</span>
+                            <span id="hintIsp" class="mask-hint"></span>
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="subnetIspHq" value="172.16.1.0" style="width: 72%;" oninput="onSubnetChange('IspHq')">
+                            <input type="number" id="hostsIsp" value="14" style="width: 28%;" title="Хостов ISP" oninput="onSubnetChange('Isp')" min="1" max="254">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><span>Сеть ISP-BR (к BR-RTR):</span></label>
+                        <input type="text" id="subnetIspBr" value="172.16.2.0" oninput="onSubnetChange('IspBr')">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span>Туннель GRE (HQ-RTR ↔ BR-RTR):</span>
+                            <span id="hintGre" class="mask-hint"></span>
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="subnetGre" value="10.10.10.0" style="width: 72%;" oninput="onSubnetChange('Gre')">
+                            <input type="number" id="hostsGre" value="2" style="width: 28%;" title="Хостов GRE" oninput="onSubnetChange('Gre')" min="1" max="254">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Хостов ISP (/28 = 14) <span id="hintIsp" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsIsp" value="14" oninput="onSubnetChange('Isp')" min="1" max="254">
-            </div>
-            <div class="form-group">
-                <label>Сеть GRE (между HQ-RTR и BR-RTR):</label>
-                <input type="text" id="subnetGre" value="10.10.10.0" oninput="onSubnetChange('Gre')">
-            </div>
-            <div class="form-group">
-                <label>Хостов GRE (мин. маска /30) <span id="hintGre" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsGre" value="2" oninput="onSubnetChange('Gre')" min="1" max="254">
+
+            <!-- Сегмент BR -->
+            <div class="settings-card accent-amber">
+                <div class="card-header">
+                    <h3 class="card-title"><span>🧱</span> Сегмент BR (Филиал)</h3>
+                    <span class="card-badge">FW-NET + BR-NET</span>
+                </div>
+                <div class="form-section" style="grid-template-columns: 1fr;">
+                    <div class="form-group">
+                        <label>
+                            <span>Сеть FW-NET (BR-RTR ↔ BR-FW):</span>
+                            <span id="hintFwNet" class="mask-hint"></span>
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="subnetFwNet" value="172.16.3.0" style="width: 72%;" oninput="onSubnetChange('FwNet')">
+                            <input type="number" id="hostsFwNet" value="2" style="width: 28%;" title="Хостов FW-NET" oninput="onSubnetChange('FwNet')" min="1" max="254">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span>Сеть BR-NET (BR-FW ↔ BR-SRV):</span>
+                            <span id="hintBrNet" class="mask-hint"></span>
+                        </label>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="text" id="subnetBrNet" value="172.16.4.0" style="width: 72%;" oninput="onSubnetChange('BrNet')">
+                            <input type="number" id="hostsBrNet" value="14" style="width: 28%;" title="Хостов BR-NET" oninput="onSubnetChange('BrNet')" min="1" max="254">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h4>Сегмент BR (Филиал: BR-RTR &lt;-&gt; BR-FW &lt;-&gt; BR-SRV) (п. 1)</h4>
-        <div class="form-section">
-            <div class="form-group">
-                <label>Сеть FW-NET (BR-RTR &lt;-&gt; BR-FW):</label>
-                <input type="text" id="subnetFwNet" value="172.16.3.0" oninput="onSubnetChange('FwNet')">
-            </div>
-            <div class="form-group">
-                <label>Хостов FW-NET (мин. маска /30) <span id="hintFwNet" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsFwNet" value="2" oninput="onSubnetChange('FwNet')" min="1" max="254">
-            </div>
-            <div class="form-group">
-                <label>Сеть BR-NET (BR-FW &lt;-&gt; BR-SRV):</label>
-                <input type="text" id="subnetBrNet" value="172.16.4.0" oninput="onSubnetChange('BrNet')">
-            </div>
-            <div class="form-group">
-                <label>Хостов BR-NET (не более 16 адресов) <span id="hintBrNet" class="mask-hint"></span>:</label>
-                <input type="number" id="hostsBrNet" value="14" oninput="onSubnetChange('BrNet')" min="1" max="254">
-            </div>
-        </div>
-
-        <!-- Блок точных IP-адресов всех интерфейсов устройств -->
-        <details open>
+        <!-- Выпадающий блок: Точные IP-адреса интерфейсов -->
+        <details class="custom-drawer">
             <summary>
-                <h3>Точные IPv4-адреса интерфейсов устройств (Авторасчёт по пресету + ручное редактирование)</h3>
+                <span>🎯 Точные IPv4-адреса всех 16 интерфейсов устройств (Авторасчёт по пресету + ручная правка)</span>
+                <span style="font-size: 12px; color: var(--accent-primary);">Развернуть / Свернуть ▾</span>
             </summary>
-            <div style="margin-top: 12px;">
+            <div class="drawer-body">
                 <div class="form-section">
                     <div class="form-group"><label>ISP (к HQ-RTR):</label><input type="text" id="ipIspHqInput" value="172.16.1.1" oninput="onAnyFieldChange()"></div>
                     <div class="form-group"><label>HQ-RTR (WAN к ISP):</label><input type="text" id="ipHqExtInput" value="172.16.1.2" oninput="onAnyFieldChange()"></div>
@@ -849,12 +1028,33 @@
             </div>
         </details>
 
+        <!-- Выпадающий блок: Имена устройств и CNAME -->
+        <details class="custom-drawer">
+            <summary>
+                <span>🏷️ Имена узлов (hostname) и CNAME-алиасы DNS (Таблица 3)</span>
+                <span style="font-size: 12px; color: var(--accent-primary);">Развернуть / Свернуть ▾</span>
+            </summary>
+            <div class="drawer-body">
+                <div class="form-section">
+                    <div class="form-group"><label>HQ-RTR:</label><input type="text" id="nameHqRtr" value="hq-rtr" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-SW:</label><input type="text" id="nameHqSw" value="hq-sw" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-SRV:</label><input type="text" id="nameHqSrv" value="hq-srv" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>HQ-CLI:</label><input type="text" id="nameHqCli" value="hq-cli" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-RTR:</label><input type="text" id="nameBrRtr" value="br-rtr" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-FW:</label><input type="text" id="nameBrFw" value="br-fw" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>BR-SRV:</label><input type="text" id="nameBrSrv" value="br-srv" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>CNAME 1:</label><input type="text" id="cname1" value="moodle" oninput="onAnyFieldChange()"></div>
+                    <div class="form-group"><label>CNAME 2:</label><input type="text" id="cname2" value="wiki" oninput="onAnyFieldChange()"></div>
+                </div>
+            </div>
+        </details>
+
         <!-- Панель автоматической валидации -->
         <div id="validationPanel" class="validation-panel valid">
             <span id="validationIcon" style="font-size: 22px;">🛡️</span>
             <div style="flex: 1;">
-                <div style="font-weight: bold; font-size: 15px;" id="validationTitle">Сеть сбалансирована: конфликтов адресации не обнаружено</div>
-                <div style="font-size: 12.5px; opacity: 0.9; margin-top: 3px;" id="validationDetails">Все 8 подсетей и GRE туннель распределены изолированно без пересечений.</div>
+                <div style="font-weight: 700; font-size: 14.5px;" id="validationTitle">Сеть сбалансирована: конфликтов адресации не обнаружено</div>
+                <div style="font-size: 12.5px; opacity: 0.9; margin-top: 2px;" id="validationDetails">Все 8 подсетей и GRE туннель распределены изолированно без пересечений.</div>
             </div>
             <div id="validationBadges"></div>
         </div>
@@ -864,11 +1064,11 @@
             <div class="topology-header">
                 <div class="topology-title">
                     <span>🗺️</span>
-                    <span>Интерактивная схема топологии с текущими IP-адресами узлов</span>
-                    <span style="font-size: 12px; font-weight: normal; color: #888; margin-left: 8px;">(Кликните на узел для открытия его скрипта)</span>
+                    <span>Интерактивная карта топологии стенда</span>
+                    <span style="font-size: 12px; font-weight: normal; color: var(--text-muted); margin-left: 6px;">(Кликните на любое устройство для перехода к его конфигурации)</span>
                 </div>
-                <div style="font-size: 12px; color: #888;" id="topoStatusSummary">
-                    HQ (RAID0 + NFS + LAMP + AD Client) • BR (Samba DC + Ansible + Docker) • ISP (Chrony Stratum 5)
+                <div style="font-size: 12px; color: var(--text-muted);">
+                    🟢 Активный узел подсвечивается на схеме
                 </div>
             </div>
             <div style="overflow-x: auto; width: 100%; display: flex; justify-content: center;">
@@ -880,15 +1080,17 @@
 
         <!-- Переключатель модулей -->
         <div class="module-switch-bar">
-            <span style="font-weight: bold; font-size: 14px;">Режим отображения скриптов:</span>
-            <button type="button" id="modBtnAll" class="btn-mod active" onclick="setModuleFilter('all')">🔥 Модуль 1 + Модуль 2 (Полный)</button>
+            <span style="font-weight: 700; font-size: 13.5px; margin-right: 4px;">Режим генерации:</span>
+            <button type="button" id="modBtnAll" class="btn-mod active" onclick="setModuleFilter('all')">🔥 Модуль 1 + Модуль 2 (Все задания)</button>
             <button type="button" id="modBtnM1" class="btn-mod" onclick="setModuleFilter('m1')">🌐 Только Модуль 1 (Задания 1–11)</button>
             <button type="button" id="modBtnM2" class="btn-mod" onclick="setModuleFilter('m2')">🚀 Только Модуль 2 (Задания 1–8)</button>
-            <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-                <input type="checkbox" id="removeComments" onchange="renderScriptTabsAndActive()"
-                    style="width: 18px; height: 18px; cursor: pointer; margin: 0;">
-                <label for="removeComments" style="margin: 0; cursor: pointer; font-weight: bold;">Без комментариев</label>
-                <button class="btn-generate" onclick="generateScript(false)" style="padding: 8px 16px; font-size: 14px;">⚡ Обновить скрипты</button>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+                <label style="margin: 0; cursor: pointer; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+                    <input type="checkbox" id="removeComments" onchange="renderScriptTabsAndActive()"
+                        style="width: 17px; height: 17px; cursor: pointer; margin: 0;">
+                    <span>Чистый код (без комментариев)</span>
+                </label>
+                <button class="btn-generate" onclick="generateScript(false)">⚡ Обновить скрипты</button>
             </div>
         </div>
 
@@ -899,12 +1101,12 @@
         <div id="scriptControlsBar" class="script-controls-bar" style="display: none;">
             <div style="display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap;">
                 <input type="text" id="scriptSearchInput" class="script-search-input"
-                    placeholder="🔍 Поиск по командам текущего узла..." oninput="filterActiveScript()">
-                <span id="searchMatchesCount" style="font-size: 12px; color: #007bff; font-weight: bold;"></span>
+                    placeholder="🔍 Быстрый поиск команды или IP в текущем скрипте..." oninput="filterActiveScript()">
+                <span id="searchMatchesCount" style="font-size: 12.5px; color: var(--accent-primary); font-weight: 700;"></span>
             </div>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <button class="btn-copy" onclick="copyCurrentTabScript()">📋 Копировать вкладку</button>
-                <button class="btn-download-all" onclick="downloadAllScripts()">💾 Скачать все файлы</button>
+                <button class="btn-download-all" onclick="downloadAllScripts()">💾 Скачать все (.sh / .cfg)</button>
             </div>
         </div>
 
@@ -943,30 +1145,23 @@
         }
 
         function parseInterfaceConfig(val) {
-            let raw = (val || 'enp7s').trim();
+            const raw = (val || 'enp7s').trim();
             const match = raw.match(/^([a-zA-Z0-9]*[a-zA-Z_-])(\d+)$/);
             if (match) {
                 const prefix = match[1];
                 const startNum = parseInt(match[2], 10);
                 return {
-                    raw: raw,
-                    prefix: prefix,
                     iface1: `${prefix}${startNum}`,
                     iface2: `${prefix}${startNum + 1}`,
-                    iface3: `${prefix}${startNum + 2}`,
-                    cleanPrefix: prefix
-                };
-            } else {
-                const prefix = raw || 'enp7s';
-                return {
-                    raw: raw,
-                    prefix: prefix,
-                    iface1: `${prefix}1`,
-                    iface2: `${prefix}2`,
-                    iface3: `${prefix}3`,
-                    cleanPrefix: prefix
+                    iface3: `${prefix}${startNum + 2}`
                 };
             }
+            const prefix = raw || 'enp7s';
+            return {
+                iface1: `${prefix}1`,
+                iface2: `${prefix}2`,
+                iface3: `${prefix}3`
+            };
         }
 
         function updateIfaceHint() {
@@ -975,7 +1170,7 @@
             const cfg = parseInterfaceConfig(raw);
             const hintEl = document.getElementById('ifaceHint');
             if (hintEl) {
-                hintEl.innerText = `Порты Linux: ${cfg.iface1} (1-й порт / WAN / Trunk), ${cfg.iface2} (2-й порт / LAN / SRV), ${cfg.iface3} (3-й порт / CLI / ISP-BR)`;
+                hintEl.innerText = `${cfg.iface1}, ${cfg.iface2}, ${cfg.iface3}`;
             }
         }
 
@@ -996,26 +1191,25 @@
             if (h <= 30) return '27';
             if (h <= 62) return '26';
             if (h <= 126) return '25';
-            if (h <= 254) return '24';
             return '24';
         }
 
         function updateMaskHints() {
             const fields = [
-                { id: '100', text: 'макс. 32 адреса' },
-                { id: '200', text: 'макс. 16 адресов' },
-                { id: '999', text: 'макс. 8 адресов' },
-                { id: 'Isp', text: 'сеть /28' },
-                { id: 'Gre', text: 'мин. маска /30' },
-                { id: 'FwNet', text: 'мин. маска /30' },
-                { id: 'BrNet', text: 'макс. 16 адресов' }
+                { id: '100', text: '≤32 IP' },
+                { id: '200', text: '≤16 IP' },
+                { id: '999', text: '≤8 IP' },
+                { id: 'Isp', text: 'ISP' },
+                { id: 'Gre', text: 'P2P' },
+                { id: 'FwNet', text: 'P2P' },
+                { id: 'BrNet', text: '≤16 IP' }
             ];
             fields.forEach(f => {
                 const el = document.getElementById('hosts' + f.id);
                 const hint = document.getElementById('hint' + f.id);
                 if (el && hint) {
                     const cidr = getCidr(el.value);
-                    hint.innerText = `(/${cidr} — ${f.text})`;
+                    hint.innerText = `/${cidr} (${f.text})`;
                 }
             });
         }
@@ -1046,7 +1240,6 @@
             return `${(lastHost >>> 24) & 255}.${(lastHost >>> 16) & 255}.${(lastHost >>> 8) & 255}.${lastHost & 255}`;
         }
 
-        // Автоматический пересчёт IP-адресов устройств из базовых адресов подсетей
         function recalcDeviceIpsFromSubnets(whichSubnet) {
             const s100 = cleanIpString(document.getElementById('subnet100').value);
             const s200 = cleanIpString(document.getElementById('subnet200').value);
@@ -1113,7 +1306,6 @@
             return `${m1}\n\n${m2}`;
         }
 
-        // Генератор динамических обратных зон DNS (без дублирования зон и с точными октетами)
         function buildDynamicBindReverseZones(domain, nameHqSrv, records) {
             const zonesMap = {};
             records.forEach(r => {
@@ -1129,8 +1321,8 @@
                 }
             });
 
-            let rfc1912Blocks = [];
-            let zoneFilesCreation = [];
+            const rfc1912Blocks = [];
+            const zoneFilesCreation = [];
 
             Object.keys(zonesMap).forEach(zoneName => {
                 rfc1912Blocks.push(`zone "${zoneName}" IN {\n    type master;\n    file "/etc/bind/zone/${zoneName}";\n};`);
@@ -1213,7 +1405,6 @@ EOF`);
             const maskFwNet = getCidr(document.getElementById('hostsFwNet').value);
             const maskBrNet = getCidr(document.getElementById('hostsBrNet').value);
 
-            // Чтение точных IP-адресов устройств из полей формы
             const ipIspHq = cleanIpString(document.getElementById('ipIspHqInput').value);
             const ipHqExt = cleanIpString(document.getElementById('ipHqExtInput').value);
             const ipIspBr = cleanIpString(document.getElementById('ipIspBrInput').value);
@@ -1253,7 +1444,6 @@ EOF`);
             };
             const netmask200 = cidrToNetmask[mask200] || '255.255.255.240';
 
-            // Формирование обратных зон DNS по реальным IP-адресам устройств
             const revDnsData = buildDynamicBindReverseZones(domain, nameHqSrv, [
                 { ip: ipHqVlan100Rtr, fqdn: `${nameHqRtr}.${domain}` },
                 { ip: ipHqVlan100Srv, fqdn: `${nameHqSrv}.${domain}` },
@@ -1266,9 +1456,7 @@ EOF`);
                 { ip: ipBrNetSrv, fqdn: `${nameBrSrv}.${domain}` }
             ]);
 
-            // =========================================================================
-            // 1. ISP (Модуль 1: п. 1, 2, 11 | Модуль 2: п. 4 Chrony NTP Server)
-            // =========================================================================
+            // 1. ISP
             const ispM1 = `# ======= [МОДУЛЬ 1] ISP (Маршрутизатор провайдера - ALT Linux) =======
 # Задания 1, 2, 11:
 # - Интерфейс к магистральному провайдеру (${iface1}) по DHCP
@@ -1343,9 +1531,7 @@ systemctl restart chronyd
 chronyc tracking
 chronyc sources -v`;
 
-            // =========================================================================
-            // 2. HQ-RTR (EcoRouter CLI) — М1: п. 1,2,3,4,6,7,8,9,11 | М2: п. 5, 8
-            // =========================================================================
+            // 2. HQ-RTR (EcoRouter CLI)
             const hqRtrEcoM1 = `! ======= [МОДУЛЬ 1] HQ-RTR (EcoRouter CLI) =======
 ! Задания 1, 2, 3, 4, 6, 7, 8, 9, 11
 
@@ -1359,7 +1545,6 @@ ntp timezone ${ecoTz}
 
 ! Пользователь ${rtrUser} с максимальными привилегиями (п. 3)
 username ${rtrUser} password ${rtrPwd} role admin
-exit
 
 ! Логические интерфейсы: WAN (isp) и VLAN ${vlan100Id}, ${vlan200Id}, ${vlan999Id} (п. 1, 2, 4, 8)
 interface isp
@@ -1482,9 +1667,7 @@ ip nat source static tcp ${ipHqVlan100Srv} ${sshPort} ${ipHqExt} ${sshPort}
 end
 write memory`;
 
-            // =========================================================================
-            // 3. HQ-RTR (ALT Linux Bash) — М1: п. 1..9,11 | М2: п. 8
-            // =========================================================================
+            // 3. HQ-RTR (ALT Linux Bash)
             const hqRtrBashM1 = `# ======= [МОДУЛЬ 1] HQ-RTR (Маршрутизатор HQ - ALT Linux) =======
 # Задания 1, 2, 3, 4, 6, 7, 8, 9, 11
 
@@ -1577,19 +1760,15 @@ interface gre1
  ip ospf message-digest-key 1 md5 ${rtrPwd}
  no ip ospf passive
 exit
-!
 interface ${iface2}.${vlan100Id}
  ip ospf area 0
 exit
-!
 interface ${iface2}.${vlan200Id}
  ip ospf area 0
 exit
-!
 interface ${iface2}.${vlan999Id}
  ip ospf area 0
 exit
-!
 router ospf
  ospf router-id ${ipGreHq}
  passive-interface default
@@ -1615,8 +1794,8 @@ systemctl enable --now dhcpd
 systemctl restart frr dhcpd`;
 
             const hqRtrBashM2 = `# ======= [МОДУЛЬ 2] HQ-RTR (ALT Linux): Проброс портов DNAT (Пункт 8) =======
-# - Порт ${webExtPort} -> Веб-приложение HQ-SRV (${ipHqVlan100Srv}:80)
-# - Порт ${sshPort} -> SSH HQ-SRV (${ipHqVlan100Srv}:${sshPort})
+# - Порт ${webExtPort} (${ipHqExt}:${webExtPort}) -> Веб-приложение HQ-SRV (${ipHqVlan100Srv}:80)
+# - Порт ${sshPort} (${ipHqExt}:${sshPort}) -> SSH HQ-SRV (${ipHqVlan100Srv}:${sshPort})
 
 cat << 'EOF' > /etc/nftables/nftables.nft
 #!/usr/sbin/nft -f
@@ -1624,8 +1803,8 @@ flush ruleset
 table ip nat {
     chain prerouting {
         type nat hook prerouting priority dstnat;
-        iifname "${iface1}" tcp dport ${webExtPort} dnat to ${ipHqVlan100Srv}:80
-        iifname "${iface1}" tcp dport ${sshPort} dnat to ${ipHqVlan100Srv}:${sshPort}
+        ip daddr ${ipHqExt} tcp dport ${webExtPort} dnat to ${ipHqVlan100Srv}:80
+        ip daddr ${ipHqExt} tcp dport ${sshPort} dnat to ${ipHqVlan100Srv}:${sshPort}
     }
     chain postrouting {
         type nat hook postrouting priority srcnat;
@@ -1637,9 +1816,7 @@ systemctl enable --now nftables
 systemctl restart nftables
 nft list ruleset`;
 
-            // =========================================================================
-            // 4. HQ-SW (Open vSwitch) — М1: п. 1, 4, 11
-            // =========================================================================
+            // 4. HQ-SW (Open vSwitch)
             const hqSwM1 = `# ======= [МОДУЛЬ 1] HQ-SW (Коммутатор сегмента HQ - Open vSwitch / ALT Linux) =======
 # Задания 1, 4, 11:
 # - Имя: ${nameHqSw}.${domain}
@@ -1681,9 +1858,7 @@ ip route replace default via ${ipHqVlan999Rtr}
 ovs-vsctl show
 ip -br a`;
 
-            // =========================================================================
-            // 5. HQ-SRV (ALT Linux) — М1: п. 1,3,5,10,11 | М2: п. 2 (RAID0), 3 (NFS), 4 (Chrony), 7 (Apache+MariaDB)
-            // =========================================================================
+            // 5. HQ-SRV (ALT Linux)
             const hqSrvM1 = `# ======= [МОДУЛЬ 1] HQ-SRV (Сервер главного офиса - ALT Linux) =======
 # Задания 1, 3, 5, 10, 11:
 # - Имя: ${nameHqSrv}.${domain}, IPv4: ${ipHqVlan100Srv}/${mask100}, шлюз: ${ipHqVlan100Rtr}
@@ -1795,32 +1970,42 @@ echo -e "search ${domain}\nnameserver 127.0.0.1" > /etc/resolv.conf`;
             const hqSrvM2 = `# ======= [МОДУЛЬ 2] HQ-SRV: RAID 0, NFS-сервер, Chrony, Веб-приложение LAMP (Пункты 2, 3, 4, 7) =======
 
 # -------------------------------------------------------------------------
-# ПУНКТ 2: Файловое хранилище RAID 0 (/dev/md0 -> /raid, ext4)
+# ПУНКТ 2: Файловое хранилище RAID 0 (/dev/md0 -> раздел /dev/md0p1 -> /raid, ext4)
 # -------------------------------------------------------------------------
-apt-get update && apt-get install -y mdadm fdisk e2fsprogs
+apt-get update && apt-get install -y mdadm fdisk e2fsprogs parted
 
 umount /raid 2>/dev/null || true
 mdadm --stop /dev/md0 2>/dev/null || true
 wipefs -a ${raidDisks} 2>/dev/null || true
 
-yes | mdadm --create /dev/md0 --level=0 --raid-devices=2 ${raidDisks}
+# Сборка дискового массива уровня 0 из двух дисков по 1 Гб
+yes | mdadm --create --verbose /dev/md0 --level=0 --raid-devices=2 ${raidDisks}
 
+# Сохранение конфигурации массива в /etc/mdadm.conf
 echo "DEVICE partitions" > /etc/mdadm.conf
-mdadm --detail --scan >> /etc/mdadm.conf
+mdadm --detail --scan --verbose >> /etc/mdadm.conf
 
-mkfs.ext4 -F /dev/md0
+# Создание раздела на массиве /dev/md0 и форматирование в ext4
+echo -e "o\\nn\\np\\n1\\n\\n\\nw" | fdisk /dev/md0
+partprobe /dev/md0 2>/dev/null || true
+sleep 1
+
+RAID_PART="/dev/md0p1"
+[ -b "\$RAID_PART" ] || RAID_PART="/dev/md0"
+mkfs.ext4 -F "\$RAID_PART"
+
 mkdir -p /raid
 sed -i '\\|/raid|d' /etc/fstab
-echo "/dev/md0 /raid ext4 defaults,nofail 0 0" >> /etc/fstab
+echo "\$RAID_PART /raid ext4 defaults,nofail 0 0" >> /etc/fstab
 systemctl daemon-reload
-mount -a
+mount -av
 df -hT /raid
-cat /proc/mdstat
+lsblk
 
 # -------------------------------------------------------------------------
 # ПУНКТ 3: Сервер сетевой файловой системы NFS (/raid/nfs для сети HQ-CLI)
 # -------------------------------------------------------------------------
-apt-get install -y nfs-server
+apt-get install -y nfs-server nfs-utils
 mkdir -p /raid/nfs
 chmod -R 777 /raid/nfs
 
@@ -1844,7 +2029,7 @@ systemctl restart chronyd
 chronyc sources -v
 
 # -------------------------------------------------------------------------
-# ПУНКТ 7: Веб-приложение (Apache + MariaDB + импорт dump.sql в ${webDbName})
+# ПУНКТ 7: Веб-приложение (Apache + MariaDB + импорт dump.sql в БД ${webDbName})
 # -------------------------------------------------------------------------
 apt-get install -y apache2 apache2-mod_php8.2 php8.2-mysqlnd mariadb-server iconv 2>/dev/null || \\
 apt-get install -y lamp-server mariadb-server iconv
@@ -1852,10 +2037,16 @@ apt-get install -y lamp-server mariadb-server iconv
 systemctl enable --now mariadb
 systemctl enable --now httpd2
 
+# Поиск и монтирование образа Additional.iso
 mkdir -p /mnt/iso
-mount /dev/sr0 /mnt/iso 2>/dev/null || mount /dev/sr1 /mnt/iso 2>/dev/null || true
+mount /dev/sr0 /mnt/iso 2>/dev/null || mount /dev/sr1 /mnt/iso 2>/dev/null || mount /dev/cdrom /mnt/iso 2>/dev/null || true
+if [ ! -d /mnt/iso/web ]; then
+    ISO_FILE=\$(find /root /home -iname "*additional*.iso" 2>/dev/null | head -n 1)
+    [ -n "\$ISO_FILE" ] && mount -o loop,ro "\$ISO_FILE" /mnt/iso
+fi
 
-mariadb -u root << EOF
+# Создание базы данных ${webDbName} и пользователя ${webDbUser} с паролем ${srvPwd}
+cat << 'EOF' | mariadb -u root
 CREATE DATABASE IF NOT EXISTS ${webDbName} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS '${webDbUser}'@'localhost' IDENTIFIED BY '${srvPwd}';
 ALTER USER '${webDbUser}'@'localhost' IDENTIFIED BY '${srvPwd}';
@@ -1863,27 +2054,27 @@ GRANT ALL PRIVILEGES ON ${webDbName}.* TO '${webDbUser}'@'localhost' WITH GRANT 
 FLUSH PRIVILEGES;
 EOF
 
+# Импорт схемы и данных из dump.sql
 if [ -f /mnt/iso/web/dump.sql ]; then
-    iconv -f US-ASCII -t UTF-8 /mnt/iso/web/dump.sql -o /tmp/dump_utf8.sql 2>/dev/null || cp /mnt/iso/web/dump.sql /tmp/dump_utf8.sql
+    iconv -f US-ASCII -t UTF-8 /mnt/iso/web/dump.sql -o /tmp/dump_utf8.sql 2>/dev/null || cp -f /mnt/iso/web/dump.sql /tmp/dump_utf8.sql
     mariadb -u ${webDbUser} -p"${srvPwd}" ${webDbName} < /tmp/dump_utf8.sql
 fi
 
-cp -f /mnt/iso/web/index.php /var/www/html/index.php
-cp -f /mnt/iso/web/logo.png /var/www/html/logo.png
-rm -f /var/www/html/index.html 2>/dev/null || true
+# Копирование файлов веб-приложения (index.php, logo.png, images) в /var/www/html
+cp -rf /mnt/iso/web/* /var/www/html/ 2>/dev/null || true
+rm -f /var/www/html/dump.sql /var/www/html/index.html 2>/dev/null || true
 
-sed -i 's/\\$servername\\s*=.*/\\$servername = "localhost";/g' /var/www/html/index.php
-sed -i 's/\\$username\\s*=.*/\\$username = "${webDbUser}";/g' /var/www/html/index.php
-sed -i 's/\\$password\\s*=.*/\\$password = "${srvPwd}";/g' /var/www/html/index.php
-sed -i 's/\\$dbname\\s*=.*/\\$dbname = "${webDbName}";/g' /var/www/html/index.php
+# Указание правильных учётных данных подключения к БД в index.php
+sed -i 's/\\$servername\\s*=.*/$servername = "localhost";/g' /var/www/html/index.php
+sed -i 's/\\$username\\s*=.*/$username = "${webDbUser}";/g' /var/www/html/index.php
+sed -i 's/\\$password\\s*=.*/$password = "${srvPwd}";/g' /var/www/html/index.php
+sed -i 's/\\$dbname\\s*=.*/$dbname = "${webDbName}";/g' /var/www/html/index.php
 
 chmod -R 755 /var/www/html
 systemctl restart httpd2
 curl -I http://127.0.0.1/index.php`;
 
-            // =========================================================================
-            // 6. HQ-CLI (ALT Linux) — М1: п. 1, 9, 11 | М2: п. 1 (AD + sudo), 3 (NFS), 4 (Chrony)
-            // =========================================================================
+            // 6. HQ-CLI (ALT Linux)
             const hqCliM1 = `# ======= [МОДУЛЬ 1] HQ-CLI (Клиентская рабочая станция HQ - ALT Linux) =======
 # Задания 1, 9, 11:
 # - Полное доменное имя: ${nameHqCli}.${domain}
@@ -1906,15 +2097,29 @@ rm -f /etc/net/ifaces/${iface1}/ipv4address /etc/net/ifaces/${iface1}/ipv4route 
 systemctl restart network
 dhclient -v ${iface1} 2>/dev/null || true
 
-apt-get update && apt-get install -y tzdata
+apt-get update && apt-get install -y tzdata openssh-server sudo
 timedatectl set-timezone ${tz}`;
 
-            const hqCliM2 = `# ======= [МОДУЛЬ 2] HQ-CLI: Ввод в домен Samba DC, sudo для группы ${adGroup}, NFS-клиент, Chrony (Пункты 1, 3, 4) =======
+            const hqCliM2 = `# ======= [МОДУЛЬ 2] HQ-CLI: Ввод в домен Samba DC, sudo для группы ${adGroup}, NFS-клиент, Chrony (Пункты 1, 3, 4, 5) =======
+
+apt-get update && apt-get install -y chrony nfs-clients task-auth-ad-sssd sudo openssh-server
+
+# -------------------------------------------------------------------------
+# Подготовка SSH на HQ-CLI для подключения Ansible с BR-SRV (Пункт 5)
+# -------------------------------------------------------------------------
+useradd -m -s /bin/bash ${srvUser} 2>/dev/null || true
+echo "${srvUser}:${srvPwd}" | chpasswd
+echo "root:${srvPwd}" | chpasswd
+usermod -aG wheel ${srvUser}
+echo "${srvUser} ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/${srvUser}
+chmod 440 /etc/sudoers.d/${srvUser}
+sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/openssh/sshd_config
+systemctl enable --now sshd
+systemctl restart sshd
 
 # -------------------------------------------------------------------------
 # ПУНКТ 4: Настройка клиента сетевого времени Chrony (сервер ISP: ${ipIspHq})
 # -------------------------------------------------------------------------
-apt-get update && apt-get install -y chrony nfs-clients task-auth-ad-sssd sudo
 sed -i 's/^pool /#pool /g; s/^server /#server /g' /etc/chrony.conf
 echo "server ${ipIspHq} iburst prefer" >> /etc/chrony.conf
 systemctl enable --now chronyd
@@ -1925,28 +2130,30 @@ chronyc sources -v
 # -------------------------------------------------------------------------
 # ПУНКТ 1: Ввод машины HQ-CLI в домен Samba DC (${domain}) и настройка sudo
 # -------------------------------------------------------------------------
-cat << 'EOF' > /etc/resolv.conf
+cat << 'EOF' > /etc/net/ifaces/${iface1}/resolv.conf
 search ${domain}
 nameserver ${ipBrNetSrv}
 nameserver ${ipHqVlan100Srv}
 EOF
+cp -f /etc/net/ifaces/${iface1}/resolv.conf /etc/resolv.conf
 
+# Ввод в домен Active Directory
 system-auth write ad ${domain} ${nameHqCli} ${netbiosDomain} Administrator "${srvPwd}" || \\
 echo "${srvPwd}" | realm join -U Administrator ${domain}
 
-pam-config -a --mkhomedir 2>/dev/null || true
-systemctl restart sssd
+# В ALT Linux разрешаем запуск sudo всем пользователям
+control sudo public 2>/dev/null || chmod 4711 /usr/bin/sudo
 
 # Настройка привилегий sudo для группы ${adGroup}: ТОЛЬКО команды cat, grep, id
 cat << 'EOF' > /etc/sudoers.d/${adGroup}
 Cmnd_Alias HQ_ALLOWED = /bin/cat, /usr/bin/cat, /bin/grep, /usr/bin/grep, /usr/bin/id
 %${adGroup} ALL=(ALL) NOPASSWD: HQ_ALLOWED
-%"${domain}\\${adGroup}" ALL=(ALL) NOPASSWD: HQ_ALLOWED
-%"${netbiosDomain}\\${adGroup}" ALL=(ALL) NOPASSWD: HQ_ALLOWED
+%${adGroup}@${domain} ALL=(ALL) NOPASSWD: HQ_ALLOWED
 EOF
 chmod 440 /etc/sudoers.d/${adGroup}
 visudo -c
 
+systemctl restart sssd
 id ${adGroup}user1
 
 # -------------------------------------------------------------------------
@@ -1955,14 +2162,12 @@ id ${adGroup}user1
 mkdir -p /mnt/nfs
 chmod 777 /mnt/nfs
 sed -i '\\|/mnt/nfs|d' /etc/fstab
-echo "${ipHqVlan100Srv}:/raid/nfs /mnt/nfs nfs defaults,_netdev,nofail 0 0" >> /etc/fstab
+echo "${ipHqVlan100Srv}:/raid/nfs /mnt/nfs nfs defaults,_netdev,nofail,x-systemd.automount 0 0" >> /etc/fstab
 systemctl daemon-reload
 mount -av
 df -hT /mnt/nfs`;
 
-            // =========================================================================
-            // 7. BR-RTR (EcoRouter CLI) — М1: п. 1,2,3,6,7,8,11 | М2: п. 4 (NTP), 5 (Ansible), 8 (DNAT)
-            // =========================================================================
+            // 7. BR-RTR (EcoRouter CLI)
             const brRtrEcoM1 = `! ======= [МОДУЛЬ 1] BR-RTR (EcoRouter CLI) =======
 ! Задания 1, 2, 3, 6, 7, 8, 11
 
@@ -1976,7 +2181,6 @@ ntp timezone ${ecoTz}
 
 ! Пользователь ${rtrUser} с максимальными привилегиями (п. 3)
 username ${rtrUser} password ${rtrPwd} role admin
-exit
 
 ! Логические интерфейсы: к ISP (${subnetIspBrVal}/${maskIsp}) и к BR-FW (${subnetFwNetVal}/${maskFwNet})
 interface isp
@@ -2062,9 +2266,7 @@ ip nat source static tcp ${ipBrNetSrv} ${sshPort} ${ipBrExt} ${sshPort}
 end
 write memory`;
 
-            // =========================================================================
-            // 8. BR-RTR (ALT Linux Bash) — М1: п. 1,2,3,6,7,8,11 | М2: п. 4, 8
-            // =========================================================================
+            // 8. BR-RTR (ALT Linux Bash)
             const brRtrBashM1 = `# ======= [МОДУЛЬ 1] BR-RTR (Маршрутизатор филиала BR - ALT Linux) =======
 # Задания 1, 2, 3, 6, 7, 8, 11
 
@@ -2131,12 +2333,10 @@ interface gre1
  ip ospf message-digest-key 1 md5 ${rtrPwd}
  no ip ospf passive
 exit
-!
 interface ${iface2}
  ip ospf area 0
  no ip ospf passive
 exit
-!
 router ospf
  ospf router-id ${ipGreBr}
  passive-interface default
@@ -2160,16 +2360,16 @@ systemctl restart chronyd
 chronyc sources -v
 
 # 2. Статическая трансляция портов DNAT (Пункт 8):
-# - Порт ${webExtPort} -> Приложение testapp BR-SRV (${ipBrNetSrv}:${webExtPort})
-# - Порт ${sshPort} -> SSH BR-SRV (${ipBrNetSrv}:${sshPort})
+# - Порт ${webExtPort} (${ipBrExt}:${webExtPort}) -> Приложение testapp BR-SRV (${ipBrNetSrv}:${webExtPort})
+# - Порт ${sshPort} (${ipBrExt}:${sshPort}) -> SSH BR-SRV (${ipBrNetSrv}:${sshPort})
 cat << 'EOF' > /etc/nftables/nftables.nft
 #!/usr/sbin/nft -f
 flush ruleset
 table ip nat {
     chain prerouting {
         type nat hook prerouting priority dstnat;
-        iifname "${iface1}" tcp dport ${webExtPort} dnat to ${ipBrNetSrv}:${webExtPort}
-        iifname "${iface1}" tcp dport ${sshPort} dnat to ${ipBrNetSrv}:${sshPort}
+        ip daddr ${ipBrExt} tcp dport ${webExtPort} dnat to ${ipBrNetSrv}:${webExtPort}
+        ip daddr ${ipBrExt} tcp dport ${sshPort} dnat to ${ipBrNetSrv}:${sshPort}
     }
     chain postrouting {
         type nat hook postrouting priority srcnat;
@@ -2181,9 +2381,7 @@ systemctl enable --now nftables
 systemctl restart nftables
 nft list ruleset`;
 
-            // =========================================================================
-            // 9. BR-FW (ALT Linux / FRR) — М1: п. 1, 7, 11
-            // =========================================================================
+            // 9. BR-FW (ALT Linux / FRR)
             const brFwM1 = `# ======= [МОДУЛЬ 1] BR-FW (Межсетевой экран филиала BR - ALT Linux / FRR) =======
 # Задания 1, 7, 11:
 # - Имя: ${nameBrFw}.${domain}
@@ -2230,11 +2428,9 @@ interface ${iface1}
  ip ospf area 0
  no ip ospf passive
 exit
-!
 interface ${iface2}
  ip ospf area 0
 exit
-!
 router ospf
  ospf router-id ${ipBrFwFw}
  passive-interface default
@@ -2247,9 +2443,7 @@ EOF
 systemctl enable --now frr
 systemctl restart frr`;
 
-            // =========================================================================
-            // 10. BR-SRV (ALT Linux) — М1: п. 1,3,5,11 | М2: п. 1 (Samba DC), 4 (Chrony), 5 (Ansible), 6 (Docker)
-            // =========================================================================
+            // 10. BR-SRV (ALT Linux)
             const brSrvM1 = `# ======= [МОДУЛЬ 1] BR-SRV (Сервер филиала BR - ALT Linux) =======
 # Задания 1, 3, 5, 11:
 # - Имя: ${nameBrSrv}.${domain}, IPv4: ${ipBrNetSrv}/${maskBrNet}, шлюз: ${ipBrNetFw}
@@ -2311,40 +2505,55 @@ chronyc sources -v
 # -------------------------------------------------------------------------
 apt-get install -y task-samba-dc
 
-systemctl stop samba bind krb5kdc 2>/dev/null || true
-rm -f /etc/samba/smb.conf
-rm -rf /var/lib/samba/* /var/cache/samba/*
-
 sed -i "/${nameBrSrv}/d" /etc/hosts
 echo "${ipBrNetSrv} ${nameBrSrv}.${domain} ${nameBrSrv}" >> /etc/hosts
 
-samba-tool domain provision \\
-    --realm=${realmUpper} \\
-    --domain=${netbiosDomain} \\
-    --adminpass="${srvPwd}" \\
-    --dns-backend=SAMBA_INTERNAL \\
-    --server-role=dc \\
-    --use-rfc2307 \\
-    --option="dns forwarder = ${ipHqVlan100Srv}"
+# Если домен ещё не развёрнут, выполняем чистый provision
+if [ ! -f /var/lib/samba/private/sam.ldb ]; then
+    systemctl stop samba bind krb5kdc 2>/dev/null || true
+    rm -f /etc/samba/smb.conf
+    rm -rf /var/lib/samba/* /var/cache/samba/*
 
-cp -f /var/lib/samba/private/krb5.conf /etc/krb5.conf
+    samba-tool domain provision \\
+        --realm=${realmUpper} \\
+        --domain=${netbiosDomain} \\
+        --adminpass="${srvPwd}" \\
+        --dns-backend=SAMBA_INTERNAL \\
+        --server-role=dc \\
+        --use-rfc2307 \\
+        --option="dns forwarder = ${ipHqVlan100Srv}"
+fi
+
+cp -f /var/lib/samba/private/krb5.conf /etc/krb5.conf 2>/dev/null || true
 systemctl enable --now samba
+sleep 2
 
 echo -e "search ${domain}\nnameserver 127.0.0.1\nnameserver ${ipHqVlan100Srv}" > /etc/resolv.conf
 
-# Политика паролей: мин. длина 8 символов, блокировка после 5 неудачных попыток
+# Политика паролей:
+# - Минимальная длина пароля: 8 символов
+# - Блокировка учётной записи после 5 неудачных попыток входа
 samba-tool domain passwordsettings set \\
     --min-pwd-length=8 \\
-    --account-lockout-threshold=5 \\
-    --complexity=on
+    --account-lockout-threshold=5
 
 # Создание группы ${adGroup} и 5 пользователей (${adGroup}user1 .. ${adGroup}user5)
-samba-tool group add ${adGroup}
+samba-tool group add ${adGroup} 2>/dev/null || true
 for i in {1..5}; do
-    samba-tool user create "${adGroup}user\${i}" "${srvPwd}"
+    samba-tool user create "${adGroup}user\${i}" "${srvPwd}" 2>/dev/null || samba-tool user setpassword "${adGroup}user\${i}" --newpassword="${srvPwd}"
     samba-tool user setexpiry "${adGroup}user\${i}" --noexpiry
-    samba-tool group addmembers ${adGroup} "${adGroup}user\${i}"
+    samba-tool group addmembers ${adGroup} "${adGroup}user\${i}" 2>/dev/null || true
 done
+
+# Добавление записей Таблицы 3 в DNS Samba (чтобы HQ-CLI разрешал все узлы сети)
+samba-tool dns add 127.0.0.1 ${domain} ${nameHqRtr} A ${ipHqVlan100Rtr} -U Administrator%"${srvPwd}" 2>/dev/null || true
+samba-tool dns add 127.0.0.1 ${domain} ${nameHqSw} A ${ipHqSwMgt} -U Administrator%"${srvPwd}" 2>/dev/null || true
+samba-tool dns add 127.0.0.1 ${domain} ${nameHqSrv} A ${ipHqVlan100Srv} -U Administrator%"${srvPwd}" 2>/dev/null || true
+samba-tool dns add 127.0.0.1 ${domain} ${nameHqCli} A ${ipHqVlan200Cli} -U Administrator%"${srvPwd}" 2>/dev/null || true
+samba-tool dns add 127.0.0.1 ${domain} ${nameBrRtr} A ${ipBrFwRtr} -U Administrator%"${srvPwd}" 2>/dev/null || true
+samba-tool dns add 127.0.0.1 ${domain} ${nameBrFw} A ${ipBrFwFw} -U Administrator%"${srvPwd}" 2>/dev/null || true
+samba-tool dns add 127.0.0.1 ${domain} ${cname1} CNAME ${nameHqSrv}.${domain} -U Administrator%"${srvPwd}" 2>/dev/null || true
+samba-tool dns add 127.0.0.1 ${domain} ${cname2} CNAME ${nameHqSrv}.${domain} -U Administrator%"${srvPwd}" 2>/dev/null || true
 
 samba-tool domain passwordsettings show
 samba-tool group listmembers ${adGroup}
@@ -2367,11 +2576,12 @@ EOF
 
 [ -f ~/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa
 
-# ВАРИАНТ А: Инвентарь /etc/ansible/hosts, если ${nameHqRtr} и ${nameBrRtr} на базе EcoRouter:
+# ВАРИАНТ А: Инвентарь /etc/ansible/hosts (если ${nameHqRtr} и ${nameBrRtr} на базе EcoRouter):
+# (На HQ-RTR и BR-RTR должна быть выполнена команда: security none)
 cat << 'EOF' > /etc/ansible/hosts
 [servers]
 ${nameHqSrv} ansible_host=${ipHqVlan100Srv} ansible_port=${sshPort} ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
-${nameHqCli} ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=root ansible_ssh_pass=${srvPwd}
+${nameHqCli} ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
 
 [routers]
 ${nameHqRtr} ansible_host=${ipHqVlan100Rtr} ansible_user=${rtrUser} ansible_password=${rtrPwd} ansible_connection=network_cli ansible_network_os=ios
@@ -2382,7 +2592,7 @@ EOF
 # cat << 'EOF' > /etc/ansible/hosts
 # [servers]
 # ${nameHqSrv} ansible_host=${ipHqVlan100Srv} ansible_port=${sshPort} ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
-# ${nameHqCli} ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=root ansible_ssh_pass=${srvPwd}
+# ${nameHqCli} ansible_host=${ipHqVlan200Cli} ansible_port=22 ansible_user=${srvUser} ansible_ssh_pass=${srvPwd}
 #
 # [routers]
 # ${nameHqRtr} ansible_host=${ipHqVlan100Rtr} ansible_port=22 ansible_user=${rtrUser} ansible_ssh_pass=${rtrPwd}
@@ -2397,9 +2607,15 @@ ansible all -m ping
 apt-get install -y docker-engine docker-compose-v2 2>/dev/null || apt-get install -y docker-engine docker-compose
 systemctl enable --now docker
 
+# Поиск и монтирование образа Additional.iso
 mkdir -p /mnt/iso /opt/testapp
-mount /dev/sr0 /mnt/iso 2>/dev/null || mount /dev/sr1 /mnt/iso 2>/dev/null || true
+mount /dev/sr0 /mnt/iso 2>/dev/null || mount /dev/sr1 /mnt/iso 2>/dev/null || mount /dev/cdrom /mnt/iso 2>/dev/null || true
+if [ ! -d /mnt/iso/docker ]; then
+    ISO_FILE=\$(find /root /home -iname "*additional*.iso" 2>/dev/null | head -n 1)
+    [ -n "\$ISO_FILE" ] && mount -o loop,ro "\$ISO_FILE" /mnt/iso
+fi
 
+# Загрузка образов site_latest и mariadb_latest
 for img in /mnt/iso/docker/*; do
     [ -f "\$img" ] && [[ "\$img" != *.yaml ]] && [[ "\$img" != *.yml ]] && docker load -i "\$img"
 done
@@ -2411,9 +2627,7 @@ docker compose up -d 2>/dev/null || docker-compose up -d
 docker ps
 curl -I http://127.0.0.1:${webExtPort}`;
 
-            // =========================================================================
-            // 11. ТАБЛИЦЫ 2, 3 И ОТЧЁТ (МОДУЛЬ 1 + МОДУЛЬ 2)
-            // =========================================================================
+            // 11. ТАБЛИЦЫ 2, 3 И ОТЧЁТ
             const scriptREPORT = `================================================================================
 ТАБЛИЦА 2 — СВЕДЕНИЯ ОБ АДРЕСАХ УСТРОЙСТВ (Модуль 1, Пункт 1)
 ================================================================================
@@ -2484,7 +2698,7 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
    - Права sudo на HQ-CLI (/etc/sudoers.d/${adGroup}): разрешены только /bin/cat, /bin/grep, /usr/bin/id
 
 2. RAID 0 на HQ-SRV (Пункт 2):
-   - Устройство: /dev/md0, уровень: RAID 0 (striping), диски: ${raidDisks} (по 1 Гб)
+   - Устройство: /dev/md0 (раздел /dev/md0p1), уровень: RAID 0 (striping), диски: ${raidDisks} (по 1 Гб)
    - Файловая система: ext4, точка монтирования: /raid (прописана в /etc/fstab и /etc/mdadm.conf)
 
 3. Сервер NFS на HQ-SRV (Пункт 3):
@@ -2566,6 +2780,7 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
                 btn.onclick = () => {
                     activeTabDeviceName = deviceName;
                     renderScriptTabsAndActive();
+                    updateNetworkTopology();
                 };
                 tabsBar.appendChild(btn);
             });
@@ -2580,6 +2795,7 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
                 }).filter(line => line.trim() !== '').join('\n');
             }
 
+            const linesCount = finalScript.split('\n').length;
             const id = 'script-' + encodeURIComponent(activeTabDeviceName).replace(/%/g, '');
             const isEco = activeTabDeviceName.includes('EcoRouter');
             const isOvs = activeTabDeviceName.includes('OVS');
@@ -2591,18 +2807,26 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
             else if (isReport) badgeHtml = '<span class="badge-ovs">Таблицы 2, 3 и Отчёт</span>';
 
             container.innerHTML = `
-            <div class="device-block">
-                <div class="device-header">
-                    <h2>
-                        <span>${activeTabDeviceName}</span>
-                        ${badgeHtml}
-                    </h2>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-title-wrap">
+                        <div class="window-dots">
+                            <span class="win-dot red"></span>
+                            <span class="win-dot yellow"></span>
+                            <span class="win-dot green"></span>
+                        </div>
+                        <h2 class="terminal-title">
+                            <span>${activeTabDeviceName}</span>
+                            ${badgeHtml}
+                            <span style="font-size: 11.5px; color: #8b949e; font-weight: normal; margin-left: 6px;">(${linesCount} строк)</span>
+                        </h2>
+                    </div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn-copy" onclick="downloadSingleScript('${activeTabDeviceName}')" style="background: #17a2b8;">Скачать .${fileExt}</button>
-                        <button class="btn-copy" onclick="copyText('${id}', this)">Копировать</button>
+                        <button class="btn-download-all" onclick="downloadSingleScript('${activeTabDeviceName}')">⬇️ Скачать .${fileExt}</button>
+                        <button class="btn-copy" onclick="copyText('${id}', this)">📋 Копировать</button>
                     </div>
                 </div>
-                <pre id="${id}" contenteditable="true" spellcheck="false"><code>${escapeHtml(finalScript)}</code></pre>
+                <pre id="${id}" class="terminal-code" contenteditable="true" spellcheck="false"><code>${escapeHtml(finalScript)}</code></pre>
             </div>
             `;
 
@@ -2619,12 +2843,14 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
             if (generatedScriptsStore[name]) {
                 activeTabDeviceName = name;
                 renderScriptTabsAndActive();
+                updateNetworkTopology();
                 const tabsBar = document.getElementById('scriptTabsBar');
                 if (tabsBar) tabsBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             } else {
                 generateScript(true);
                 activeTabDeviceName = name;
                 renderScriptTabsAndActive();
+                updateNetworkTopology();
             }
         }
 
@@ -2658,7 +2884,7 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
                     matchCount++;
                     const escaped = escapeHtml(line);
                     const reg = new RegExp(`(${escapeRegExp(escapeHtml(query))})`, 'gi');
-                    return `<mark style="background: #ffea79; color: #000; border-radius: 2px;">${escaped.replace(reg, '<span style="background:#ff9800; color:#fff; font-weight:bold;">$1</span>')}</mark>`;
+                    return `<mark style="background: rgba(245, 158, 11, 0.25); color: #fff; border-radius: 3px;">${escaped.replace(reg, '<span style="background:#f59e0b; color:#000; font-weight:bold; padding: 0 2px; border-radius: 2px;">$1</span>')}</mark>`;
                 }
                 return escapeHtml(line);
             }).join('\n');
@@ -2679,7 +2905,7 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
             navigator.clipboard.writeText(output.innerText).then(() => {
                 if (buttonElement) {
                     const originalText = buttonElement.innerText;
-                    buttonElement.innerText = 'Скопировано!';
+                    buttonElement.innerText = '✅ Скопировано!';
                     buttonElement.disabled = true;
                     setTimeout(() => {
                         buttonElement.innerText = originalText;
@@ -2831,6 +3057,10 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
             }
         }
 
+        function isNodeSelected(matchStr) {
+            return activeTabDeviceName && activeTabDeviceName.includes(matchStr) ? 'selected-node' : '';
+        }
+
         function updateNetworkTopology() {
             const svg = document.getElementById('networkTopologySvg');
             if (!svg) return;
@@ -2848,7 +3078,6 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
             const subnet999Val = cleanIpString(document.getElementById('subnet999')?.value);
             const subnetIspHqVal = cleanIpString(document.getElementById('subnetIspHq')?.value);
             const subnetIspBrVal = cleanIpString(document.getElementById('subnetIspBr')?.value);
-            const subnetGreVal = cleanIpString(document.getElementById('subnetGre')?.value);
             const subnetFwNetVal = cleanIpString(document.getElementById('subnetFwNet')?.value);
             const subnetBrNetVal = cleanIpString(document.getElementById('subnetBrNet')?.value);
 
@@ -2867,39 +3096,40 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
             const ipBrNetSrv = cleanIpString(document.getElementById('ipBrNetSrvInput')?.value);
 
             const isDark = document.body.classList.contains('dark-theme');
-            const nodeBg = isDark ? '#1a1f26' : '#ffffff';
-            const textColor = isDark ? '#f0f6fc' : '#212529';
-            const subTextColor = isDark ? '#8b949e' : '#6c757d';
-            const wireColor = isDark ? '#30363d' : '#ced4da';
-            const ispWireColor = '#007bff';
-            const greColor = '#ff9800';
-            const areaBorder = isDark ? 'rgba(46, 160, 67, 0.5)' : 'rgba(40, 167, 69, 0.6)';
+            const nodeBg = isDark ? '#161f30' : '#ffffff';
+            const textColor = isDark ? '#f8fafc' : '#0f172a';
+            const subTextColor = isDark ? '#94a3b8' : '#64748b';
+            const wireColor = isDark ? '#334155' : '#cbd5e1';
+            const ispWireColor = '#3b82f6';
+            const greColor = '#f59e0b';
+            const areaBorder = isDark ? 'rgba(16, 185, 129, 0.45)' : 'rgba(16, 185, 129, 0.55)';
+            const areaFill = isDark ? 'rgba(16, 185, 129, 0.03)' : 'rgba(16, 185, 129, 0.02)';
 
             svg.innerHTML = `
             <defs>
                 <linearGradient id="greGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#ff9800"/>
-                    <stop offset="100%" stop-color="#ff5722"/>
+                    <stop offset="0%" stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#ef4444"/>
                 </linearGradient>
                 <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.22"/>
                 </filter>
             </defs>
 
             <!-- ГРАНИЦЫ ОФИСОВ -->
-            <rect x="20" y="100" width="465" height="320" rx="14" fill="none" stroke="${areaBorder}" stroke-width="2.5" stroke-dasharray="8,6"/>
-            <text x="35" y="122" fill="#28a745" font-size="13" font-weight="bold">СЕГМЕНТ HQ (Главный офис)</text>
+            <rect x="20" y="100" width="465" height="320" rx="16" fill="${areaFill}" stroke="${areaBorder}" stroke-width="2" stroke-dasharray="8,6"/>
+            <text x="36" y="123" fill="#10b981" font-size="12.5" font-weight="800" letter-spacing="0.5">СЕГМЕНТ HQ (ГЛАВНЫЙ ОФИС)</text>
 
-            <rect x="535" y="100" width="445" height="320" rx="14" fill="none" stroke="${areaBorder}" stroke-width="2.5" stroke-dasharray="8,6"/>
-            <text x="550" y="122" fill="#28a745" font-size="13" font-weight="bold">СЕГМЕНТ BR (Филиал)</text>
+            <rect x="535" y="100" width="445" height="320" rx="16" fill="${areaFill}" stroke="${areaBorder}" stroke-width="2" stroke-dasharray="8,6"/>
+            <text x="551" y="123" fill="#10b981" font-size="12.5" font-weight="800" letter-spacing="0.5">СЕГМЕНТ BR (ФИЛИАЛ)</text>
 
             <!-- ЛИНИИ СВЯЗИ -->
             <line x1="500" y1="35" x2="500" y2="55" stroke="${wireColor}" stroke-width="2.5"/>
-            <path d="M 435 72 L 260 135" stroke="${ispWireColor}" stroke-width="3" fill="none"/>
-            <path d="M 565 72 L 750 135" stroke="${ispWireColor}" stroke-width="3" fill="none"/>
+            <path d="M 435 72 L 260 135" stroke="${ispWireColor}" stroke-width="2.8" fill="none" stroke-dasharray="7,6" class="animated-link"/>
+            <path d="M 565 72 L 750 135" stroke="${ispWireColor}" stroke-width="2.8" fill="none" stroke-dasharray="7,6" class="animated-link"/>
 
             <!-- GRE ТУННЕЛЬ -->
-            <path d="M 335 152 Q 500 112 665 152" stroke="url(#greGrad)" stroke-width="3.5" fill="none" stroke-dasharray="8,5"/>
+            <path d="M 335 152 Q 500 110 665 152" stroke="url(#greGrad)" stroke-width="3.2" fill="none" stroke-dasharray="8,5" class="animated-link"/>
 
             <!-- HQ-RTR -> HQ-SW -> HQ-SRV / HQ-CLI -->
             <line x1="260" y1="185" x2="260" y2="235" stroke="${wireColor}" stroke-width="3"/>
@@ -2911,83 +3141,83 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
             <line x1="750" y1="288" x2="750" y2="340" stroke="${wireColor}" stroke-width="3"/>
 
             <!-- МЕТКИ СЕТЕЙ -->
-            <rect x="285" y="84" width="135" height="19" rx="4" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
+            <rect x="285" y="83" width="135" height="20" rx="5" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
             <text x="352" y="97" text-anchor="middle" font-size="9.5" fill="${ispWireColor}" font-weight="bold">ISP-HQ: ${subnetIspHqVal}/${maskIsp}</text>
 
-            <rect x="580" y="84" width="135" height="19" rx="4" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
+            <rect x="580" y="83" width="135" height="20" rx="5" fill="${nodeBg}" stroke="${ispWireColor}" stroke-width="1"/>
             <text x="647" y="97" text-anchor="middle" font-size="9.5" fill="${ispWireColor}" font-weight="bold">ISP-BR: ${subnetIspBrVal}/${maskIsp}</text>
 
-            <rect x="415" y="122" width="170" height="21" rx="4" fill="${nodeBg}" stroke="${greColor}" stroke-width="1.5"/>
+            <rect x="415" y="121" width="170" height="22" rx="6" fill="${nodeBg}" stroke="${greColor}" stroke-width="1.5"/>
             <text x="500" y="136" text-anchor="middle" font-size="9.5" fill="${greColor}" font-weight="bold">GRE: ${ipGreHq} ↔ ${ipGreBr} (/${maskGre})</text>
 
             <text x="270" y="214" font-size="9.5" fill="${subTextColor}" font-weight="bold">HQ-NET (VLAN 999: ${subnet999Val}/${mask999})</text>
-            <text x="145" y="220" font-size="9.5" fill="#28a745" font-weight="bold">SRV-NET: ${subnet100Val}/${mask100}</text>
-            <text x="270" y="318" font-size="9.5" fill="#6f42c1" font-weight="bold">CLI-NET: ${subnet200Val}/${mask200}</text>
+            <text x="145" y="220" font-size="9.5" fill="#10b981" font-weight="bold">SRV-NET: ${subnet100Val}/${mask100}</text>
+            <text x="270" y="318" font-size="9.5" fill="#8b5cf6" font-weight="bold">CLI-NET: ${subnet200Val}/${mask200}</text>
 
-            <text x="760" y="214" font-size="9.5" fill="#fd7e14" font-weight="bold">FW-NET: ${subnetFwNetVal}/${maskFwNet}</text>
-            <text x="760" y="318" font-size="9.5" fill="#20c997" font-weight="bold">BR-NET: ${subnetBrNetVal}/${maskBrNet}</text>
+            <text x="760" y="214" font-size="9.5" fill="#f59e0b" font-weight="bold">FW-NET: ${subnetFwNetVal}/${maskFwNet}</text>
+            <text x="760" y="318" font-size="9.5" fill="#06b6d4" font-weight="bold">BR-NET: ${subnetBrNetVal}/${maskBrNet}</text>
 
             <!-- УЗЛЫ -->
             <g>
-                <ellipse cx="500" cy="20" rx="45" ry="15" fill="${nodeBg}" stroke="#17a2b8" stroke-width="1.8"/>
+                <ellipse cx="500" cy="20" rx="46" ry="15" fill="${nodeBg}" stroke="#0ea5e9" stroke-width="1.8"/>
                 <text x="500" y="24" text-anchor="middle" font-size="11" font-weight="bold" fill="${textColor}">☁️ Internet</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('ISP')">
-                <rect x="420" y="42" width="160" height="54" rx="8" fill="${nodeBg}" stroke="#17a2b8" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('ISP')}" onclick="selectTabByName('ISP')">
+                <rect class="node-card" x="420" y="42" width="160" height="54" rx="10" fill="${nodeBg}" stroke="#0ea5e9" stroke-width="2" filter="url(#shadow)"/>
                 <text x="500" y="61" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🌐 ISP (Chrony)</text>
-                <text x="500" y="76" text-anchor="middle" font-size="9" fill="#17a2b8" font-weight="bold">${ipIspHq} | ${ipIspBr}</text>
+                <text x="500" y="76" text-anchor="middle" font-size="9" fill="#0ea5e9" font-weight="bold">${ipIspHq} | ${ipIspBr}</text>
                 <text x="500" y="89" text-anchor="middle" font-size="8.5" fill="${subTextColor}">WAN: DHCP • NAT PAT</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('HQ-RTR (EcoRouter)')">
-                <rect x="175" y="128" width="170" height="58" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('HQ-RTR')}" onclick="selectTabByName('HQ-RTR (EcoRouter)')">
+                <rect class="node-card" x="175" y="128" width="170" height="58" rx="10" fill="${nodeBg}" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
                 <text x="260" y="146" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🔀 HQ-RTR</text>
-                <text x="260" y="161" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">WAN: ${ipHqExt} | GRE: ${ipGreHq}</text>
+                <text x="260" y="161" text-anchor="middle" font-size="9" fill="#10b981" font-weight="bold">WAN: ${ipHqExt} | GRE: ${ipGreHq}</text>
                 <text x="260" y="175" text-anchor="middle" font-size="8.5" fill="${subTextColor}">DNAT 8080/2027 • DHCP</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('BR-RTR (EcoRouter)')">
-                <rect x="665" y="128" width="170" height="58" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('BR-RTR')}" onclick="selectTabByName('BR-RTR (EcoRouter)')">
+                <rect class="node-card" x="665" y="128" width="170" height="58" rx="10" fill="${nodeBg}" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
                 <text x="750" y="146" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🔀 BR-RTR</text>
-                <text x="750" y="161" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">WAN: ${ipBrExt} | LAN: ${ipBrFwRtr}</text>
+                <text x="750" y="161" text-anchor="middle" font-size="9" fill="#10b981" font-weight="bold">WAN: ${ipBrExt} | LAN: ${ipBrFwRtr}</text>
                 <text x="750" y="175" text-anchor="middle" font-size="8.5" fill="${subTextColor}">DNAT 8080/2027 • GRE: ${ipGreBr}</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('HQ-SW (OVS)')">
-                <rect x="180" y="235" width="160" height="54" rx="8" fill="${nodeBg}" stroke="#17a2b8" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('HQ-SW')}" onclick="selectTabByName('HQ-SW (OVS)')">
+                <rect class="node-card" x="180" y="235" width="160" height="54" rx="10" fill="${nodeBg}" stroke="#0ea5e9" stroke-width="2" filter="url(#shadow)"/>
                 <text x="260" y="254" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🎛️ HQ-SW (OVS)</text>
-                <text x="260" y="269" text-anchor="middle" font-size="9" fill="#17a2b8" font-weight="bold">MGMT: ${ipHqSwMgt}/${mask999}</text>
+                <text x="260" y="269" text-anchor="middle" font-size="9" fill="#0ea5e9" font-weight="bold">MGMT: ${ipHqSwMgt}/${mask999}</text>
                 <text x="260" y="282" text-anchor="middle" font-size="8.5" fill="${subTextColor}">VLAN 100 / 200 / 999</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('HQ-SRV')">
-                <rect x="25" y="228" width="134" height="68" rx="8" fill="${nodeBg}" stroke="#28a745" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('HQ-SRV')}" onclick="selectTabByName('HQ-SRV')">
+                <rect class="node-card" x="25" y="228" width="134" height="68" rx="10" fill="${nodeBg}" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
                 <text x="92" y="246" text-anchor="middle" font-size="12" font-weight="bold" fill="${textColor}">🖥️ HQ-SRV</text>
-                <text x="92" y="260" text-anchor="middle" font-size="9" fill="#28a745" font-weight="bold">${ipHqVlan100Srv}/${mask100}</text>
+                <text x="92" y="260" text-anchor="middle" font-size="9" fill="#10b981" font-weight="bold">${ipHqVlan100Srv}/${mask100}</text>
                 <text x="92" y="273" text-anchor="middle" font-size="8.5" fill="${textColor}">DNS • RAID0 • NFS</text>
                 <text x="92" y="286" text-anchor="middle" font-size="8.5" fill="${subTextColor}">Apache + MariaDB</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('HQ-CLI')">
-                <rect x="175" y="338" width="170" height="64" rx="8" fill="${nodeBg}" stroke="#6f42c1" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('HQ-CLI')}" onclick="selectTabByName('HQ-CLI')">
+                <rect class="node-card" x="175" y="338" width="170" height="64" rx="10" fill="${nodeBg}" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
                 <text x="260" y="356" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">💻 HQ-CLI</text>
-                <text x="260" y="371" text-anchor="middle" font-size="9" fill="#6f42c1" font-weight="bold">DHCP: ${ipHqVlan200Cli}/${mask200}</text>
+                <text x="260" y="371" text-anchor="middle" font-size="9" fill="#8b5cf6" font-weight="bold">DHCP: ${ipHqVlan200Cli}/${mask200}</text>
                 <text x="260" y="384" text-anchor="middle" font-size="8.5" fill="${textColor}">Samba AD • /mnt/nfs</text>
                 <text x="260" y="396" text-anchor="middle" font-size="8" fill="${subTextColor}">sudo: cat, grep, id</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('BR-FW')">
-                <rect x="665" y="235" width="170" height="54" rx="8" fill="${nodeBg}" stroke="#fd7e14" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('BR-FW')}" onclick="selectTabByName('BR-FW')">
+                <rect class="node-card" x="665" y="235" width="170" height="54" rx="10" fill="${nodeBg}" stroke="#f59e0b" stroke-width="2" filter="url(#shadow)"/>
                 <text x="750" y="254" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🧱 BR-FW</text>
-                <text x="750" y="269" text-anchor="middle" font-size="9" fill="#fd7e14" font-weight="bold">${ipBrFwFw} | ${ipBrNetFw}</text>
+                <text x="750" y="269" text-anchor="middle" font-size="9" fill="#f59e0b" font-weight="bold">${ipBrFwFw} | ${ipBrNetFw}</text>
                 <text x="750" y="282" text-anchor="middle" font-size="8.5" fill="${subTextColor}">OSPF Area 0 к BR-RTR</text>
             </g>
 
-            <g class="topo-node" onclick="selectTabByName('BR-SRV')">
-                <rect x="665" y="335" width="170" height="66" rx="8" fill="${nodeBg}" stroke="#20c997" stroke-width="2" filter="url(#shadow)"/>
+            <g class="topo-node ${isNodeSelected('BR-SRV')}" onclick="selectTabByName('BR-SRV')">
+                <rect class="node-card" x="665" y="335" width="170" height="66" rx="10" fill="${nodeBg}" stroke="#06b6d4" stroke-width="2" filter="url(#shadow)"/>
                 <text x="750" y="353" text-anchor="middle" font-size="12.5" font-weight="bold" fill="${textColor}">🖥️ BR-SRV</text>
-                <text x="750" y="367" text-anchor="middle" font-size="9" fill="#20c997" font-weight="bold">${ipBrNetSrv}/${maskBrNet}</text>
+                <text x="750" y="367" text-anchor="middle" font-size="9" fill="#06b6d4" font-weight="bold">${ipBrNetSrv}/${maskBrNet}</text>
                 <text x="750" y="380" text-anchor="middle" font-size="8.5" fill="${textColor}">Samba DC • Ansible</text>
                 <text x="750" y="393" text-anchor="middle" font-size="8.5" fill="${subTextColor}">Docker testapp:8080</text>
             </g>
@@ -3095,4 +3325,4 @@ ${cname2}.${domain}.         | CNAME | ${nameHqSrv}.${domain}.
     </script>
 </body>
 
-    </html> 
+</html>
