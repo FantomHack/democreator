@@ -58,7 +58,12 @@
             font-size: 13px;
         }
 
-        /* Экран авторизации (неприметный системный стиль) */
+        /* Урезанный режим (по паролю 1234) */
+        body.lite-mode .full-only {
+            display: none !important;
+        }
+
+        /* Экран авторизации */
         #authOverlay {
             position: fixed;
             inset: 0;
@@ -432,18 +437,18 @@
             <h1>Параметры сети и сервисов</h1>
         </div>
         <div class="preset-group">
-            <span style="font-size: 12px; color: var(--text-muted);">Профиль:</span>
-            <button class="btn-preset active" id="btn-preset-actual" onclick="loadPreset('actual')">Профиль 1 (au-team)</button>
-            <button class="btn-preset" id="btn-preset-default" onclick="loadPreset('default')">Профиль 2 (172.16)</button>
-            <button class="btn-preset" id="btn-preset-preset1" onclick="loadPreset('preset1')">Профиль 3 (192.168)</button>
+            <span class="full-only" style="font-size: 12px; color: var(--text-muted);">Профиль:</span>
+            <button class="btn-preset active full-only" id="btn-preset-actual" onclick="loadPreset('actual')">Профиль 1 (au-team)</button>
+            <button class="btn-preset full-only" id="btn-preset-default" onclick="loadPreset('default')">Профиль 2 (172.16)</button>
+            <button class="btn-preset full-only" id="btn-preset-preset1" onclick="loadPreset('preset1')">Профиль 3 (192.168)</button>
             <button id="themeToggle" onclick="toggleTheme()" title="Тема">Тема</button>
             <button onclick="lockApp()" title="Скрыть (Esc)">Скрыть</button>
         </div>
     </div>
 
-    <!-- Вкладки разделов -->
-    <div class="nav-tabs">
-        <button class="nav-tab active" onclick="switchTab('tab-m1', this)">Часть 1 (Сеть)</button>
+    <!-- Вкладки разделов (скрыты в режиме 1234) -->
+    <div class="nav-tabs full-only">
+        <button class="nav-tab active" id="nav-tab-m1" onclick="switchTab('tab-m1', this)">Часть 1 (Сеть)</button>
         <button class="nav-tab" onclick="switchTab('tab-m2', this)">Часть 2 (Сервисы)</button>
         <button class="nav-tab" onclick="switchTab('tab-m3', this)">Часть 3 (Прокси и службы)</button>
         <button class="nav-tab" onclick="switchTab('tab-tables', this)">Таблицы адресации</button>
@@ -452,8 +457,8 @@
     <!-- ВКЛАДКА 1: ЗАДАНИЕ 1 -->
     <div id="tab-m1" class="tab-pane active">
         <div class="cards-grid">
-            <!-- Сетевые интерфейсы по устройствам -->
-            <div class="card" style="grid-column: span 2;">
+            <!-- Сетевые интерфейсы по устройствам (только в полном режиме) -->
+            <div class="card full-only" style="grid-column: span 2;">
                 <div class="card-title">
                     <span>Сетевые интерфейсы (на HQ-RTR и BR-RTR ens18 — заглушка)</span>
                     <div style="display: flex; flex-wrap: wrap; gap: 4px;">
@@ -479,22 +484,22 @@
 
             <!-- Общие настройки и Пользователи -->
             <div class="card">
-                <div class="card-title">Домен, DNS, Учетные записи и SSH</div>
+                <div class="card-title">Основные параметры и учетные записи</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Домен:</label><input type="text" id="domain" value="au-team.irpo" oninput="onFormChange()"></div>
-                    <div class="form-group"><label>Часовой пояс:</label><input type="text" id="timezone" value="Asia/Yekaterinburg" oninput="onFormChange()"></div>
-                    <div class="form-group"><label>Внешний DNS:</label><input type="text" id="extDns" value="77.88.8.8" oninput="onFormChange()"></div>
-                    <div class="form-group"><label>Юзер Роутеров/CLI:</label><input type="text" id="rtrUser" value="net_admin" oninput="onFormChange()"></div>
-                    <div class="form-group"><label>Пароль Роутеров/OSPF:</label><input type="text" id="rtrPwd" value="P@ssw0rd" oninput="onFormChange()"></div>
-                    <div class="form-group"><label>SSH Порт (Серверы):</label><input type="text" id="sshPort" value="2027" oninput="onFormChange()"></div>
+                    <div class="form-group full-only"><label>Часовой пояс:</label><input type="text" id="timezone" value="Asia/Yekaterinburg" oninput="onFormChange()"></div>
+                    <div class="form-group full-only"><label>Внешний DNS:</label><input type="text" id="extDns" value="77.88.8.8" oninput="onFormChange()"></div>
+                    <div class="form-group"><label>Юзер Роутеров:</label><input type="text" id="rtrUser" value="net_admin" oninput="onFormChange()"></div>
+                    <div class="form-group"><label>Пароль Роутеров:</label><input type="text" id="rtrPwd" value="P@ssw0rd" oninput="onFormChange()"></div>
+                    <div class="form-group"><label>SSH Порт:</label><input type="text" id="sshPort" value="2027" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Юзер Серверов:</label><input type="text" id="srvUser" value="sshuser" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Пароль Серверов:</label><input type="text" id="srvPwd" value="P@ssw0rd" oninput="onFormChange()"></div>
                     <div class="form-group"><label>UID (Серверы):</label><input type="text" id="srvUid" value="2027" oninput="onFormChange()"></div>
                 </div>
             </div>
 
-            <!-- Доп. записи DNS и Имена -->
-            <div class="card">
+            <!-- Доп. записи DNS и Имена (только в полном режиме) -->
+            <div class="card full-only">
                 <div class="card-title">Имена узлов и Записи DNS</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Запись 1 (к HQ):</label><input type="text" id="cname1" value="docker" oninput="onFormChange()"></div>
@@ -527,48 +532,48 @@
                 <div class="form-grid">
                     <div class="form-group"><label>ISP ↔ HQ-RTR:</label><input type="text" id="subnetIspHq" value="172.16.1.0" oninput="onFormChange()"></div>
                     <div class="form-group"><label>ISP ↔ BR-RTR:</label><input type="text" id="subnetIspBr" value="172.16.2.0" oninput="onFormChange()"></div>
-                    <div class="form-group"><label>Размер сети:</label><input type="number" id="hostsIsp" value="16" oninput="onFormChange()"></div>
+                    <div class="form-group full-only"><label>Размер сети:</label><input type="number" id="hostsIsp" value="16" oninput="onFormChange()"></div>
                 </div>
-                <div class="live-preview" id="previewIsp"></div>
+                <div class="live-preview full-only" id="previewIsp"></div>
             </div>
 
             <div class="card">
                 <div class="card-title"><span>Сеть HQ-SRV (VLAN 100)</span> <span id="hint100" class="device-badge"></span></div>
                 <div class="form-grid">
-                    <div class="form-group"><label>VLAN ID:</label><input type="number" id="vlan100" value="100" oninput="onFormChange()"></div>
+                    <div class="form-group full-only"><label>VLAN ID:</label><input type="number" id="vlan100" value="100" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Подсеть:</label><input type="text" id="subnet100" value="192.168.100.0" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Размер (не более):</label><input type="number" id="hosts100" value="32" oninput="onFormChange()"></div>
                 </div>
-                <div class="live-preview" id="preview100"></div>
+                <div class="live-preview full-only" id="preview100"></div>
             </div>
 
             <div class="card">
                 <div class="card-title"><span>Сеть HQ-CLI + DHCP (VLAN 200)</span> <span id="hint200" class="device-badge"></span></div>
                 <div class="form-grid">
-                    <div class="form-group"><label>VLAN ID:</label><input type="number" id="vlan200" value="200" oninput="onFormChange()"></div>
+                    <div class="form-group full-only"><label>VLAN ID:</label><input type="number" id="vlan200" value="200" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Подсеть:</label><input type="text" id="subnet200" value="192.168.200.0" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Размер (не более):</label><input type="number" id="hosts200" value="16" oninput="onFormChange()"></div>
                 </div>
-                <div class="live-preview" id="preview200"></div>
+                <div class="live-preview full-only" id="preview200"></div>
             </div>
 
             <div class="card">
                 <div class="card-title"><span>Сеть Управления (VLAN 999)</span> <span id="hint999" class="device-badge"></span></div>
                 <div class="form-grid">
-                    <div class="form-group"><label>VLAN ID:</label><input type="number" id="vlan999" value="999" oninput="onFormChange()"></div>
+                    <div class="form-group full-only"><label>VLAN ID:</label><input type="number" id="vlan999" value="999" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Подсеть:</label><input type="text" id="subnet999" value="192.168.99.0" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Размер (не более):</label><input type="number" id="hosts999" value="8" oninput="onFormChange()"></div>
                 </div>
-                <div class="live-preview" id="preview999"></div>
+                <div class="live-preview full-only" id="preview999"></div>
             </div>
 
             <div class="card">
                 <div class="card-title"><span>Сеть BR-RTR ↔ BR-FW (FW-NET)</span> <span id="hintFw" class="device-badge"></span></div>
                 <div class="form-grid">
                     <div class="form-group"><label>Подсеть:</label><input type="text" id="subnetFw" value="172.16.3.0" oninput="onFormChange()"></div>
-                    <div class="form-group"><label>Размер (мин. маска=4):</label><input type="number" id="hostsFw" value="4" oninput="onFormChange()"></div>
+                    <div class="form-group full-only"><label>Размер (мин. маска=4):</label><input type="number" id="hostsFw" value="4" oninput="onFormChange()"></div>
                 </div>
-                <div class="live-preview" id="previewFw"></div>
+                <div class="live-preview full-only" id="previewFw"></div>
             </div>
 
             <div class="card">
@@ -577,10 +582,10 @@
                     <div class="form-group"><label>Подсеть:</label><input type="text" id="subnetBr" value="172.16.6.0" oninput="onFormChange()"></div>
                     <div class="form-group"><label>Размер (не более):</label><input type="number" id="hostsBr" value="16" oninput="onFormChange()"></div>
                 </div>
-                <div class="live-preview" id="previewBr"></div>
+                <div class="live-preview full-only" id="previewBr"></div>
             </div>
 
-            <div class="card">
+            <div class="card full-only">
                 <div class="card-title"><span>Туннель GRE (HQ-RTR ↔ BR-RTR)</span> <span id="hintGre" class="device-badge"></span></div>
                 <div class="form-grid">
                     <div class="form-group"><label>Подсеть GRE:</label><input type="text" id="subnetGre" value="10.10.10.0" oninput="onFormChange()"></div>
@@ -592,7 +597,7 @@
     </div>
 
     <!-- ВКЛАДКА 2: ЗАДАНИЕ 2 -->
-    <div id="tab-m2" class="tab-pane">
+    <div id="tab-m2" class="tab-pane full-only">
         <div class="cards-grid">
             <div class="card">
                 <div class="card-title">1. Контроллер домена Samba DC (BR-SRV + HQ-CLI)</div>
@@ -666,7 +671,7 @@
     </div>
 
     <!-- ВКЛАДКА 3: ЗАДАНИЕ 3 -->
-    <div id="tab-m3" class="tab-pane">
+    <div id="tab-m3" class="tab-pane full-only">
         <div class="cards-grid">
             <div class="card">
                 <div class="card-title">2, 3, 4. Обратный прокси (ISP) и Сертификаты CA (HQ-SRV)</div>
@@ -699,7 +704,7 @@
     </div>
 
     <!-- ВКЛАДКА 4: ТАБЛИЦЫ IP И DNS -->
-    <div id="tab-tables" class="tab-pane">
+    <div id="tab-tables" class="tab-pane full-only">
         <div class="card" style="margin-bottom: 12px;">
             <div class="card-title">Таблица 2 (Сведения об IP-адресах, интерфейсах, масках и шлюзах)</div>
             <table class="memo-table">
@@ -757,7 +762,7 @@
     <div class="control-bar">
         <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 12px;">
             <button class="btn-generate" onclick="generateScript()">Обновить</button>
-            <div style="display: flex; align-items: center; gap: 6px;">
+            <div class="full-only" style="display: flex; align-items: center; gap: 6px;">
                 <label for="moduleMode" style="margin: 0; font-size: 12.5px; color: var(--text-main);">Режим:</label>
                 <select id="moduleMode" onchange="generateScript()" style="width: auto;">
                     <option value="m12" selected>Часть 1 + Часть 2</option>
@@ -785,17 +790,25 @@
 </div>
 
 <script>
-    const _k = [110, 121, 108, 116, 115, 112, 117, 56];
+    // Коды доступа (полный и базовый)
+    const _kFull = [110, 121, 108, 116, 115, 112, 117, 56];
+    const _kLite = [56, 57, 58, 59];
 
-    function checkAccessKey(val) {
-        if (!val || val.length !== _k.length) return false;
+    function matchCodes(val, arr) {
+        if (!val || val.length !== arr.length) return false;
         for (let i = 0; i < val.length; i++) {
-            if (val.charCodeAt(i) + 7 !== _k[i]) return false;
+            if (val.charCodeAt(i) + 7 !== arr[i]) return false;
         }
         return true;
     }
 
-    function unlockApp() {
+    function unlockApp(mode) {
+        if (mode === 'lite') {
+            document.body.classList.add('lite-mode');
+            switchTab('tab-m1', document.getElementById('nav-tab-m1'));
+        } else {
+            document.body.classList.remove('lite-mode');
+        }
         document.getElementById('authOverlay').style.display = 'none';
         document.getElementById('mainContainer').style.display = 'block';
         generateScript();
@@ -813,8 +826,10 @@
         const input = document.getElementById('authPassword');
         const err = document.getElementById('authError');
 
-        if (checkAccessKey(input.value)) {
-            unlockApp();
+        if (matchCodes(input.value, _kFull)) {
+            unlockApp('full');
+        } else if (matchCodes(input.value, _kLite)) {
+            unlockApp('lite');
         } else {
             err.style.display = 'block';
             input.select();
@@ -825,7 +840,6 @@
         if (e.key === 'Enter') verifyPassword();
     });
 
-    // Быстрая блокировка по клавише Esc
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && document.getElementById('mainContainer').style.display === 'block') {
             lockApp();
@@ -848,7 +862,7 @@
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        btn.classList.add('active');
+        if (btn) btn.classList.add('active');
     }
 
     function setDeviceFilter(device) {
@@ -931,7 +945,8 @@
     }
 
     function generateScript() {
-        const moduleMode = document.getElementById('moduleMode').value;
+        const isLite = document.body.classList.contains('lite-mode');
+        const moduleMode = isLite ? 'm1' : document.getElementById('moduleMode').value;
 
         const ifaceIspWan = document.getElementById('ifaceIspWan').value.trim() || 'ens18';
         const ifaceIspHq = document.getElementById('ifaceIspHq').value.trim() || 'ens19';
@@ -1079,14 +1094,14 @@
         };
         const dhcpRangeEnd = `${base200}.${dhcpEndOctetMap[mask200] || '14'}`;
 
-        // Обновление живых подсказок в карточках
-        document.getElementById('hintIsp').innerText = `/${maskIsp} (${cidrToNetmask[maskIsp]})`;
-        document.getElementById('hint100').innerText = `/${mask100} (${cidrToNetmask[mask100]})`;
-        document.getElementById('hint200').innerText = `/${mask200} (${cidrToNetmask[mask200]})`;
-        document.getElementById('hint999').innerText = `/${mask999} (${cidrToNetmask[mask999]})`;
-        document.getElementById('hintFw').innerText = `/${maskFw} (${cidrToNetmask[maskFw]})`;
-        document.getElementById('hintBr').innerText = `/${maskBr} (${cidrToNetmask[maskBr]})`;
-        document.getElementById('hintGre').innerText = `/${maskGre} (${cidrToNetmask[maskGre]})`;
+        // Обновление подсказок масок
+        document.getElementById('hintIsp').innerText = `/${maskIsp}`;
+        document.getElementById('hint100').innerText = `/${mask100}`;
+        document.getElementById('hint200').innerText = `/${mask200}`;
+        document.getElementById('hint999').innerText = `/${mask999}`;
+        document.getElementById('hintFw').innerText = `/${maskFw}`;
+        document.getElementById('hintBr').innerText = `/${maskBr}`;
+        document.getElementById('hintGre').innerText = `/${maskGre}`;
 
         document.getElementById('previewIsp').innerText = `ISP (${ifaceIspHq}/${ifaceIspBr}): ${ipIspHq} & ${ipIspBr} | HQ-RTR (${ifaceHqRtrWan}): ${ipHqExt} | BR-RTR (${ifaceBrRtrWan}): ${ipBrExt}`;
         document.getElementById('preview100').innerText = `HQ-RTR (${ifaceHqRtrLan}.${vlan100Id}): ${ipHqVlan100Rtr}/${mask100} -> HQ-SRV (${ifaceEndHost}): ${ipHqVlan100Srv}/${mask100}`;
@@ -1535,7 +1550,7 @@ mkdir -p /etc/net/ifaces/${ifaceEndHost}
 echo -e 'BOOTPROTO=dhcp\\nTYPE=eth\\nONBOOT=yes\\nUSE_PEERDNS=no' > /etc/net/ifaces/${ifaceEndHost}/options 
 echo 'nameserver ${extDns}' > /etc/net/ifaces/${ifaceEndHost}/resolv.conf
 systemctl restart network
-# -------Установка ПО и включение SSH (для Ansible во 2 задании)-------
+# -------Установка ПО и включение SSH-------
 apt-get update && apt-get install sudo tzdata openssh-server -y
 timedatectl set-timezone ${tz}
 useradd -m ${rtrUser} 2>/dev/null || true
@@ -2194,11 +2209,11 @@ systemctl restart network`;
                 <div class="device-header">
                     <div class="device-title-wrap">
                         <h2>${meta.step}</h2>
-                        <span class="device-badge">${meta.ip}</span>
-                        <span style="font-size: 12px; color: var(--text-muted);">${meta.role}</span>
+                        <span class="device-badge full-only">${meta.ip}</span>
+                        <span class="full-only" style="font-size: 12px; color: var(--text-muted);">${meta.role}</span>
                     </div>
                     <div style="display: flex; gap: 6px;">
-                        <button class="btn-download" onclick="downloadScript('${id}', '${deviceName}')">.sh</button>
+                        <button class="btn-download full-only" onclick="downloadScript('${id}', '${deviceName}')">.sh</button>
                         <button class="btn-copy" onclick="copyText('${id}', this)">Копировать</button>
                     </div>
                 </div>
